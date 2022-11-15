@@ -4,7 +4,7 @@
 | Lab code  |  Lab report  |
 |:---------:|:------------:|
 | [Lab 1](lab-1) | [Report 1](https://github.com/AndrewKachmarKPI/pa-labs/blob/039710d9de1c1b8bbe13b8d001a780573ea925d1/lab-1/lr1_report.pdf) |
-| [Lab 2](lab-2) | [Report 1]() |
+| [Lab 2](lab-2) | [Report 1](lab-1/lr1_report.pdf) |
 | [Lab 3](lab-3) | [Report 3]() |
 | [Lab 4](lab-4) | [Report 4]() |
 | [Lab 5](lab-5) | [Report 5]() |

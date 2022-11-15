@@ -3,12 +3,12 @@
 ## Lab links
 | Lab code  |  Lab report  |
 |:---------:|:------------:|
-| [Lab 1](lab-1) | [Report 1](https://github.com/AndrewKachmarKPI/pa-labs/blob/039710d9de1c1b8bbe13b8d001a780573ea925d1/lab-1/lr1_report.pdf) |
-| [Lab 2](lab-2) | [Report 1](lab-1/lr1_report.pdf) |
-| [Lab 3](lab-3) | [Report 3]() |
-| [Lab 4](lab-4) | [Report 4]() |
-| [Lab 5](lab-5) | [Report 5]() |
-| [Lab 6](lab-6) | [Report 6]() |
+| [Lab 1](lab-1) | [Report 1](lab-1/lr1_report.pdf) |
+| [Lab 2](lab-2) | [Report 2](lab-2/lr2_report.pdf) |
+| [Lab 3](lab-3) | [Report 3](lab-3/lr3_report.pdf) |
+| [Lab 4](lab-4) | [Report 4](lab-4/lr4_report.pdf) |
+| [Lab 5](lab-5) | [Report 5](lab-5/lr5_report.pdf) |
+| [Lab 6](lab-6) | [Report 6](lab-6/lr6_report.pdf) |
 
 ## Run guide
 * [JDK install](https://phoenixnap.com/kb/install-java-windows)

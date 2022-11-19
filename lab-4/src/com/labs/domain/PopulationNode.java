@@ -15,6 +15,7 @@ public class PopulationNode {
         this.totalWeight = totalWeight;
         this.nodeId = UUID.randomUUID().toString();
     }
+
     public PopulationNode(List<Integer> vector) {
         this.vector = vector;
         this.totalPrice = 0;
@@ -57,5 +58,29 @@ public class PopulationNode {
                 ", totalPrice=" + totalPrice +
                 ", totalWeight=" + totalWeight +
                 '}';
+    }
+
+    public void addGene(Integer index, Integer value) {
+        this.vector.set(index, value);
+    }
+
+    public long selectedSize() {
+        return vector.stream().filter(num -> num == 1).count();
+    }
+
+    public void countParameters(List<Item> items) {
+        this.totalPrice = 0;
+        this.totalWeight = 0;
+        int counter = 0;
+        for (Integer item : this.vector) {
+            if (item == 1) {
+                Item selectedItem = items.get(counter);
+//                System.out.println("selectedItem " + selectedItem.getWeight() + "|" + selectedItem.getPrice());
+                totalWeight += selectedItem.getWeight();
+                totalPrice += selectedItem.getPrice();
+            }
+            counter++;
+        }
+//        System.out.println("totalWeight " + totalWeight + "| totalPrice" + totalPrice);
     }
 }

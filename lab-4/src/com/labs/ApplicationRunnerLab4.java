@@ -7,6 +7,6 @@ public class ApplicationRunnerLab4 {
     public static void main(String[] args) {
         KnapsackProblemService service = new KnapsackProblemService(150);
         PopulationNode populationNode = service.searchLoop(1000);
-//        System.out.println(populationNode);
+        System.out.println(populationNode);
     }
 }

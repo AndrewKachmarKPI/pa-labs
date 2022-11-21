@@ -1,8 +1,5 @@
 package com.labs.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SearchResult {
     private GameNode solution;
     private String message;

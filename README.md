@@ -16,3 +16,19 @@
 * IDE
   * [Intellij IDEA](https://www.jetbrains.com/idea/download/)
   * [Eclipse](https://www.eclipse.org/downloads/)
+
+## Lab 2
+Lab 2 contains 2 runners for each algorithm
+> #### Runners folder 
+> **lab2/src/com/labs/** 
+>> * LDFSRunner.java
+>> * AStarRunner.java
+_________________
+To be able to run code you should have prepared environment installed JDK and JVM
+
+To run code you should execute such commands (from command line in folder with runners)
+> ####Compile 
+> javac [runner name].java
+
+> ####Run
+> java [runner name]

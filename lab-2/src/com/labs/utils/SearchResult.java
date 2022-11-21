@@ -1,5 +1,6 @@
 package com.labs.utils;
 
+
 public class SearchResult {
     private GameNode solution;
     private String message;

@@ -27,8 +27,8 @@ _________________
 To be able to run code you should have prepared environment installed JDK and JVM
 
 To run code you should execute such commands (from command line in folder with runners)
-> ####Compile 
+> #### Compile 
 > javac [runner name].java
 
-> ####Run
+> #### Run
 > java [runner name]

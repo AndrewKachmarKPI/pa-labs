@@ -24,7 +24,9 @@ Lab 2 contains 2 runners for each algorithm
 >> * LDFSRunner.java
 >> * AStarRunner.java
 _________________
-To be able to run code you should have prepared environment installed JDK and JVM
+To be able to run code you should have prepared environment installed JDK and JVM \
+Also you can check your java installation executing
+> java -version
 
 To run code you should execute such commands (from command line in folder with runners)
 > #### Compile 

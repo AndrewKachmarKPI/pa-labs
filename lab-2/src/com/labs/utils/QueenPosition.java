@@ -15,16 +15,8 @@ public class QueenPosition {
         return xPos;
     }
 
-    public void setxPos(Integer xPos) {
-        this.xPos = xPos;
-    }
-
     public Integer getyPos() {
         return yPos;
-    }
-
-    public void setyPos(Integer yPos) {
-        this.yPos = yPos;
     }
 
     @Override

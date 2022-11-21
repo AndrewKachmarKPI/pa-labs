@@ -5,7 +5,6 @@ import java.util.List;
 
 public class SearchResult {
     private GameNode solution;
-    private List<GameNode> solutionPath = new ArrayList<>();
     private String message;
     private boolean isSuccess;
 
@@ -31,24 +30,8 @@ public class SearchResult {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public boolean isSuccess() {
         return isSuccess;
-    }
-
-    public void setSuccess(boolean success) {
-        isSuccess = success;
-    }
-
-    public List<GameNode> getSolutionPath() {
-        return solutionPath;
-    }
-
-    public void setSolutionPath(List<GameNode> solutionPath) {
-        this.solutionPath = solutionPath;
     }
 
 

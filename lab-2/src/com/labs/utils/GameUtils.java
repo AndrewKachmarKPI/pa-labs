@@ -13,24 +13,6 @@ public class GameUtils {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public static int[][] positionsToMatrix(List<QueenPosition> positions) {
-        int[][] matrix = new int[8][8];
-        positions.forEach(queenPosition -> matrix[queenPosition.getyPos()][queenPosition.getxPos()] = 1);
-        return matrix;
-    }
-
-    public static List<QueenPosition> matrixToPosition(int[][] matrix) {
-        List<QueenPosition> positions = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (matrix[i][j] == 1) {
-                    positions.add(new QueenPosition(j, i));
-                }
-            }
-        }
-        return positions;
-    }
-
     public static Map<QueenPosition, QueenPosition> getAllConflicts(List<QueenPosition> positions) {
         Map<QueenPosition, QueenPosition> positionMap = new HashMap<>();
         positions.forEach(pos1 -> {
@@ -113,32 +95,5 @@ public class GameUtils {
             System.out.printf(pattern, i + 1, line);
         }
         System.out.println(stringBuilder);
-    }
-
-    private List<QueenPosition> solution() {
-        List<QueenPosition> queenPositions = new ArrayList<>();
-        queenPositions.add(new QueenPosition(2, 0));
-        queenPositions.add(new QueenPosition(5, 1));
-        queenPositions.add(new QueenPosition(7, 2));
-        queenPositions.add(new QueenPosition(0, 3));
-        queenPositions.add(new QueenPosition(3, 4));
-        queenPositions.add(new QueenPosition(6, 5));
-        queenPositions.add(new QueenPosition(4, 6));
-        queenPositions.add(new QueenPosition(1, 7));
-        return queenPositions;
-    }
-
-    public static List<QueenPosition> check() {
-        List<QueenPosition> queenPositions = new ArrayList<>();
-        queenPositions.add(new QueenPosition(7, 1));
-        queenPositions.add(new QueenPosition(5, 3));
-        queenPositions.add(new QueenPosition(1, 7));
-        queenPositions.add(new QueenPosition(3, 5));
-        queenPositions.add(new QueenPosition(5, 1));
-        queenPositions.add(new QueenPosition(2, 2));
-        queenPositions.add(new QueenPosition(7, 2));
-        queenPositions.add(new QueenPosition(1, 3));
-        queenPositions.add(new QueenPosition(3, 3));
-        return queenPositions;
     }
 }

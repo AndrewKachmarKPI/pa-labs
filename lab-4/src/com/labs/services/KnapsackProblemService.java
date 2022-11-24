@@ -1,24 +1,20 @@
 package com.labs.services;
 
 import com.labs.domain.Item;
-import com.labs.domain.Knapsack;
 import com.labs.domain.MutationResponse;
 import com.labs.domain.PopulationNode;
 
 import java.util.*;
 
-import static com.labs.services.GeneralMethods.*;
-
-
 /**
  * Population select criteria (best in population + randomly selected)
  */
 public class KnapsackProblemService {
-    private Integer capacity;
-    private Integer numberOfNodes = 100;
+    private final Integer capacity;
+    private static final Integer numberOfNodes = 100;
 
-    private List<Item> items;
-    private List<PopulationNode> currentPopulation = new ArrayList<>();
+    private final List<Item> items;
+    private final List<PopulationNode> currentPopulation = new ArrayList<>();
     private PopulationNode currentRecord; //F* rack with best price
 
 
@@ -32,23 +28,14 @@ public class KnapsackProblemService {
     public PopulationNode searchLoop(Integer iterations) {
         for (int i = 0; i < iterations; i++) {
             PopulationNode selectedNode = selection();//S0
-
             PopulationNode afterCross = cross(selectedNode, currentRecord); //S1
-
             MutationResponse mutationResponse = mutation(afterCross); //S2
-
             PopulationNode nodeForImprovement = mutationResponse.isSuccessful() ? mutationResponse.getPopulationNode() : afterCross;
             PopulationNode populationNode = localImprovement(nodeForImprovement);//S3
-
             if (populationNode.getTotalPrice() > currentRecord.getTotalPrice() && populationNode.getTotalWeight() <= capacity) {
                 currentRecord = populationNode;
             }
             replaceWorstPopulationNode(populationNode);
-
-            if (i % 20 == 0) {
-                System.out.println("ITERATION - " + i);
-                System.out.println(currentRecord);
-            }
         }
         return currentRecord;
     }
@@ -108,34 +95,16 @@ public class KnapsackProblemService {
 
     //STEP 5
     public PopulationNode localImprovement(PopulationNode populationNode) {
-        int randomIndex = randomNumber(0, numberOfNodes);
+        int dif = randomNumber(0, 5);
+        int xRange = randomNumber(0, numberOfNodes);
+        int randomIndex = randomNumber(xRange, countRange(dif, xRange));
         populationNode.addGene(randomIndex, 1);
         populationNode.countParameters(items);
         return populationNode;
     }
 
-
-    //ADDITIONAL
     public boolean checkForCross() {
         return randomDouble(0, 1) < 0.5;
-    }
-
-    public PopulationNode countNodeParameters(PopulationNode populationNode) {
-        Integer totalWeight = 0;
-        Integer totalPrice = 0;
-
-        int counter = 0;
-        for (Integer item : populationNode.getVector()) {
-            if (item == 1) {
-                Item selectedItem = items.get(counter);
-                totalWeight += selectedItem.getWeight();
-                totalPrice += selectedItem.getPrice();
-            }
-            counter++;
-        }
-        populationNode.setTotalWeight(totalWeight);
-        populationNode.setTotalPrice(totalPrice);
-        return populationNode;
     }
 
     public boolean checkProbability(int probability) {
@@ -171,4 +140,25 @@ public class KnapsackProblemService {
         return populationNode.getVector().stream().filter(gene -> gene == 1).count() > 2;
     }
 
+    public int countRange(int dif, int xRange) {
+        if (xRange + dif > this.items.size()) {
+            xRange = this.items.size() - xRange;
+        }
+        return xRange;
+    }
+
+    public List<Item> generateItems(int count) {
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            items.add(new Item(randomNumber(2, 11), randomNumber(1, 6)));
+        }
+        return items;
+    }
+
+    public int randomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+    public double randomDouble(int min, int max) {
+        return  ((Math.random() * (max - min)) + min);
+    }
 }

@@ -13,16 +13,8 @@ public class MutationResponse {
         return populationNode;
     }
 
-    public void setPopulationNode(PopulationNode populationNode) {
-        this.populationNode = populationNode;
-    }
-
     public Boolean isSuccessful() {
         return isSuccessful;
-    }
-
-    public void setSuccessful(Boolean successful) {
-        isSuccessful = successful;
     }
 
     @Override

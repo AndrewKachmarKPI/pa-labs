@@ -27,24 +27,12 @@ public class PopulationNode {
         return vector;
     }
 
-    public void setVector(List<Integer> vector) {
-        this.vector = vector;
-    }
-
     public Integer getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Integer totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public Integer getTotalWeight() {
         return totalWeight;
-    }
-
-    public void setTotalWeight(Integer totalWeight) {
-        this.totalWeight = totalWeight;
     }
 
     public String getNodeId() {
@@ -64,10 +52,6 @@ public class PopulationNode {
         this.vector.set(index, value);
     }
 
-    public long selectedSize() {
-        return vector.stream().filter(num -> num == 1).count();
-    }
-
     public void countParameters(List<Item> items) {
         this.totalPrice = 0;
         this.totalWeight = 0;
@@ -75,12 +59,10 @@ public class PopulationNode {
         for (Integer item : this.vector) {
             if (item == 1) {
                 Item selectedItem = items.get(counter);
-//                System.out.println("selectedItem " + selectedItem.getWeight() + "|" + selectedItem.getPrice());
                 totalWeight += selectedItem.getWeight();
                 totalPrice += selectedItem.getPrice();
             }
             counter++;
         }
-//        System.out.println("totalWeight " + totalWeight + "| totalPrice" + totalPrice);
     }
 }

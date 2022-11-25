@@ -5,11 +5,11 @@ import com.labs.services.KnapsackProblemService;
 
 import java.util.Scanner;
 
+import static com.labs.services.KnapsackProblemService.enterCapacity;
+
 public class ApplicationRunnerLab4 {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter backpack capacity:");
-        int capacity = scanner.nextInt();
+        int capacity = enterCapacity();
         KnapsackProblemService service = new KnapsackProblemService(capacity);
         PopulationNode solution = service.searchLoop(1000);
         System.out.println("Solution found");

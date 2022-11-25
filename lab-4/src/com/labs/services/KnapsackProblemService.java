@@ -17,13 +17,11 @@ public class KnapsackProblemService {
     private final List<PopulationNode> currentPopulation = new ArrayList<>();
     private PopulationNode currentRecord; //F* rack with best price
 
-
     public KnapsackProblemService(Integer capacity) {
         this.capacity = capacity;
         this.items = generateItems(100);
         this.generateInitial();
     }
-
 
     public PopulationNode searchLoop(Integer iterations) {
         for (int i = 0; i < iterations; i++) {
@@ -52,7 +50,6 @@ public class KnapsackProblemService {
         }
         currentRecord = getBestNodeOfPopulation(currentPopulation);
     }
-
     //STEP 2
     public PopulationNode selection() {
         int nodeIndex = randomNumber(0, numberOfNodes);
@@ -62,7 +59,6 @@ public class KnapsackProblemService {
         }
         return populationNode;
     }
-
     //STEP 3
     public PopulationNode cross(PopulationNode firstNode, PopulationNode secondNode) {
         List<Integer> selectedItems = new ArrayList<>();
@@ -113,26 +109,14 @@ public class KnapsackProblemService {
     }
 
     public PopulationNode getBestNodeOfPopulation(List<PopulationNode> currentPopulation) {
-        Integer maxTotalPrice = currentPopulation.stream()
-                .max(Comparator.comparing(PopulationNode::getTotalPrice))
-                .orElseThrow(() -> new RuntimeException("Best node not found"))
-                .getTotalPrice();
-        return currentPopulation.stream()
-                .filter(node -> node.getTotalPrice().equals(maxTotalPrice))
-                .min(Comparator.comparing(PopulationNode::getTotalWeight))
-                .orElseThrow(() -> new RuntimeException("Best node not found"));
+        Integer maxTotalPrice = currentPopulation.stream().max(Comparator.comparing(PopulationNode::getTotalPrice)).orElseThrow(() -> new RuntimeException("Best node not found")).getTotalPrice();
+        return currentPopulation.stream().filter(node -> node.getTotalPrice().equals(maxTotalPrice)).min(Comparator.comparing(PopulationNode::getTotalWeight)).orElseThrow(() -> new RuntimeException("Best node not found"));
     }
 
 
     public void replaceWorstPopulationNode(PopulationNode populationNode) {
-        Integer minTotalPrice = currentPopulation.stream()
-                .min(Comparator.comparing(PopulationNode::getTotalPrice))
-                .orElseThrow(() -> new RuntimeException("Min node not found"))
-                .getTotalPrice();
-        PopulationNode worstNode = currentPopulation.stream()
-                .filter(node -> node.getTotalPrice().equals(minTotalPrice))
-                .max(Comparator.comparing(PopulationNode::getTotalWeight))
-                .orElseThrow(() -> new RuntimeException("Min node not found"));
+        Integer minTotalPrice = currentPopulation.stream().min(Comparator.comparing(PopulationNode::getTotalPrice)).orElseThrow(() -> new RuntimeException("Min node not found")).getTotalPrice();
+        PopulationNode worstNode = currentPopulation.stream().filter(node -> node.getTotalPrice().equals(minTotalPrice)).max(Comparator.comparing(PopulationNode::getTotalWeight)).orElseThrow(() -> new RuntimeException("Min node not found"));
         currentPopulation.set(currentPopulation.indexOf(worstNode), populationNode);
     }
 
@@ -158,7 +142,19 @@ public class KnapsackProblemService {
     public int randomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
+
     public double randomDouble(int min, int max) {
-        return  ((Math.random() * (max - min)) + min);
+        return ((Math.random() * (max - min)) + min);
+    }
+
+    public static Integer enterCapacity() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter backpack capacity:");
+        int capacity = scanner.nextInt();
+        while (capacity < 0) {
+            System.out.print("Invalid capacity enter again:");
+            capacity = scanner.nextInt();
+        }
+        return capacity;
     }
 }

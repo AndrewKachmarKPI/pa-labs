@@ -19,6 +19,6 @@ public class ApplicationRunnerLab5 {
 //        int r = scanner.nextInt();
 //        System.out.print("Enter Lmin:");
 //        int lMin = scanner.nextInt();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(1);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(2, 3, 0.2, 34, 1);
     }
 }

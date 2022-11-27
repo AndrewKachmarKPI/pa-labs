@@ -1,18 +1,21 @@
 package com.labs.service;
 
 import com.labs.domain.Ant;
+import com.labs.domain.CityNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class SalesmanProblemSolverService {
+    public static int G_SIZE = 5;
     private int A, B, L_MIN;
     private double R;
-
     private List<Ant> ants = new ArrayList<>();
-    private List<Integer> cities = new ArrayList<>();
-    private final int[][] distanceMatrix = new int[300][300];
-    private final double[][] pheromoneMatrix = new double[300][300];
+
+    private List<String> cities = new ArrayList<>();
+
+    private final int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
+    private final double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
 
     public SalesmanProblemSolverService(int a, int b, double r, int lMin, int numberOfAnts) {
         this.A = a;
@@ -23,47 +26,62 @@ public class SalesmanProblemSolverService {
         generateDistanceMatrix();
         buildPheromoneMatrix();
         generateAnts(numberOfAnts);
+        findSolution();
     }
 
     private void findSolution() {
-        double probability = calculateProbability(ants.get(0));
-        System.out.println(probability);
+        Ant ant = ants.get(0);
+        String startCity = ant.getCurrentLocation();
+        System.out.println("START ->" + startCity);
+
+        for (int i = 0; i < 5; i++) {
+            CityNode moveCityNode = getMoveCity(ant);
+            System.out.println("MOVE TO ->"+moveCityNode);
+            ant.moveToCity(moveCityNode.getCity());
+//            System.out.println("==================");
+//            System.out.println(ant.getVisitedCities());
+//            System.out.println("==================");
+        }
+
+        System.out.println("FINISH ->" + ant.getCurrentLocation());
     }
 
     private void generateAnts(int numberOfAnts) { //STEP 1
-        int index = 0;
         for (int i = 0; i < numberOfAnts; i++) {
-            ants.add(new Ant(distanceMatrix, index));
+            ants.add(new Ant(distanceMatrix, cities.get(0)));
         }
     }
 
-    private double calculateProbability(Ant ant) { //STEP 2
-        List<Double> probabilities = new ArrayList<>();
-        int currentLocation = ant.getCurrentLocation();
-        for (int i = 0; i < distanceMatrix.length; i++) {
-            if (currentLocation != i) {
-                double up = Math.pow(getPheromoneLevel(currentLocation, i), A) * Math.pow(getDistance(currentLocation, i), B);
+    private CityNode getMoveCity(Ant ant) { //STEP 2  TODO FIX
+        List<CityNode> cityNodes = new ArrayList<>();
+        int currentLocationIndex = cities.indexOf(ant.getCurrentLocation());
+        for (int i = 0; i < cities.size(); i++) {
+            if (currentLocationIndex != i) {
+                double up = Math.pow(getPheromoneLevel(currentLocationIndex, i), A) * Math.pow(getDistance(currentLocationIndex, i), B);
                 double down = citiesProbability(ant);
-                probabilities.add(up / down);
+                cityNodes.add(new CityNode(i, cities.get(i), up / down));
             }
         }
-        probabilities.forEach(System.out::println);
-        OptionalDouble probability = probabilities.stream()
-                .mapToDouble(value -> value)
-                .max();
-
-        if (probability.isEmpty()) {
-            throw new RuntimeException("Probability not found");
+        Optional<CityNode> cityNode = cityNodes.stream().max(Comparator.comparing(CityNode::getProbability));
+        if (cityNode.isEmpty()) {
+            throw new RuntimeException("City not found");
         }
-        System.out.println("====================");
-        return probability.getAsDouble();
+        return cityNode.get();
     }
 
-    private double citiesProbability(Ant ant) { //STEP 2
-        List<Integer> availableCities = cities.stream().filter(city -> !ant.getVisitedCities().contains(city)).collect(Collectors.toList());
+    private double citiesProbability(Ant ant) { //STEP 2 TODO FIX RETREIVE ALL
+        List<Integer> availableCities = new ArrayList<>();
+        cities.forEach(city -> {
+            if (!ant.getVisitedCities().contains(city)) {
+                availableCities.add(cities.indexOf(city));
+            }
+        });
+        System.out.println("SIZE->"+availableCities.size());
+
         double probability = 0;
+        int currentLocationIndex = cities.indexOf(ant.getCurrentLocation());
         for (int i = 0; i < availableCities.size(); i++) {
-            probability += Math.pow(getPheromoneLevel(ant.getCurrentLocation(), i), A) * Math.pow(getDistance(ant.getCurrentLocation(), i), B);
+            probability += Math.pow(getPheromoneLevel(currentLocationIndex, i), A) * Math.pow(getDistance(currentLocationIndex, i), B);
         }
         return probability;
     }
@@ -83,8 +101,8 @@ public class SalesmanProblemSolverService {
     }
 
     private void generateCities() {
-        for (int i = 0; i < 300; i++) {
-            cities.add(i);
+        for (int i = 0; i < G_SIZE; i++) {
+            cities.add(UUID.randomUUID().toString());
         }
     }
 

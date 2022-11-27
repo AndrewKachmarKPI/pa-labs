@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.labs.service.SalesmanProblemSolverService.G_SIZE;
+
 
 public class Ant {
     private final String antId;
-    private final List<Integer> visitedCities = new ArrayList<>();
-    private final int currentLocation;
-    private final double[][] visionMatrix = new double[300][300];
+    private final List<String> visitedCities = new ArrayList<>();
+    private String currentLocation;
+    private final double[][] visionMatrix = new double[G_SIZE][G_SIZE];
 
 
-    public Ant(int[][] distanceMatrix, int currentLocation) {
+    public Ant(int[][] distanceMatrix, String currentLocation) {
         this.antId = UUID.randomUUID().toString();
         this.currentLocation = currentLocation;
         this.visitedCities.add(currentLocation);
@@ -35,11 +37,11 @@ public class Ant {
         return antId;
     }
 
-    public List<Integer> getVisitedCities() {
+    public List<String> getVisitedCities() {
         return visitedCities;
     }
 
-    public int getCurrentLocation() {
+    public String getCurrentLocation() {
         return currentLocation;
     }
 
@@ -47,7 +49,12 @@ public class Ant {
         return visionMatrix;
     }
 
-    public int getPathCost(int[][] distances){
+    public void moveToCity(String cityIndex) {
+        visitedCities.add(cityIndex);
+        this.currentLocation = cityIndex;
+    }
+
+    public int getPathCost(int[][] distances) {
         int cost = 0;
         return cost;
     }

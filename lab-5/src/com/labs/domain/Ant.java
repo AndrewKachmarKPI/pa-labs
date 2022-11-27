@@ -46,4 +46,9 @@ public class Ant {
     public double[][] getVisionMatrix() {
         return visionMatrix;
     }
+
+    public int getPathCost(int[][] distances){
+        int cost = 0;
+        return cost;
+    }
 }

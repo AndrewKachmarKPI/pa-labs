@@ -59,7 +59,7 @@ public class SalesmanProblemSolverService {
         return probability.getAsDouble();
     }
 
-    private double citiesProbability(Ant ant) {
+    private double citiesProbability(Ant ant) { //STEP 2
         List<Integer> availableCities = cities.stream().filter(city -> !ant.getVisitedCities().contains(city)).collect(Collectors.toList());
         double probability = 0;
         for (int i = 0; i < availableCities.size(); i++) {
@@ -68,6 +68,12 @@ public class SalesmanProblemSolverService {
         return probability;
     }
 
+    private void updatePheromone() {
+
+    }
+
+
+    //ADDITIONAL
     private double getPheromoneLevel(int form, int to) {
         return pheromoneMatrix[form][to];
     }
@@ -82,7 +88,6 @@ public class SalesmanProblemSolverService {
         }
     }
 
-    //ADDITIONAL
     private void generateDistanceMatrix() {
         for (int i = 0; i < distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix[i].length; j++) {

@@ -38,7 +38,7 @@ FROM SRC FOLDER
 
 ## Lab 4
 > #### Runners folder 
-> **lab2/src/com/labs/** 
+> **lab4/src/com/labs/** 
 >> * ApplicationRunnerLab4.java
 
 FROM SRC FOLDER

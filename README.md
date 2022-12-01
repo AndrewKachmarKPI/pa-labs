@@ -29,8 +29,9 @@ Also you can check your java installation executing
 > java -version
 
 To run code you should execute such commands (from command line in folder with runners)
+FROM SRC FOLDER
 > #### Compile 
-> javac [runner name].java
+> javac com/labs/*.java -d classes
 
 > #### Run
-> java [runner name]
+>  java -cp classes com.labs.ApplicationRunnerLab4

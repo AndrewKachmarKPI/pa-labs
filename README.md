@@ -34,4 +34,16 @@ FROM SRC FOLDER
 > javac com/labs/*.java -d classes
 
 > #### Run
+>  java -cp classes com.labs.[runner name]
+
+## Lab 4
+> #### Runners folder 
+> **lab2/src/com/labs/** 
+>> * ApplicationRunnerLab4.java
+
+FROM SRC FOLDER
+> #### Compile 
+> javac com/labs/*.java -d classes
+
+> #### Run
 >  java -cp classes com.labs.ApplicationRunnerLab4

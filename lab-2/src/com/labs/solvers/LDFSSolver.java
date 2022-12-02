@@ -34,6 +34,12 @@ public class LDFSSolver {
         this.checkedStates = new ArrayList<>();
         printSolution("START POSITION", parentNode.getPositions(), BOARD);
     }
+    public LDFSSolver(Integer MAX_DEPTH, List<QueenPosition> placement) {
+        this.MAX_DEPTH = MAX_DEPTH;
+        this.parentNode = new GameNode(placement, 0);
+        this.checkedStates = new ArrayList<>();
+        printSolution("START POSITION", parentNode.getPositions(), BOARD);
+    }
 
     public SearchResult depthLimitedSearch() {
         time = System.currentTimeMillis();

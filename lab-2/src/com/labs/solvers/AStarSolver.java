@@ -32,13 +32,18 @@ public class AStarSolver {
         printSolution("START POSITION", parentNode.getPositions(), BOARD);
     }
 
+    public AStarSolver(List<QueenPosition> placement) {
+        this.parentNode = new GameNode(placement, 0, true);
+        printSolution("START POSITION", parentNode.getPositions(), BOARD);
+    }
+
 
     public SearchResult aStarSearch() {
         long start = System.currentTimeMillis();
         PriorityQueue<GameNode> open = new PriorityQueue<>(new GameNodeComparator());
         PriorityQueue<GameNode> closed = new PriorityQueue<>(new GameNodeComparator());
         open.add(parentNode);
-        while (!open.isEmpty()) {
+        while (!open.isEmpty() && !parentNode.getPositions().isEmpty()) {
             iterations++;
             GameNode currentNode = open.poll();
             if (validatePositions(currentNode.getPositions())) {

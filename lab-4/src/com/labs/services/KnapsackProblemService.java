@@ -17,7 +17,10 @@ public class KnapsackProblemService {
     private final List<PopulationNode> currentPopulation = new ArrayList<>();
     private PopulationNode currentRecord; //F* rack with best price
 
-    public KnapsackProblemService(Integer capacity) {
+    public KnapsackProblemService(int capacity) {
+        if (capacity <= 0) {
+            throw new RuntimeException("Capacity should not be 0");
+        }
         this.capacity = capacity;
         this.items = generateItems(100);
         this.generateInitial();
@@ -50,6 +53,7 @@ public class KnapsackProblemService {
         }
         currentRecord = getBestNodeOfPopulation(currentPopulation);
     }
+
     //STEP 2
     public PopulationNode selection() {
         int nodeIndex = randomNumber(0, numberOfNodes);
@@ -59,6 +63,7 @@ public class KnapsackProblemService {
         }
         return populationNode;
     }
+
     //STEP 3
     public PopulationNode cross(PopulationNode firstNode, PopulationNode secondNode) {
         List<Integer> selectedItems = new ArrayList<>();

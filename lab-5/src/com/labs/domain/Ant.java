@@ -42,8 +42,10 @@ public class Ant {
         return cityNodes;
     }
 
-    public void clearMemory() {
+    public void clearMemory(Integer cityIndex) {
         this.visitedCities = generateCities();
+        visitCity(cityIndex);
+        this.isFound = false;
     }
 
     public Integer getCurrentCityIndex() {

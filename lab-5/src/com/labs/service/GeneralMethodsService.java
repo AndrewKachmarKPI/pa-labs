@@ -67,5 +67,4 @@ public class GeneralMethodsService {
     public static Map<String, Integer> getAntsInitialPlacement() {
         return antsInitialPlacement;
     }
-
 }

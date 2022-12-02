@@ -6,12 +6,16 @@ import java.util.List;
 public class PathSearchResult {
     private List<Integer> pathIndexes = new ArrayList<>();
     private StringBuilder path = new StringBuilder();
-    private Integer pathCost = 0;
+    private Integer pathCost = Integer.MAX_VALUE;
     private String antId;
 
     public PathSearchResult(int startPosition, String antId) {
         addCityIndex(startPosition, false);
         this.antId = antId;
+    }
+
+    public PathSearchResult() {
+
     }
 
     public void addCityIndex(int cityIndex, boolean isLast) {
@@ -31,7 +35,12 @@ public class PathSearchResult {
         return path.toString();
     }
 
+    public String getAntId() {
+        return antId;
+    }
+
     public void countPathCost(int[][] distances) {
+        this.pathCost = 0;
         for (int i = 0; i < pathIndexes.size() - 1; i++) {
             this.pathCost += distances[pathIndexes.get(i)][pathIndexes.get(i + 1)];
         }

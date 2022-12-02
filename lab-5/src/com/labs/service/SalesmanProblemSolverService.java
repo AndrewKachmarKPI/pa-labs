@@ -22,7 +22,7 @@ public class SalesmanProblemSolverService {
     private int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
     private double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
 
-    private PathSearchResult bestPath;
+    private PathSearchResult bestPath = new PathSearchResult();
 
     public SalesmanProblemSolverService(int a, int b, double r, int lMin, int numberOfAnts) {
         this.A = a;
@@ -38,22 +38,35 @@ public class SalesmanProblemSolverService {
         generateAnts(numberOfAnts);
         placeAnts(ants);
 
-        for (int i = 0; i < 2; i++) {//COLONY LIFE
+
+        for (int i = 0; i < 10; i++) {//COLONY LIFE
             List<PathSearchResult> paths = buildPathsForAllAnts();
-            this.bestPath = paths.stream()
+            PathSearchResult foundBestPath = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
                     .orElseThrow(() -> new RuntimeException("Path not found"));
+            System.out.println(foundBestPath);
+            if (foundBestPath.getPathCost() < this.bestPath.getPathCost()) {
+                this.bestPath = foundBestPath;
+            }
             updatePheromoneLevel(paths);
+            clearAntMemory();
         }
         return bestPath;
     }
 
+    public void clearAntMemory() {
+        for (Ant ant : this.ants) {
+            ant.clearMemory(getAntsInitialPlacement().get(ant.getAntId()));
+        }
+    }
 
     private void updatePheromoneLevel(List<PathSearchResult> pathSearchResults) {
         for (int i = 0; i < G_SIZE; i++) {
             for (int j = 0; j < G_SIZE; j++) {
-                double pheromoneValue = (1 - R) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
-                pheromoneMatrix[i][j] = round(pheromoneValue, 3);
+                if (i != j) {
+                    double pheromoneValue = (1 - R) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
+                    pheromoneMatrix[i][j] = round(pheromoneValue, 2);
+                }
             }
         }
     }

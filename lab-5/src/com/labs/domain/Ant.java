@@ -14,7 +14,7 @@ public class Ant {
     private Integer currentCityIndex;
     private Boolean isFound = false;
 
-    private double[][] pheromoneMatrix;
+
     private double[][] visionMatrix;
 
     public Ant(Integer currentCityIndex, int[][] distances) {
@@ -23,7 +23,6 @@ public class Ant {
         this.visitedCities = generateCities();
 
         this.visionMatrix = buildVisionMatrix(distances);
-        this.pheromoneMatrix = buildPheromoneMatrix();
     }
 
     public void visitCity(Integer cityIndex) {
@@ -52,12 +51,12 @@ public class Ant {
         return currentCityIndex;
     }
 
-    public Boolean isFound() {
-        return isFound;
+    public String getAntId() {
+        return antId;
     }
 
-    public double pheromoneAtPath(int from, int to) {
-        return pheromoneMatrix[from][to];
+    public Boolean isFound() {
+        return isFound;
     }
 
     public double visionAtPath(int from, int to) {

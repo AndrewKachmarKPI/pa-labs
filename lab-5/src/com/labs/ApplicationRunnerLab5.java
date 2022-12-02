@@ -1,5 +1,6 @@
 package com.labs;
 
+import com.labs.domain.PathSearchResult;
 import com.labs.service.SalesmanProblemSolverService;
 
 import java.util.Scanner;
@@ -19,6 +20,9 @@ public class ApplicationRunnerLab5 {
 //        int r = scanner.nextInt();
 //        System.out.print("Enter Lmin:");
 //        int lMin = scanner.nextInt();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(2, 3, 0.2, 34, 1);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(2, 3, 0.2, 34, 10);
+
+        PathSearchResult pathSearchResult = solverService.findSolution();
+        System.out.println(pathSearchResult);
     }
 }

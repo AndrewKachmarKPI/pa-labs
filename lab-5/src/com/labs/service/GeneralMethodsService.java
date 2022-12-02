@@ -26,7 +26,7 @@ public class GeneralMethodsService {
                 if (i == j) {
                     visionMatrix[i][j] = 0;
                 } else {
-                    visionMatrix[i][j] = round((double) 1 / distanceMatrix[i][j],3);
+                    visionMatrix[i][j] = round((double) 1 / distanceMatrix[i][j], 3);
                 }
             }
         }
@@ -54,7 +54,7 @@ public class GeneralMethodsService {
 
     public static void placeAnts(List<Ant> ants) {
         for (Ant ant : ants) {
-            ant.visitCity(0);
+            ant.visitCity(randomNumber(0, G_SIZE));
         }
     }
 

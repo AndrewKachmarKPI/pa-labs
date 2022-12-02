@@ -2,13 +2,10 @@ package com.labs.domain;
 
 public class CityNode {
     private Integer index;
-    private String city;
     private Double probability;
 
-    public CityNode(Integer index, String city, Double probability) {
+    public CityNode(Integer index) {
         this.index = index;
-        this.city = city;
-        this.probability = probability;
     }
 
     public Integer getIndex() {
@@ -19,14 +16,6 @@ public class CityNode {
         this.index = index;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public Double getProbability() {
         return probability;
     }
@@ -34,11 +23,15 @@ public class CityNode {
     public void setProbability(Double probability) {
         this.probability = probability;
     }
+
+    public boolean isNodeFound() {
+        return index != null;
+    }
+
     @Override
     public String toString() {
         return "CityNode{" +
                 "index=" + index +
-                ", city='" + city + '\'' +
                 ", probability=" + probability +
                 '}';
     }

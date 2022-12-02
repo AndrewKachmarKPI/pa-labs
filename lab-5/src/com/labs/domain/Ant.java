@@ -4,58 +4,63 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.labs.service.SalesmanProblemSolverService.G_SIZE;
+import static com.labs.service.GeneralMethodsService.*;
+import static com.labs.service.SalesmanProblemSolverService.*;
 
 
 public class Ant {
     private final String antId;
-    private final List<String> visitedCities = new ArrayList<>();
-    private String currentLocation;
-    private final double[][] visionMatrix = new double[G_SIZE][G_SIZE];
+    private List<Integer> visitedCities;
+    private Integer currentCityIndex;
+    private Boolean isFound = false;
 
+    private double[][] pheromoneMatrix;
+    private double[][] visionMatrix;
 
-    public Ant(int[][] distanceMatrix, String currentLocation) {
+    public Ant(Integer currentCityIndex, int[][] distances) {
         this.antId = UUID.randomUUID().toString();
-        this.currentLocation = currentLocation;
-        this.visitedCities.add(currentLocation);
-        buildVisionMatrix(distanceMatrix);
+        this.currentCityIndex = currentCityIndex;
+        this.visitedCities = generateCities();
+
+        this.visionMatrix = buildVisionMatrix(distances);
+        this.pheromoneMatrix = buildPheromoneMatrix();
     }
 
-    private void buildVisionMatrix(int[][] distanceMatrix) {
-        for (int i = 0; i < visionMatrix.length; i++) {
-            for (int j = 0; j < visionMatrix.length; j++) {
-                if (distanceMatrix[i][j] != 0) {
-                    visionMatrix[i][j] = (double) 1 / distanceMatrix[i][j];
-                } else {
-                    visionMatrix[i][j] = 0;
-                }
+    public void visitCity(Integer cityIndex) {
+        visitedCities.set(cityIndex, 1);
+        this.currentCityIndex = cityIndex;
+    }
+
+    public List<CityNode> availableCities() {
+        List<CityNode> cityNodes = new ArrayList<>();
+        for (int i = 0; i < G_SIZE; i++) {
+            if (visitedCities.get(i) != 1) {
+                cityNodes.add(new CityNode(i));
             }
         }
+        if (cityNodes.isEmpty()) {
+            this.isFound = true;
+        }
+        return cityNodes;
     }
 
-    public String getAntId() {
-        return antId;
+    public void updatePheromone() {
+
     }
 
-    public List<String> getVisitedCities() {
-        return visitedCities;
+    public Integer getCurrentCityIndex() {
+        return currentCityIndex;
     }
 
-    public String getCurrentLocation() {
-        return currentLocation;
+    public Boolean isFound() {
+        return isFound;
     }
 
-    public double[][] getVisionMatrix() {
-        return visionMatrix;
+    public double pheromoneAtPath(int from, int to) {
+        return pheromoneMatrix[from][to];
     }
 
-    public void moveToCity(String cityIndex) {
-        visitedCities.add(cityIndex);
-        this.currentLocation = cityIndex;
-    }
-
-    public int getPathCost(int[][] distances) {
-        int cost = 0;
-        return cost;
+    public double visionAtPath(int from, int to) {
+        return visionMatrix[from][to];
     }
 }

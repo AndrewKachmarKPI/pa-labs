@@ -3,11 +3,15 @@ package com.labs.service;
 import com.labs.domain.Ant;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.labs.service.SalesmanProblemSolverService.*;
 
 public class GeneralMethodsService {
+    private static Map<String, Integer> antsInitialPlacement = new HashMap<>();
+
     public static int[][] buildDistanceMatrix() {
         int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
         for (int i = 0; i < distanceMatrix.length; i++) {
@@ -54,8 +58,14 @@ public class GeneralMethodsService {
 
     public static void placeAnts(List<Ant> ants) {
         for (Ant ant : ants) {
-            ant.visitCity(randomNumber(0, G_SIZE));
+            int index = randomNumber(0, G_SIZE);
+            ant.visitCity(index);
+            antsInitialPlacement.put(ant.getAntId(), index);
         }
+    }
+
+    public static Map<String, Integer> getAntsInitialPlacement() {
+        return antsInitialPlacement;
     }
 
 }

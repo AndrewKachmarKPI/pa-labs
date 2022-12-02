@@ -32,13 +32,13 @@ public class SalesmanProblemSolverService {
         this.numberOfAnts = numberOfAnts;
     }
 
-    public PathSearchResult findSolution() {
+    public PathSearchResult findSolution() {//MAIN METHOD
         distanceMatrix = buildDistanceMatrix();
         pheromoneMatrix = buildPheromoneMatrix();
         generateAnts(numberOfAnts);
         placeAnts(ants);
 
-        for (int i = 0; i < 1; i++) {//COLONY LIFE
+        for (int i = 0; i < 2; i++) {//COLONY LIFE
             List<PathSearchResult> paths = buildPathsForAllAnts();
             this.bestPath = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
@@ -48,10 +48,12 @@ public class SalesmanProblemSolverService {
         return bestPath;
     }
 
+
     private void updatePheromoneLevel(List<PathSearchResult> pathSearchResults) {
         for (int i = 0; i < G_SIZE; i++) {
             for (int j = 0; j < G_SIZE; j++) {
-                pheromoneMatrix[i][j] = getAntPheromoneLevel(pathSearchResults, i, j);
+                double pheromoneValue = (1 - R) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
+                pheromoneMatrix[i][j] = round(pheromoneValue, 3);
             }
         }
     }
@@ -59,16 +61,13 @@ public class SalesmanProblemSolverService {
     private double getAntPheromoneLevel(List<PathSearchResult> pathSearchResults, int from, int to) {
         double pheromoneSum = 0;
         for (PathSearchResult searchResult : pathSearchResults) {
-            double pheromoneWeight = 0;
             String pathCheck = from + "-" + to;
             if (searchResult.getPath().contains(pathCheck)) {
-                pheromoneWeight = L_MIN / searchResult.getPathCost();
+                pheromoneSum += (double) L_MIN / searchResult.getPathCost();
             }
-            pheromoneSum += (1 - R) * pheromoneAtPath(from, to) + pheromoneWeight;
         }
         return pheromoneSum;
     }
-
 
     private List<PathSearchResult> buildPathsForAllAnts() {
         List<PathSearchResult> paths = new ArrayList<>();
@@ -140,6 +139,15 @@ public class SalesmanProblemSolverService {
     private void printMatrix(int[][] matrix) {
         for (int[] ints : matrix) {
             for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private void printMatrix(double[][] matrix) {
+        for (double[] ints : matrix) {
+            for (double anInt : ints) {
                 System.out.print(anInt + " ");
             }
             System.out.println();

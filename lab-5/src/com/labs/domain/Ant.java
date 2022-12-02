@@ -14,7 +14,6 @@ public class Ant {
     private Integer currentCityIndex;
     private Boolean isFound = false;
 
-
     private double[][] visionMatrix;
 
     public Ant(Integer currentCityIndex, int[][] distances) {
@@ -43,8 +42,8 @@ public class Ant {
         return cityNodes;
     }
 
-    public void updatePheromone() {
-
+    public void clearMemory() {
+        this.visitedCities = generateCities();
     }
 
     public Integer getCurrentCityIndex() {

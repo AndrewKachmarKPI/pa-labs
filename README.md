@@ -13,6 +13,7 @@
 ## Run guide
 * [JDK install](https://phoenixnap.com/kb/install-java-windows)
 * [JVM install](https://www.java.com/en/download/manual.jsp)
+* [Maven install](https://mkyong.com/maven/how-to-install-maven-in-windows)
 * IDE
   * [Intellij IDEA](https://www.jetbrains.com/idea/download/)
   * [Eclipse](https://www.eclipse.org/downloads/)
@@ -34,7 +35,10 @@ FROM SRC FOLDER
 > javac com/labs/*.java -d classes
 
 > #### Run
->  java -cp classes com.labs.[runner name]
+>  java -cp classes com.labs.[RUNNER NAME]
+
+> #### Run Tests
+>  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
 
 ## Lab 4
 > #### Runners folder 
@@ -45,5 +49,5 @@ FROM SRC FOLDER
 > #### Compile 
 > javac com/labs/*.java -d classes
 
-> #### Run
+> #### Run Application
 >  java -cp classes com.labs.ApplicationRunnerLab4

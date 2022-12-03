@@ -39,6 +39,7 @@ FROM SRC FOLDER
 
 > #### Run Tests
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
+
 from root of project
 
 ## Lab 4
@@ -49,6 +50,7 @@ from root of project
 
 > #### Compile 
 > javac com/labs/*.java -d classes
+
 from src folder
 
 > #### Run Application

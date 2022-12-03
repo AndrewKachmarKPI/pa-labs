@@ -38,6 +38,7 @@ FROM SRC FOLDER
 >  java -cp classes com.labs.[RUNNER NAME]
 
 > #### Run Tests
+> from root of project
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
 
 ## Lab 4

@@ -22,17 +22,19 @@ public class ApplicationRunnerLab5 {
 //        int lMin = scanner.nextInt();
 
         SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
-                .setA(2)
-                .setB(3)
-                .setR(0.2)
-                .setL_MIN(34)
-                .setNumberOfAnts(5)
-                .setNumberOfEliteAnts(2)
-                .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
+                .setA(16)
+                .setB(24)
+                .setR(0.8)
+                .setL_MIN(64)
+                .setNumberOfAnts(10)
+                .setNumberOfEliteAnts(5)
+                .setColonyLife(10)
+                .setAntPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
         System.out.println(salesmanProblemDto);
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto);
-
+        long start = System.currentTimeMillis();
         PathSearchResult pathSearchResult = solverService.findSolution();
         System.out.println(pathSearchResult);
+        System.out.println("FOUND TIME->" + (System.currentTimeMillis() - start));
     }
 }

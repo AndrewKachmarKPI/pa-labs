@@ -4,23 +4,24 @@ package com.labs.domain;
 import com.labs.enums.AntPlacementType;
 
 public final class SalesmanProblemDto {
-    private int A;
-    private int B;
+    private double A;
+    private double B;
     private int L_MIN;
     private double R;
     private int numberOfAnts;
     private int numberOfEliteAnts = 0;
+    private int colonyLife = 1;
     private AntPlacementType antPlacementType;
 
 
     public SalesmanProblemDto() {
     }
 
-    public int getA() {
+    public double getA() {
         return A;
     }
 
-    public int getB() {
+    public double getB() {
         return B;
     }
 
@@ -44,6 +45,10 @@ public final class SalesmanProblemDto {
         return antPlacementType;
     }
 
+    public int getColonyLife() {
+        return colonyLife;
+    }
+
     public static Builder builder() {
         return new SalesmanProblemDto().new Builder();
     }
@@ -65,12 +70,12 @@ public final class SalesmanProblemDto {
         public Builder() {
         }
 
-        public Builder setA(int a) {
+        public Builder setA(double a) {
             SalesmanProblemDto.this.A = a;
             return this;
         }
 
-        public Builder setB(int b) {
+        public Builder setB(double b) {
             SalesmanProblemDto.this.B = b;
             return this;
         }
@@ -97,6 +102,12 @@ public final class SalesmanProblemDto {
 
         public Builder setNumberOfEliteAnts(int eliteAnts) {
             SalesmanProblemDto.this.numberOfEliteAnts = eliteAnts;
+            return this;
+        }
+
+
+        public Builder setColonyLife(int colonyLife) {
+            SalesmanProblemDto.this.colonyLife = colonyLife;
             return this;
         }
 

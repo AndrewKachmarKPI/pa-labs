@@ -26,11 +26,15 @@ public class SalesmanProblemSolverService {
 
     public PathSearchResult findSolution() {//MAIN METHOD
         distanceMatrix = buildDistanceMatrix();
+        System.out.println("GEN distanceMatrix");
         pheromoneMatrix = buildPheromoneMatrix();
+        System.out.println("GEN pheromoneMatrix");
         ants = generateAnts(distanceMatrix, salesmanProblemDto);
-        placeAnts(ants, AntPlacementType.MANY_WITHOUT_REPEAT);
+        System.out.println("GEN ants-" + ants.size());
+        placeAnts(ants, salesmanProblemDto.getAntPlacementType());
+        System.out.println("PLACE ants-" + ants.size());
 
-        for (int i = 0; i < 1; i++) {//COLONY LIFE
+        for (int i = 0; i < salesmanProblemDto.getColonyLife(); i++) {//COLONY LIFE
             List<PathSearchResult> paths = buildPathsForAllAnts(); //FIND CYCLES FOR ALL ANTS
             PathSearchResult foundBestPath = paths.stream()  //FIND BEST PATH BY COST
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
@@ -86,6 +90,8 @@ public class SalesmanProblemSolverService {
             PathSearchResult pathSearchResult = findAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);
+            System.out.println("PATH SIZES -" + paths.size());
+//            System.out.println("FOUND PATH FOR ant " + ant.getAntId() + " -" + pathSearchResult);
         }
         return paths;
     }
@@ -94,7 +100,7 @@ public class SalesmanProblemSolverService {
     private PathSearchResult findAntPath(Ant ant) {
         int initialPosition = ant.getCurrentCityIndex();
         PathSearchResult pathSearchResult = new PathSearchResult(initialPosition, ant.getAntId());
-        while (!ant.isFound()) {
+        while (Boolean.FALSE.equals(ant.isFound())) {
             CityNode nextCityNode = nextCityMove(ant);
             if (nextCityNode.isNodeFound()) {
                 ant.visitCity(nextCityNode.getIndex());

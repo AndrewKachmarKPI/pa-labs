@@ -37,8 +37,8 @@ FROM SRC FOLDER
 > #### Run
 >  java -cp classes com.labs.[RUNNER NAME]
 
+from root of project
 > #### Run Tests
-> from root of project
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
 
 ## Lab 4
@@ -46,7 +46,7 @@ FROM SRC FOLDER
 > **lab4/src/com/labs/** 
 >> * ApplicationRunnerLab4.java
 
-FROM SRC FOLDER
+from src folder
 > #### Compile 
 > javac com/labs/*.java -d classes
 

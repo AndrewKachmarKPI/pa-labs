@@ -3,7 +3,7 @@ package com.labs.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PathSearchResult {
+public final class PathSearchResult {
     private List<Integer> pathIndexes = new ArrayList<>();
     private StringBuilder path = new StringBuilder();
     private Integer pathCost = Integer.MAX_VALUE;

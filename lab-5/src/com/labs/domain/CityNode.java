@@ -1,6 +1,6 @@
 package com.labs.domain;
 
-public class CityNode {
+public final class CityNode {
     private Integer index;
     private Double probability;
 
@@ -10,10 +10,6 @@ public class CityNode {
 
     public Integer getIndex() {
         return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     public Double getProbability() {

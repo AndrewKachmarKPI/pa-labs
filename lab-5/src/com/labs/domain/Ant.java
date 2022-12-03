@@ -1,5 +1,7 @@
 package com.labs.domain;
 
+import com.labs.enums.AntType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +14,7 @@ public class Ant {
     private final String antId;
     private List<Integer> visitedCities;
     private Integer currentCityIndex;
+    private AntType antType = AntType.ORDINARY;
     private Boolean isFound = false;
 
     private double[][] visionMatrix;
@@ -20,9 +23,17 @@ public class Ant {
         this.antId = UUID.randomUUID().toString();
         this.currentCityIndex = currentCityIndex;
         this.visitedCities = generateCities();
-
         this.visionMatrix = buildVisionMatrix(distances);
     }
+
+    public Ant(Integer currentCityIndex, int[][] distances, AntType antType) {
+        this.antId = UUID.randomUUID().toString();
+        this.currentCityIndex = currentCityIndex;
+        this.visitedCities = generateCities();
+        this.visionMatrix = buildVisionMatrix(distances);
+        this.antType = antType;
+    }
+
 
     public void visitCity(Integer cityIndex) {
         visitedCities.set(cityIndex, 1);
@@ -54,6 +65,10 @@ public class Ant {
 
     public String getAntId() {
         return antId;
+    }
+
+    public AntType getAntType() {
+        return antType;
     }
 
     public Boolean isFound() {

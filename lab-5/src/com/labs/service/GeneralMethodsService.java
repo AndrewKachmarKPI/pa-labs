@@ -1,6 +1,9 @@
 package com.labs.service;
 
 import com.labs.domain.Ant;
+import com.labs.domain.SalesmanProblemDto;
+import com.labs.enums.AntPlacementType;
+import com.labs.enums.AntType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,11 +59,37 @@ public class GeneralMethodsService {
         return cities;
     }
 
-    public static void placeAnts(List<Ant> ants) {
+    public static List<Ant> generateAnts(int[][] distanceMatrix, SalesmanProblemDto salesmanProblemDto) {
+        List<Ant> ants = new ArrayList<>();
+        if (salesmanProblemDto.getNumberOfEliteAnts() > salesmanProblemDto.getNumberOfAnts()) {
+            throw new RuntimeException("Not enough ants for creation");
+        }
+        for (int i = 0; i < salesmanProblemDto.getNumberOfAnts() - salesmanProblemDto.getNumberOfEliteAnts(); i++) {
+            ants.add(new Ant(0, distanceMatrix));
+        }
+        for (int i = 0; i < salesmanProblemDto.getNumberOfEliteAnts(); i++) {
+            ants.add(new Ant(0, distanceMatrix, AntType.ELITE));
+        }
+        return ants;
+    }
+
+
+    public static void placeAnts(List<Ant> ants, AntPlacementType placementType) {
         for (Ant ant : ants) {
-            int index = randomNumber(0, G_SIZE);
-            ant.visitCity(index);
-            antsInitialPlacement.put(ant.getAntId(), index);
+            int cityIndex = 0;
+
+            if (placementType == AntPlacementType.MANY_WITH_REPEAT) {
+                cityIndex = randomNumber(0, G_SIZE);
+            } else {
+                if (ants.size() > G_SIZE) {
+                    throw new RuntimeException("Ant size should be greater that " + G_SIZE);
+                }
+                while (antsInitialPlacement.containsValue(cityIndex)) {
+                    cityIndex = randomNumber(0, G_SIZE);
+                }
+            }
+            ant.visitCity(cityIndex);
+            antsInitialPlacement.put(ant.getAntId(), cityIndex);
         }
     }
 

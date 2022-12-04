@@ -1,7 +1,6 @@
 package com.labs.service;
 
 import com.labs.domain.*;
-import com.labs.enums.AntPlacementType;
 import com.labs.enums.AntType;
 
 import java.util.*;
@@ -11,10 +10,10 @@ import static com.labs.service.GeneralMethodsService.*;
 
 
 public class SalesmanProblemSolverService {
-    public static int G_SIZE = 300;
-    private SalesmanProblemDto salesmanProblemDto;
-
+    private final SalesmanProblemDto salesmanProblemDto;
     private List<Ant> ants = new ArrayList<>();
+
+    public static int G_SIZE = 300;
     private int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
     private double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
 
@@ -91,7 +90,6 @@ public class SalesmanProblemSolverService {
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);
             System.out.println("PATH SIZES -" + paths.size());
-//            System.out.println("FOUND PATH FOR ant " + ant.getAntId() + " -" + pathSearchResult);
         }
         return paths;
     }
@@ -131,7 +129,11 @@ public class SalesmanProblemSolverService {
         double pheromoneValue = Math.pow(pheromoneAtPath(from, to), salesmanProblemDto.getA());
         double visionValue = Math.pow(ant.visionAtPath(from, to), salesmanProblemDto.getB());
         double antsValue = sumAntCities(ant, from);
-        return (pheromoneValue * visionValue) / (antsValue);
+        double probability = 0;
+        if (antsValue != 0) {
+            probability = (pheromoneValue * visionValue) / (antsValue);
+        }
+        return probability;
     }
 
     private double sumAntCities(Ant ant, int from) {
@@ -143,24 +145,6 @@ public class SalesmanProblemSolverService {
             sum += (pheromoneValue * visionValue);
         }
         return sum;
-    }
-
-    private void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    private void printMatrix(double[][] matrix) {
-        for (double[] ints : matrix) {
-            for (double anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println();
-        }
     }
 
     public static int randomNumber(int min, int max) {
@@ -177,10 +161,6 @@ public class SalesmanProblemSolverService {
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
-    }
-
-    public double distanceAtPath(int from, int to) {
-        return distanceMatrix[from][to];
     }
 
     public double pheromoneAtPath(int from, int to) {

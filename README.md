@@ -55,3 +55,9 @@ from src folder
 
 > #### Run Application
 >  java -cp classes com.labs.ApplicationRunnerLab4
+
+> #### Run Tests
+>  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
+
+from root of project
+

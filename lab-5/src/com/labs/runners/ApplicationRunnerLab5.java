@@ -1,4 +1,4 @@
-package com.labs;
+package com.labs.runners;
 
 import com.labs.enums.AntPlacementType;
 import com.labs.domain.PathSearchResult;

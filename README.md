@@ -26,6 +26,8 @@ To be able to run code you should have prepared environment installed JDK and JV
 To be able to run tests you should install Maven \
 Also you can check your java installation executing
 > java -version
+
+
 Also you can check your maven installation executing
 > mvn -version
 

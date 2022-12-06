@@ -1,4 +1,4 @@
-package com.labs;
+package com.labs.runners;
 
 import com.labs.domain.PopulationNode;
 import com.labs.services.KnapsackProblemService;

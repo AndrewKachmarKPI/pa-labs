@@ -31,7 +31,7 @@ Also you can check your java installation executing
 Also you can check your maven installation executing
 > mvn -version
 
-To run code you should execute such commands (from command line in folder with runners)
+To run code you should execute such commands \
 FROM SRC FOLDER
 > #### Compile 
 > javac com/labs/*.java -d classes

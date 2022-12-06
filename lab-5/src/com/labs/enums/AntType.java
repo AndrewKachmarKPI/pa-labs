@@ -1,5 +1,5 @@
 package com.labs.enums;
 
 public enum AntType {
-    ORDINARY, ELITE
+    ORDINARY, ELITE, WILD
 }

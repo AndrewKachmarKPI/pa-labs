@@ -8,8 +8,9 @@ public final class SalesmanProblemDto {
     private double B;
     private int L_MIN;
     private double R;
-    private int numberOfAnts;
+    private int numberOfOrdinaryAnts;
     private int numberOfEliteAnts = 0;
+    private int numberOfWildAnts = 0;
     private int colonyLife = 1;
     private AntPlacementType antPlacementType;
 
@@ -33,12 +34,16 @@ public final class SalesmanProblemDto {
         return R;
     }
 
-    public int getNumberOfAnts() {
-        return numberOfAnts;
+    public int getNumberOfOrdinaryAnts() {
+        return numberOfOrdinaryAnts;
     }
 
     public int getNumberOfEliteAnts() {
         return numberOfEliteAnts;
+    }
+
+    public int getNumberOfWildAnts() {
+        return numberOfWildAnts;
     }
 
     public AntPlacementType getAntPlacementType() {
@@ -60,7 +65,7 @@ public final class SalesmanProblemDto {
                 ", B=" + B +
                 ", L_MIN=" + L_MIN +
                 ", R=" + R +
-                ", numberOfAnts=" + numberOfAnts +
+                ", numberOfAnts=" + numberOfOrdinaryAnts +
                 ", antPlacementType=" + antPlacementType +
                 '}';
     }
@@ -90,8 +95,8 @@ public final class SalesmanProblemDto {
             return this;
         }
 
-        public Builder setNumberOfAnts(int antsLength) {
-            SalesmanProblemDto.this.numberOfAnts = antsLength;
+        public Builder setNumberOfOrdinaryAnts(int antsLength) {
+            SalesmanProblemDto.this.numberOfOrdinaryAnts = antsLength;
             return this;
         }
 
@@ -102,6 +107,11 @@ public final class SalesmanProblemDto {
 
         public Builder setNumberOfEliteAnts(int eliteAnts) {
             SalesmanProblemDto.this.numberOfEliteAnts = eliteAnts;
+            return this;
+        }
+
+        public Builder setNumberOfWildAnts(int wildAnts) {
+            SalesmanProblemDto.this.numberOfWildAnts = wildAnts;
             return this;
         }
 

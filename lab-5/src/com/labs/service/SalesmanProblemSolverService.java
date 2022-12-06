@@ -19,29 +19,27 @@ public class SalesmanProblemSolverService {
 
     private PathSearchResult bestPath = new PathSearchResult();
 
-    public SalesmanProblemSolverService(SalesmanProblemDto salesmanProblemDto) {
+    public SalesmanProblemSolverService(SalesmanProblemDto salesmanProblemDto, int numberOfCities) {
+        G_SIZE = numberOfCities;
         this.salesmanProblemDto = salesmanProblemDto;
     }
 
-    public PathSearchResult findSolution() {//MAIN METHOD
+    public PathSearchResult findSolution() {
         distanceMatrix = buildDistanceMatrix();
-        System.out.println("GEN distanceMatrix");
         pheromoneMatrix = buildPheromoneMatrix();
-        System.out.println("GEN pheromoneMatrix");
         ants = generateAnts(distanceMatrix, salesmanProblemDto);
-        System.out.println("GEN ants-" + ants.size());
         placeAnts(ants, salesmanProblemDto.getAntPlacementType());
-        System.out.println("PLACE ants-" + ants.size());
 
-        for (int i = 0; i < salesmanProblemDto.getColonyLife(); i++) {//COLONY LIFE
-            List<PathSearchResult> paths = buildPathsForAllAnts(); //FIND CYCLES FOR ALL ANTS
-            PathSearchResult foundBestPath = paths.stream()  //FIND BEST PATH BY COST
+        for (int i = 0; i < salesmanProblemDto.getColonyLife(); i++) {
+            List<PathSearchResult> paths = buildPathsForAllAnts();
+            PathSearchResult foundBestPath = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
                     .orElseThrow(() -> new RuntimeException("Path not found"));
-            if (foundBestPath.getPathCost() < this.bestPath.getPathCost()) { //CHECK BEST SOLUTION
+            System.out.println("PATH->" + foundBestPath);
+            if (foundBestPath.getPathCost() < this.bestPath.getPathCost()) {
                 this.bestPath = foundBestPath;
             }
-            updatePheromoneLevel(paths); //UPDATE PHEROMONE
+            updatePheromoneLevel(paths);
             clearAntMemory();
         }
         return bestPath;
@@ -89,17 +87,15 @@ public class SalesmanProblemSolverService {
             PathSearchResult pathSearchResult = findAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);
-            System.out.println("PATH SIZES -" + paths.size());
         }
         return paths;
     }
-
 
     private PathSearchResult findAntPath(Ant ant) {
         int initialPosition = ant.getCurrentCityIndex();
         PathSearchResult pathSearchResult = new PathSearchResult(initialPosition, ant.getAntId());
         while (Boolean.FALSE.equals(ant.isFound())) {
-            CityNode nextCityNode = nextCityMove(ant);
+            CityNode nextCityNode = (ant.getAntType() == AntType.WILD) ? nextCityMoveForWildAnt(ant) : nextCityMove(ant);
             if (nextCityNode.isNodeFound()) {
                 ant.visitCity(nextCityNode.getIndex());
                 pathSearchResult.addCityIndex(nextCityNode.getIndex(), false);
@@ -108,6 +104,15 @@ public class SalesmanProblemSolverService {
             }
         }
         return pathSearchResult;
+    }
+
+    private CityNode nextCityMoveForWildAnt(Ant ant) {
+        List<CityNode> availableCities = ant.availableCities();
+        CityNode cityNode = new CityNode(null);
+        if (!availableCities.isEmpty()) {
+            cityNode = availableCities.get(randomNumber(0, availableCities.size()));
+        }
+        return cityNode;
     }
 
     private CityNode nextCityMove(Ant ant) {
@@ -137,7 +142,10 @@ public class SalesmanProblemSolverService {
     }
 
     private double sumAntCities(Ant ant, int from) {
-        List<Integer> availableCitiesIndexes = ant.availableCities().stream().map(CityNode::getIndex).collect(Collectors.toList());
+        List<Integer> availableCitiesIndexes = ant.availableCities()
+                .stream()
+                .map(CityNode::getIndex)
+                .collect(Collectors.toList());
         double sum = 0.0;
         for (Integer index : availableCitiesIndexes) {
             double pheromoneValue = Math.pow(pheromoneAtPath(from, index), salesmanProblemDto.getA());

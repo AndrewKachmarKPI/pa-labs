@@ -12,16 +12,17 @@ public class ApplicationRunnerLab5 {
 
     public static void main(String[] args) {
         SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
-                .setA(16)
-                .setB(24)
-                .setR(0.8)
-                .setL_MIN(64)
-                .setNumberOfAnts(10)
-                .setNumberOfEliteAnts(5)
+                .setA(1)
+                .setB(3)
+                .setR(0.4)
+                .setL_MIN(2500)
+                .setNumberOfOrdinaryAnts(200)
+                .setNumberOfEliteAnts(20)
+                .setNumberOfWildAnts(40)
                 .setColonyLife(10)
-                .setAntPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
+                .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         System.out.println(salesmanProblemDto);
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 300);
         PathSearchResult pathSearchResult = solverService.findSolution();
 
         System.out.println("Final solution");

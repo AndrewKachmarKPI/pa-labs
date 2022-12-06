@@ -14,17 +14,10 @@ public class Ant {
     private final String antId;
     private List<Integer> visitedCities;
     private Integer currentCityIndex;
-    private AntType antType = AntType.ORDINARY;
+    private AntType antType;
     private Boolean isFound = false;
 
     private double[][] visionMatrix;
-
-    public Ant(Integer currentCityIndex, int[][] distances) {
-        this.antId = UUID.randomUUID().toString();
-        this.currentCityIndex = currentCityIndex;
-        this.visitedCities = generateCities();
-        this.visionMatrix = buildVisionMatrix(distances);
-    }
 
     public Ant(Integer currentCityIndex, int[][] distances, AntType antType) {
         this.antId = UUID.randomUUID().toString();

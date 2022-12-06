@@ -25,7 +25,6 @@ public class GeneralMethodsService {
         }
         return distanceMatrix;
     }
-
     public static double[][] buildVisionMatrix(int[][] distanceMatrix) {
         double[][] visionMatrix = new double[G_SIZE][G_SIZE];
         for (int i = 0; i < visionMatrix.length; i++) {
@@ -39,7 +38,6 @@ public class GeneralMethodsService {
         }
         return visionMatrix;
     }
-
     public static double[][] buildPheromoneMatrix() {
         double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
         for (int i = 0; i < pheromoneMatrix.length; i++) {
@@ -61,14 +59,17 @@ public class GeneralMethodsService {
 
     public static List<Ant> generateAnts(int[][] distanceMatrix, SalesmanProblemDto salesmanProblemDto) {
         List<Ant> ants = new ArrayList<>();
-        if (salesmanProblemDto.getNumberOfEliteAnts() > salesmanProblemDto.getNumberOfAnts()) {
+        if (salesmanProblemDto.getNumberOfEliteAnts() > salesmanProblemDto.getNumberOfOrdinaryAnts()) {
             throw new RuntimeException("Not enough ants for creation");
         }
-        for (int i = 0; i < salesmanProblemDto.getNumberOfAnts() - salesmanProblemDto.getNumberOfEliteAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix));
+        for (int i = 0; i < salesmanProblemDto.getNumberOfOrdinaryAnts(); i++) {
+            ants.add(new Ant(0, distanceMatrix, AntType.ORDINARY));
         }
         for (int i = 0; i < salesmanProblemDto.getNumberOfEliteAnts(); i++) {
             ants.add(new Ant(0, distanceMatrix, AntType.ELITE));
+        }
+        for (int i = 0; i < salesmanProblemDto.getNumberOfWildAnts(); i++) {
+            ants.add(new Ant(0, distanceMatrix, AntType.WILD));
         }
         return ants;
     }

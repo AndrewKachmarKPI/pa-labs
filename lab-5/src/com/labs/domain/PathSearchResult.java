@@ -15,7 +15,6 @@ public final class PathSearchResult {
     }
 
     public PathSearchResult() {
-
     }
 
     public void addCityIndex(int cityIndex, boolean isLast) {
@@ -24,19 +23,6 @@ public final class PathSearchResult {
         if (!isLast) {
             path.append("-");
         }
-    }
-
-
-    public void printPath() {
-        System.out.println(path.toString());
-    }
-
-    public String getPath() {
-        return path.toString();
-    }
-
-    public String getAntId() {
-        return antId;
     }
 
     public void countPathCost(int[][] distances) {
@@ -48,6 +34,14 @@ public final class PathSearchResult {
 
     public Integer getPathCost() {
         return pathCost;
+    }
+
+    public String getPath() {
+        return path.toString();
+    }
+
+    public String getAntId() {
+        return antId;
     }
 
     @Override

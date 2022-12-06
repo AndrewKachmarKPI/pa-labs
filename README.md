@@ -40,6 +40,6 @@ FROM SRC FOLDER
 >  java -cp classes com.labs.[RUNNER NAME]
 
 
-FROM ROUTE OF PROJECT
+FROM ROOT OF PROJECT
 > #### Run Tests
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test

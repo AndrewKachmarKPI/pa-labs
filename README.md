@@ -18,16 +18,16 @@
   * [Intellij IDEA](https://www.jetbrains.com/idea/download/)
   * [Eclipse](https://www.eclipse.org/downloads/)
 
-## Lab 2
-Lab 2 contains 2 runners for each algorithm
+## Runner guide
 > #### Runners folder 
-> **lab2/src/com/labs/** 
->> * LDFSRunner.java
->> * AStarRunner.java
+> ** [LAB_NAME]/src/com/labs/runners/... 
 _________________
 To be able to run code you should have prepared environment installed JDK and JVM \
+To be able to run tests you should install Maven \
 Also you can check your java installation executing
 > java -version
+Also you can check your maven installation executing
+> mvn -version
 
 To run code you should execute such commands (from command line in folder with runners)
 FROM SRC FOLDER
@@ -37,27 +37,7 @@ FROM SRC FOLDER
 > #### Run
 >  java -cp classes com.labs.[RUNNER NAME]
 
+
+FROM ROUTE OF PROJECT
 > #### Run Tests
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
-
-from root of project
-
-## Lab 4
-> #### Runners folder 
-> **lab4/src/com/labs/** 
->> * ApplicationRunnerLab4.java
-
-
-> #### Compile 
-> javac com/labs/*.java -d classes
-
-from src folder
-
-> #### Run Application
->  java -cp classes com.labs.ApplicationRunnerLab4
-
-> #### Run Tests
->  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
-
-from root of project
-

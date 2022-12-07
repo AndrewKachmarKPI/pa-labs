@@ -1,4 +1,4 @@
-package com.labs.runners;
+package com.labs;
 
 import com.labs.solvers.LDFSSolver;
 import com.labs.utils.SearchResult;

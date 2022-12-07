@@ -1,4 +1,4 @@
-package com.labs.runners;
+package com.labs;
 
 import com.labs.solvers.AStarSolver;
 import com.labs.utils.SearchResult;

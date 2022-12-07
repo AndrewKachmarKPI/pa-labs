@@ -19,8 +19,6 @@
   * [Eclipse](https://www.eclipse.org/downloads/)
 
 ## Runner guide
-> #### Runners folder 
-> ** [LAB_NAME]/src/com/labs/runners/... 
 _________________
 To be able to run code you should have prepared environment installed JDK and JVM \
 To be able to run tests you should install Maven \
@@ -32,14 +30,12 @@ Also you can check your maven installation executing
 > mvn -version
 
 To run code you should execute such commands \
-FROM SRC FOLDER
-> #### Compile 
+> #### Compile  FROM SRC FOLDER OF LAB
 > javac com/labs/*.java -d classes
 
 > #### Run
->  java -cp classes com.labs.[RUNNER NAME]
+>  java -cp classes com.labs.[LAB RUNNER NAME]
 
 
-FROM ROOT OF PROJECT
-> #### Run Tests
+> #### Run Tests  FROM ROOT OF PROJECT
 >  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test

@@ -7,6 +7,7 @@ import com.labs.service.SalesmanProblemSolverService;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SalesmanProblemSolverTest {
 
@@ -30,34 +31,52 @@ public class SalesmanProblemSolverTest {
         assertThat(pathSearchResult.getPathCost()).isNotNull();
         assertThat(pathSearchResult.getPathCost()).isNotZero();
         assertThat(pathSearchResult.getPathCost()).isPositive();
+        assertThat(pathSearchResult.getPathCost()).isNotEqualTo(Integer.MAX_VALUE);
     }
 
 
-    @Test(expected = RuntimeException.class)
-    public void findSolutionNegativeTestInvalidAntsAmount() {
+    @Test
+    public void findSolutionNegativeTestInvalidPlacement() {
+        SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
+                .setNumberOfOrdinaryAnts(10)
+                .setColonyLife(1)
+                .setAntPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 5);
+        assertThatThrownBy(solverService::findSolution)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Ant size should be greater that");
+    }
+
+    @Test
+    public void findSolutionNegativeTestOneCity() {
         SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
                 .setA(1)
-                .setB(3)
-                .setR(0.4)
-                .setL_MIN(2500)
-                .setNumberOfOrdinaryAnts(100)
-                .setNumberOfEliteAnts(20)
-                .setNumberOfWildAnts(40)
+                .setB(1)
+                .setR(1)
+                .setL_MIN(1)
+                .setNumberOfOrdinaryAnts(1)
+                .setNumberOfEliteAnts(1)
+                .setNumberOfWildAnts(1)
                 .setColonyLife(1)
-                .setAntPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 100);
-        solverService.findSolution();
+                .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 1);
+        PathSearchResult pathSearchResult = solverService.findSolution();
+        System.out.println(pathSearchResult);
+        assertThat(pathSearchResult.getPath()).isEmpty();
+        assertThat(pathSearchResult.getPathCost()).isNotNull();
+        assertThat(pathSearchResult.getPathCost()).isEqualTo(Integer.MAX_VALUE);
     }
 
 
-    @Test(expected = RuntimeException.class)
-    public void findSolutionNegativeTestInvalidEliteAnts() {
+    @Test
+    public void findSolutionNegativeTestPathsNotFound() {
         SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
-                .setNumberOfOrdinaryAnts(20)
-                .setNumberOfEliteAnts(40)
+                .setNumberOfOrdinaryAnts(0)
                 .setColonyLife(1)
-                .setAntPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 100);
-        solverService.findSolution();
+                .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 1);
+        assertThatThrownBy(solverService::findSolution)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Path not found");
     }
 }

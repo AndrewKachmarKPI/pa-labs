@@ -59,9 +59,6 @@ public class GeneralMethodsService {
 
     public static List<Ant> generateAnts(int[][] distanceMatrix, SalesmanProblemDto salesmanProblemDto) {
         List<Ant> ants = new ArrayList<>();
-        if (salesmanProblemDto.getNumberOfEliteAnts() > salesmanProblemDto.getNumberOfOrdinaryAnts()) {
-            throw new RuntimeException("Not enough ants for creation");
-        }
         for (int i = 0; i < salesmanProblemDto.getNumberOfOrdinaryAnts(); i++) {
             ants.add(new Ant(0, distanceMatrix, AntType.ORDINARY));
         }

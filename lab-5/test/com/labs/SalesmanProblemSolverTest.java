@@ -31,7 +31,30 @@ public class SalesmanProblemSolverTest {
         assertThat(pathSearchResult.getPathCost()).isNotNull();
         assertThat(pathSearchResult.getPathCost()).isNotZero();
         assertThat(pathSearchResult.getPathCost()).isPositive();
-        assertThat(pathSearchResult.getPathCost()).isNotEqualTo(Integer.MAX_VALUE);
+        assertThat(pathSearchResult.getPathCost()).isLessThan(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void findSolutionPositiveTestUnOptimalSolution() {
+        SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
+                .setA(0)
+                .setB(0)
+                .setR(0)
+                .setL_MIN(0)
+                .setNumberOfOrdinaryAnts(100)
+                .setNumberOfEliteAnts(0)
+                .setNumberOfWildAnts(0)
+                .setColonyLife(1)
+                .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 100);
+        PathSearchResult pathSearchResult = solverService.findSolution();
+
+        String firstCity = pathSearchResult.getPath().split("-")[0];
+        assertThat(pathSearchResult.getPath()).startsWith(firstCity).endsWith(firstCity);
+        assertThat(pathSearchResult.getPathCost()).isNotNull();
+        assertThat(pathSearchResult.getPathCost()).isNotZero();
+        assertThat(pathSearchResult.getPathCost()).isPositive();
+        assertThat(pathSearchResult.getPathCost()).isGreaterThan(2000);
     }
 
 
@@ -44,7 +67,7 @@ public class SalesmanProblemSolverTest {
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 5);
         assertThatThrownBy(solverService::findSolution)
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Ant size should be greater that");
+                .hasMessageContaining("Ant size should be greater that 5");
     }
 
     @Test

@@ -35,7 +35,7 @@ public class SalesmanProblemSolverService {
             PathSearchResult foundBestPath = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
                     .orElseThrow(() -> new RuntimeException("Path not found"));
-            System.out.println("PATH->" + foundBestPath);
+            System.out.println("COLONY LIFE ->" + (i + 1));
             if (foundBestPath.getPathCost() < this.bestPath.getPathCost()) {
                 this.bestPath = foundBestPath;
             }

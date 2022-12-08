@@ -14,8 +14,8 @@ public class ApplicationRunnerLab5 {
         SalesmanProblemDto salesmanProblemDto = SalesmanProblemDto.builder()
                 .setA(1)
                 .setB(3)
-                .setR(0.4)
-                .setL_MIN(2500)
+                .setR(0.3)
+                .setL_MIN(2200)
                 .setNumberOfOrdinaryAnts(200)
                 .setNumberOfEliteAnts(20)
                 .setNumberOfWildAnts(40)
@@ -25,7 +25,7 @@ public class ApplicationRunnerLab5 {
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 300);
         PathSearchResult pathSearchResult = solverService.findSolution();
 
-        System.out.println("Final solution");
+        System.out.println("Solution");
         System.out.println(pathSearchResult);
     }
 }

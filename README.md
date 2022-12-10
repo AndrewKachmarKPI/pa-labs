@@ -30,12 +30,12 @@ Also you can check your maven installation executing
 > mvn -version
 
 To run code you should execute such commands \
-> #### Compile  FROM SRC FOLDER OF LAB
+> #### Compile  FROM JAVA FOLDER OF LAB
 > javac com/labs/*.java -d classes
 
-> #### Run
+> #### Run FROM JAVA FOLDER OF LAB
 >  java -cp classes com.labs.[LAB RUNNER NAME]
 
 
-> #### Run Tests  FROM ROOT OF PROJECT
->  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
+> #### Run Tests  FROM LAB FOLDER 
+>  mvn clean test

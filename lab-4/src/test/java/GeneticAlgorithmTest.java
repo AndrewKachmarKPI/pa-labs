@@ -1,5 +1,3 @@
-package com.labs;
-
 import com.labs.domain.PopulationNode;
 import com.labs.services.KnapsackProblemService;
 import org.junit.Test;

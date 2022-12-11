@@ -24,7 +24,9 @@ public class SalesmanProblemSolverTest {
                 .setColonyLife(1)
                 .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 100);
+
         PathSearchResult pathSearchResult = solverService.findSolution();
+        System.out.println("RESULT ->" + pathSearchResult);
 
         String firstCity = pathSearchResult.getPath().split("-")[0];
         assertThat(pathSearchResult.getPath()).startsWith(firstCity).endsWith(firstCity);
@@ -47,7 +49,9 @@ public class SalesmanProblemSolverTest {
                 .setColonyLife(1)
                 .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 100);
+
         PathSearchResult pathSearchResult = solverService.findSolution();
+        System.out.println("RESULT ->" + pathSearchResult);
 
         String firstCity = pathSearchResult.getPath().split("-")[0];
         assertThat(pathSearchResult.getPath()).startsWith(firstCity).endsWith(firstCity);
@@ -83,8 +87,10 @@ public class SalesmanProblemSolverTest {
                 .setColonyLife(1)
                 .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 1);
+
         PathSearchResult pathSearchResult = solverService.findSolution();
-        System.out.println(pathSearchResult);
+        System.out.println("RESULT ->" + pathSearchResult);
+
         assertThat(pathSearchResult.getPath()).isEmpty();
         assertThat(pathSearchResult.getPathCost()).isNotNull();
         assertThat(pathSearchResult.getPathCost()).isEqualTo(Integer.MAX_VALUE);

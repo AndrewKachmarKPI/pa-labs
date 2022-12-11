@@ -21,12 +21,12 @@ public class ApplicationRunnerLab5 {
                 .setNumberOfWildAnts(40)
                 .setColonyLife(10)
                 .setAntPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
-        System.out.println("Input PARAMS ->" + salesmanProblemDto);
+        System.out.println("INPUT PARAMS ->" + salesmanProblemDto);
 
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(salesmanProblemDto, 300);
         PathSearchResult pathSearchResult = solverService.findSolution();
 
-        System.out.println("BEST path cost -> " + pathSearchResult.getPathCost());
+        System.out.println("RESULT -> " + pathSearchResult.getPathCost());
         System.out.println(pathSearchResult);
     }
 }

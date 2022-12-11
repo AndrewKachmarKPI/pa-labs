@@ -93,40 +93,4 @@ public class GeneralMethodsService {
     public static Map<String, Integer> getAntsInitialPlacement() {
         return antsInitialPlacement;
     }
-
-    public static int enterParam(int limit, String paramName) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter " + paramName + "->");
-        int numberOfCities = scanner.nextInt();
-        while (numberOfCities < limit) {
-            System.out.print(paramName + "should be greater than or equal " + limit + " ->");
-            numberOfCities = scanner.nextInt();
-        }
-        return numberOfCities;
-    }
-
-    public static double enterParamDouble(double limit, String paramName) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter " + paramName + "->");
-        double numberOfCities = scanner.nextDouble();
-        while (numberOfCities < limit) {
-            System.out.print(paramName + "should be greater than or equal " + limit + " ->");
-            numberOfCities = scanner.nextInt();
-        }
-        return numberOfCities;
-    }
-
-    public static AntPlacementType selectAntPlacement() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Select placement");
-        System.out.println("0: MANY_WITHOUT_REPEAT");
-        System.out.println("1: MANY_WITH_REPEAT");
-        System.out.print("Enter:");
-        int placement = scanner.nextInt();
-        while (placement != 0 && placement != 1) {
-            System.out.print("Placement should be 0 or 1 Enter:");
-            placement = scanner.nextInt();
-        }
-        return placement == 0 ? AntPlacementType.MANY_WITHOUT_REPEAT : AntPlacementType.MANY_WITH_REPEAT;
-    }
 }

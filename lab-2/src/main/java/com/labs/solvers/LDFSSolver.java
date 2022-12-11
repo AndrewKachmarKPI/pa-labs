@@ -42,6 +42,7 @@ public class LDFSSolver {
     }
 
     public SearchResult depthLimitedSearch() {
+        System.out.println("Search solution");
         time = System.currentTimeMillis();
         SearchResult result = recursiveDls(parentNode);
         time = System.currentTimeMillis() - time;
@@ -51,7 +52,7 @@ public class LDFSSolver {
     private SearchResult recursiveDls(GameNode currentNode) {
         iterations++;
         boolean isCutoff = false;
-        if (validatePositions(currentNode.getPositions())) {
+        if (validatePositions(currentNode.getPositions()) && !currentNode.getPositions().isEmpty()) {
             solution = currentNode;
             return new SearchResult(currentNode, true);
         }

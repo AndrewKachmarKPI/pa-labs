@@ -96,4 +96,15 @@ public class GameUtils {
         }
         System.out.println(stringBuilder);
     }
+
+    public static int enterDepth() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter LDFS depth limit:");
+        int depth = scanner.nextInt();
+        if (depth <= 0) {
+            System.out.println("Invalid depth");
+            return enterDepth();
+        }
+        return depth;
+    }
 }

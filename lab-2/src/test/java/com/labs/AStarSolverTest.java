@@ -31,12 +31,13 @@ public class AStarSolverTest {
     }
 
     @Test
-    public void aStarSolverNegativeTestFailure() {
+    public void aStarSolverNegativeTestFailureEmptyPositions() {
         AStarSolver aStarSolver = new AStarSolver(new ArrayList<>());
         SearchResult searchResult = aStarSolver.aStarSearch();
         assertThat(searchResult.isSuccess()).isFalse();
         assertThat(searchResult.getMessage()).isEqualTo("failure");
     }
+
 
     private List<QueenPosition> solution() {
         List<QueenPosition> queenPositions = new ArrayList<>();

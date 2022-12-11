@@ -19,9 +19,9 @@
   * [Eclipse](https://www.eclipse.org/downloads/)
 
 ## Runner guide
-_________________
-To be able to run code you should have prepared environment installed JDK and JVM \
-To be able to run tests you should install Maven \
+_________________  
+To be able to run code you should have prepared environment installed JDK and JVM   
+To be able to run tests you should install Maven   
 Also you can check your java installation executing
 > java -version
 
@@ -29,13 +29,41 @@ Also you can check your java installation executing
 Also you can check your maven installation executing
 > mvn -version
 
-To run code you should execute such commands \
-> #### Compile  FROM SRC FOLDER OF LAB
-> javac com/labs/*.java -d classes
 
-> #### Run
->  java -cp classes com.labs.[LAB RUNNER NAME]
+## Lab2
+To run code you should execute such commands
+> #### Compile  FROM (**\pa-labs\lab-2\src\main\java) folder of lab
+>  javac com/labs/*.java -d classes
 
+> #### Run  FROM (**\pa-labs\lab-2\src\main\java) folder of lab
+> ##### Run A* algorithm
+>  java -cp classes com.labs.AStarRunner
+> ##### Run LDFS algorithm
+>  java -cp classes com.labs.LDFSRunner
 
-> #### Run Tests  FROM ROOT OF PROJECT
->  mvn '-Dtest=com.labs.*[TEST RUNNER NAME]' test
+> #### Run Tests  FROM (**\pa-labs\lab-2) folder of lab
+>  mvn clean test
+
+## Lab4
+To run code you should execute such commands
+> #### Compile  FROM (**\pa-labs\lab-4\src\main\java) folder of lab
+>  javac com/labs/*.java -d classes
+
+> #### Run  FROM (**\pa-labs\lab-4\src\main\java) folder of lab
+> ##### Run algorithm
+>  java -cp classes com.labs.ApplicationRunnerLab4
+
+> #### Run Tests  FROM (**\pa-labs\lab-4) folder of lab
+>  mvn clean test
+
+## Lab5
+To run code you should execute such commands
+> #### Compile  FROM (**\pa-labs\lab-5\src\main\java) folder of lab
+>  javac com/labs/*.java -d classes
+
+> #### Run  FROM (**\pa-labs\lab-5\src\main\java) folder of lab
+> ##### Run algorithm
+>  java -cp classes com.labs.ApplicationRunnerLab5
+
+> #### Run Tests  FROM (**\pa-labs\lab-5) folder of lab
+>  mvn clean test

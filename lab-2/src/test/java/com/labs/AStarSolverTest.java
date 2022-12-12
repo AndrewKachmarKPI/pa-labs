@@ -8,47 +8,43 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.labs.utils.SolverTestUtils.getCorrectPlacement;
 import static org.assertj.core.api.Assertions.*;
 
 public class AStarSolverTest {
-
     @Test
-    public void aStarSolverPositiveTest() {
+    public void findResultSucceedsWhenRandomInitialPlacement() {
+//      arrange
         AStarSolver aStarSolver = new AStarSolver();
+//      act
         SearchResult searchResult = aStarSolver.aStarSearch();
-        aStarSolver.printReport(searchResult);
+//      assert
         assertThat(searchResult.isSuccess()).isTrue();
         assertThat(searchResult.getSolution().getPositions()).hasSize(8);
     }
 
     @Test
-    public void aStarSolverPositiveTestDefaultSolution() {
-        AStarSolver aStarSolver = new AStarSolver(solution());
+    public void findResultSucceedsWhenCorrectPlacement() {
+//      arrange
+        List<QueenPosition> correctPlacement = getCorrectPlacement();
+        AStarSolver aStarSolver = new AStarSolver(correctPlacement);
+//      act
         SearchResult searchResult = aStarSolver.aStarSearch();
-        aStarSolver.printReport(searchResult);
+//      assert
         assertThat(searchResult.isSuccess()).isTrue();
         assertThat(searchResult.getSolution().getPositions()).hasSize(8);
     }
 
+
     @Test
-    public void aStarSolverNegativeTestFailureEmptyPositions() {
-        AStarSolver aStarSolver = new AStarSolver(new ArrayList<>());
+    public void findResultFailsWhenEmptyPlacement() {
+//      arrange
+        List<QueenPosition> placement = new ArrayList<>();
+        AStarSolver aStarSolver = new AStarSolver(placement);
+//      act
         SearchResult searchResult = aStarSolver.aStarSearch();
+//      assert
         assertThat(searchResult.isSuccess()).isFalse();
         assertThat(searchResult.getMessage()).isEqualTo("failure");
-    }
-
-
-    private List<QueenPosition> solution() {
-        List<QueenPosition> queenPositions = new ArrayList<>();
-        queenPositions.add(new QueenPosition(2, 0));
-        queenPositions.add(new QueenPosition(5, 1));
-        queenPositions.add(new QueenPosition(7, 2));
-        queenPositions.add(new QueenPosition(0, 3));
-        queenPositions.add(new QueenPosition(3, 4));
-        queenPositions.add(new QueenPosition(6, 5));
-        queenPositions.add(new QueenPosition(4, 6));
-        queenPositions.add(new QueenPosition(1, 7));
-        return queenPositions;
     }
 }

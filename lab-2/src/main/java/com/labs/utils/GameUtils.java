@@ -5,28 +5,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class GameUtils {
-    public static QueenPosition randomPosition(int queensSize) {
-        return new QueenPosition(randomNumber(0, queensSize), randomNumber(0, queensSize));
-    }
-
-    public static int randomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
-
-    public static Map<QueenPosition, QueenPosition> getAllConflicts(List<QueenPosition> positions) {
-        Map<QueenPosition, QueenPosition> positionMap = new HashMap<>();
-        positions.forEach(pos1 -> {
-            positions.forEach(pos2 -> {
-                if (isConflict(pos1, pos2) && !pos1.equals(pos2)) {
-                    positionMap.put(pos1, pos2);
-                }
-            });
-        });
-        return positionMap;
-    }
+    public static final Integer QUEENS = 8;
+    public static final Integer BOARD = 8;
 
     public static boolean validatePositions(List<QueenPosition> positions) {
         return getAllConflicts(positions).isEmpty();
+    }
+
+    private static Map<QueenPosition, QueenPosition> getAllConflicts(List<QueenPosition> positions) {
+        Map<QueenPosition, QueenPosition> positionMap = new HashMap<>();
+        positions.forEach(pos1 -> positions.forEach(pos2 -> {
+            if (isConflict(pos1, pos2) && !pos1.equals(pos2)) {
+                positionMap.put(pos1, pos2);
+            }
+        }));
+        return positionMap;
     }
 
     public static boolean isConflict(QueenPosition pos1, QueenPosition pos2) {
@@ -38,7 +31,7 @@ public class GameUtils {
         return isConflict(pos1, pos2) && isAnyPositionBetween(positions, pos1, pos2);
     }
 
-    public static boolean isAnyPositionBetween(List<QueenPosition> positions, QueenPosition pos1, QueenPosition pos2) {
+    private static boolean isAnyPositionBetween(List<QueenPosition> positions, QueenPosition pos1, QueenPosition pos2) {
         List<Integer> xRange = IntStream.rangeClosed(pos1.getxPos(), pos2.getxPos()).boxed().collect(Collectors.toList());
         List<Integer> yRange = IntStream.rangeClosed(pos1.getyPos(), pos2.getyPos()).boxed().collect(Collectors.toList());
         return positions.stream()
@@ -51,7 +44,7 @@ public class GameUtils {
                 .findAny().orElse(null);
     }
 
-    public static List<QueenPosition> generateInitialPlacement(int queensSize) {
+    public static List<QueenPosition> getInitialPlacement(int queensSize) {
         List<QueenPosition> positions = new ArrayList<>();
         List<Integer> cols = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
         for (Integer col : cols) {
@@ -64,7 +57,7 @@ public class GameUtils {
         return positions;
     }
 
-    public static List<QueenPosition> retainAllNotEmptyPositions(List<QueenPosition> positions, Integer except) {
+    public static List<QueenPosition> getAllNotEmptyPositions(List<QueenPosition> positions, Integer except) {
         List<QueenPosition> positionList = new ArrayList<>();
         List<Integer> cols = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
         cols.remove(except);
@@ -74,16 +67,9 @@ public class GameUtils {
         return positionList;
     }
 
-    public static void printSolution(String title, List<QueenPosition> positions, Integer BOARD) {
+    public static void printResultPosition(String title, List<QueenPosition> positions) {
         String pattern = "| %-1s | %-8s |%n";
-        int padSize = 32 - title.length();
-        int padStart = title.length() + padSize / 2;
-
-        title = String.format("%" + padStart + "s", title);
         System.out.println(title);
-
-        StringBuilder stringBuilder = new StringBuilder("--------------------------------");
-        System.out.println(stringBuilder);
         for (int i = 0; i < BOARD; i++) {
             StringBuilder line = new StringBuilder();
             for (int j = 0; j < BOARD; j++) {
@@ -94,7 +80,14 @@ public class GameUtils {
             }
             System.out.printf(pattern, i + 1, line);
         }
-        System.out.println(stringBuilder);
+    }
+
+    public static QueenPosition randomPosition(int queensSize) {
+        return new QueenPosition(randomNumber(0, queensSize), randomNumber(0, queensSize));
+    }
+
+    private static int randomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 
     public static int enterDepth() {
@@ -107,5 +100,24 @@ public class GameUtils {
             return enterDepth();
         }
         return depth;
+    }
+
+    public static void printSearchResultPositionAndMetrics(SearchResult result, SearchPositionMetrics metrics) {
+        System.out.println();
+        String pattern = "| %-13s | %-8s |%n";
+        String headerPattern = "| %-13s | %-8s |%n";
+        if (result.isSuccess()) {
+            printResultPosition("SOLUTION", result.getSolution().getPositions());
+        } else {
+            System.out.printf(headerPattern, "METRICS", "ERROR");
+            System.out.printf("---------------------------%n");
+            System.out.printf(pattern, "STATUS", result.getMessage());
+        }
+
+        System.out.printf(pattern, "ITERATIONS", metrics.getIterations().toString());
+        System.out.printf(pattern, "FAILS", metrics.getFails().toString());
+        System.out.printf(pattern, "STATES", metrics.getStates().toString());
+        System.out.printf(pattern, "MEMORY STATES", metrics.getMemStates().toString());
+        System.out.printf(pattern, "TIME", metrics.getTime().toString() + " ms");
     }
 }

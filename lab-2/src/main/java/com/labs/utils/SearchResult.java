@@ -16,27 +16,25 @@ public class SearchResult {
         this.isSuccess = isSuccess;
     }
 
-    public GameNode getSolution() {
-        return solution;
+    public boolean isSuccess() {
+        return isSuccess;
     }
 
-    public void setSolution(GameNode solution) {
-        this.solution = solution;
+    public GameNode getSolution() {
+        return solution;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public boolean isSuccess() {
-        return isSuccess;
+    public void setSolution(GameNode solution) {
+        this.solution = solution;
     }
 
-
-    @Override
     public String toString() {
         return "SearchResult{" +
-                "positions=" + solution +
+                "solution=" + solution +
                 ", message='" + message + '\'' +
                 ", isSuccess=" + isSuccess +
                 '}';

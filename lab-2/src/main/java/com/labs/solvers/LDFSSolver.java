@@ -1,8 +1,6 @@
 package com.labs.solvers;
 
-import com.labs.utils.GameNode;
-import com.labs.utils.QueenPosition;
-import com.labs.utils.SearchResult;
+import com.labs.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,30 +17,27 @@ public class LDFSSolver {
 
     private Integer MAX_DEPTH;
     private static final String CUTOFF_MESSAGE = "cutoff";
-    private static final Integer QUEENS = 8;
-    private static final Integer BOARD = 8;
 
     private Long time = 0L;
     private Integer iterations = 0;
     private Integer fails = 0;
     private Integer states = 0;
 
-
     public LDFSSolver(Integer MAX_DEPTH) {
         this.MAX_DEPTH = MAX_DEPTH;
-        this.parentNode = new GameNode(generateInitialPlacement(QUEENS), 0);
+        this.parentNode = new GameNode(getInitialPlacement(QUEENS), 0,false);
         this.checkedStates = new ArrayList<>();
-        printSolution("START POSITION", parentNode.getPositions(), BOARD);
+        printResultPosition("START POSITION", parentNode.getPositions());
     }
+
     public LDFSSolver(Integer MAX_DEPTH, List<QueenPosition> placement) {
         this.MAX_DEPTH = MAX_DEPTH;
-        this.parentNode = new GameNode(placement, 0);
+        this.parentNode = new GameNode(placement, 0,false);
         this.checkedStates = new ArrayList<>();
-        printSolution("START POSITION", parentNode.getPositions(), BOARD);
+        printResultPosition("START POSITION", parentNode.getPositions());
     }
 
     public SearchResult depthLimitedSearch() {
-        System.out.println("Search solution");
         time = System.currentTimeMillis();
         SearchResult result = recursiveDls(parentNode);
         time = System.currentTimeMillis() - time;
@@ -59,7 +54,7 @@ public class LDFSSolver {
         if (Objects.equals(currentNode.getDepth(), MAX_DEPTH)) {
             return new SearchResult(CUTOFF_MESSAGE, false);
         }
-        List<GameNode> successors = generateSuccessors(currentNode);
+        List<GameNode> successors = getSuccessors(currentNode);
         states += successors.size();
         for (GameNode successor : successors) {
             SearchResult result = recursiveDls(successor);
@@ -74,14 +69,14 @@ public class LDFSSolver {
         return new SearchResult(isCutoff ? CUTOFF_MESSAGE : "failure", false);
     }
 
-    private List<GameNode> generateSuccessors(GameNode currentState) {
+    private List<GameNode> getSuccessors(GameNode currentState) {
         List<GameNode> successors = new ArrayList<>();
         checkedStates.add(currentState.getPositions());
 
         for (int currentCol = 0; currentCol < QUEENS; currentCol++) {
             QueenPosition takenPositions = getCurrentPosition(currentState.getPositions(), currentCol);
             if (takenPositions != null) {
-                List<QueenPosition> otherQueens = retainAllNotEmptyPositions(currentState.getPositions(), currentCol);
+                List<QueenPosition> otherQueens = getAllNotEmptyPositions(currentState.getPositions(), currentCol);
                 List<Integer> rows = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
                 rows.remove(takenPositions.getyPos());
 
@@ -89,7 +84,7 @@ public class LDFSSolver {
                     List<QueenPosition> positions = new ArrayList<>(otherQueens);
                     positions.add(new QueenPosition(currentCol, row));
                     if (!isStateChecked(positions)) {
-                        successors.add(new GameNode(positions, currentState.getDepth() + 1));
+                        successors.add(new GameNode(positions, currentState.getDepth() + 1, false));
                     }
                 }
             }
@@ -100,29 +95,11 @@ public class LDFSSolver {
         return successors;
     }
 
-
     private boolean isStateChecked(List<QueenPosition> currentState) {
         return checkedStates.stream().anyMatch(positions -> positions.equals(currentState));
     }
 
-
-    public void printReport(SearchResult result) {
-        System.out.println();
-        String pattern = "| %-13s | %-8s |%n";
-        String headerPattern = "| %-13s | %-8s |%n";
-        if (result.isSuccess()) {
-            printSolution("SOLUTION", result.getSolution().getPositions(), BOARD);
-        } else {
-            System.out.printf(headerPattern, "METRICS", "ERROR");
-            System.out.printf("---------------------------%n");
-            System.out.printf(pattern, "STATUS", result.getMessage());
-        }
-
-        System.out.printf(pattern, "ITERATIONS", iterations.toString());
-        System.out.printf(pattern, "FAILS", fails.toString());
-        System.out.printf(pattern, "STATES", states.toString());
-        System.out.printf(pattern, "MEMORY STATES", checkedStates.size());
-        System.out.printf(pattern, "TIME", time.toString() + " ms");
+    public SearchPositionMetrics getSearchPositionMetrics() {
+        return new SearchPositionMetrics(time, iterations, fails, states);
     }
-
 }

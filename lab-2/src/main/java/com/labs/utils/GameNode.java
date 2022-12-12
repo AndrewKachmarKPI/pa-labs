@@ -11,16 +11,12 @@ public class GameNode {
     private Integer depth;
     private Integer functionCost;
 
-
-    public GameNode(List<QueenPosition> positions, Integer depth) {
+    public GameNode(List<QueenPosition> positions, Integer depth, Boolean countHeuristic) {
         this.positions = positions;
         this.depth = depth;
-    }
-
-    public GameNode(List<QueenPosition> positions, Integer depth, Boolean isInform) {
-        this.positions = positions;
-        this.depth = depth;
-        this.functionCost = countHeuristicCost();
+        if (countHeuristic) {
+            this.functionCost = countHeuristicCost();
+        }
     }
 
     public List<QueenPosition> getPositions() {
@@ -33,16 +29,6 @@ public class GameNode {
 
     public Integer getTotalCost() {
         return this.depth + this.functionCost;
-    }
-
-    @Override
-    public String toString() {
-        return "GameNode{" +
-                "positions=" + positions +
-                ", depth=" + depth +
-                ", functionCost=" + functionCost +
-                ", total=" + (functionCost + depth) +
-                '}';
     }
 
     public Integer countHeuristicCost() {

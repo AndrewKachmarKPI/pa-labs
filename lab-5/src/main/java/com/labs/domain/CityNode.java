@@ -1,5 +1,11 @@
 package com.labs.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter
+@ToString
 public final class CityNode {
     private Integer index;
     private Double probability;
@@ -8,27 +14,7 @@ public final class CityNode {
         this.index = index;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    public Double getProbability() {
-        return probability;
-    }
-
-    public void setProbability(Double probability) {
-        this.probability = probability;
-    }
-
     public boolean isNodeFound() {
         return index != null;
-    }
-
-    @Override
-    public String toString() {
-        return "CityNode{" +
-                "index=" + index +
-                ", probability=" + probability +
-                '}';
     }
 }

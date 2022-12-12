@@ -1,9 +1,16 @@
 package com.labs.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PathSearchResult {
+@Getter
+@NoArgsConstructor
+@ToString
+public class PathSearchResult {
     private List<Integer> pathIndexes = new ArrayList<>();
     private StringBuilder path = new StringBuilder();
     private Integer pathCost = Integer.MAX_VALUE;
@@ -12,9 +19,6 @@ public final class PathSearchResult {
     public PathSearchResult(int startPosition, String antId) {
         addCityIndex(startPosition, false);
         this.antId = antId;
-    }
-
-    public PathSearchResult() {
     }
 
     public void addCityIndex(int cityIndex, boolean isLast) {
@@ -30,25 +34,5 @@ public final class PathSearchResult {
         for (int i = 0; i < pathIndexes.size() - 1; i++) {
             this.pathCost += distances[pathIndexes.get(i)][pathIndexes.get(i + 1)];
         }
-    }
-
-    public Integer getPathCost() {
-        return pathCost;
-    }
-
-    public String getPath() {
-        return path.toString();
-    }
-
-    public String getAntId() {
-        return antId;
-    }
-
-    @Override
-    public String toString() {
-        return "PathSearchResult{" +
-                "path=" + path +
-                ", pathCost=" + pathCost +
-                '}';
     }
 }

@@ -1,96 +1,18 @@
 package com.labs.service;
 
-import com.labs.domain.Ant;
-import com.labs.domain.SalesmanProblemDto;
-import com.labs.enums.AntPlacementType;
-import com.labs.enums.AntType;
-
-import java.util.*;
-
-import static com.labs.service.SalesmanProblemSolverService.*;
-
 public class GeneralMethodsService {
-    private static Map<String, Integer> antsInitialPlacement = new HashMap<>();
-
-    public static int[][] buildDistanceMatrix() {
-        int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
-        for (int i = 0; i < distanceMatrix.length; i++) {
-            for (int j = 0; j < distanceMatrix[i].length; j++) {
-                int distance = (i == j) ? Integer.MAX_VALUE : randomNumber(5, 150);
-                distanceMatrix[i][j] = distance;
-            }
-        }
-        return distanceMatrix;
+    public static int randomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+    public static double randomDouble(double min, double max) {
+        return (Math.random() * (max - min)) + min;
     }
 
-    public static double[][] buildVisionMatrix(int[][] distanceMatrix) {
-        double[][] visionMatrix = new double[G_SIZE][G_SIZE];
-        for (int i = 0; i < visionMatrix.length; i++) {
-            for (int j = 0; j < visionMatrix.length; j++) {
-                if (i == j) {
-                    visionMatrix[i][j] = 0;
-                } else {
-                    visionMatrix[i][j] = round((double) 1 / distanceMatrix[i][j], 3);
-                }
-            }
-        }
-        return visionMatrix;
-    }
-
-    public static double[][] buildPheromoneMatrix() {
-        double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
-        for (int i = 0; i < pheromoneMatrix.length; i++) {
-            for (int j = 0; j < pheromoneMatrix.length; j++) {
-                double pheromone = (i == j) ? 0 : (round(randomDouble(0.1, 0.2), 2));
-                pheromoneMatrix[i][j] = pheromone;
-            }
-        }
-        return pheromoneMatrix;
-    }
-
-    public static List<Integer> generateCities() {
-        List<Integer> cities = new ArrayList<>();
-        for (int i = 0; i < G_SIZE; i++) {
-            cities.add(0);
-        }
-        return cities;
-    }
-
-    public static List<Ant> generateAnts(int[][] distanceMatrix, SalesmanProblemDto salesmanProblemDto) {
-        List<Ant> ants = new ArrayList<>();
-        for (int i = 0; i < salesmanProblemDto.getNumberOfOrdinaryAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.ORDINARY));
-        }
-        for (int i = 0; i < salesmanProblemDto.getNumberOfEliteAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.ELITE));
-        }
-        for (int i = 0; i < salesmanProblemDto.getNumberOfWildAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.WILD));
-        }
-        return ants;
-    }
-
-
-    public static void placeAnts(List<Ant> ants, AntPlacementType placementType) {
-        for (Ant ant : ants) {
-            int cityIndex = 0;
-
-            if (placementType == AntPlacementType.MANY_WITH_REPEAT) {
-                cityIndex = randomNumber(0, G_SIZE);
-            } else {
-                if (ants.size() > G_SIZE) {
-                    throw new RuntimeException("Ant size should be greater that " + G_SIZE);
-                }
-                while (antsInitialPlacement.containsValue(cityIndex)) {
-                    cityIndex = randomNumber(0, G_SIZE);
-                }
-            }
-            ant.visitCity(cityIndex);
-            antsInitialPlacement.put(ant.getAntId(), cityIndex);
-        }
-    }
-
-    public static Map<String, Integer> getAntsInitialPlacement() {
-        return antsInitialPlacement;
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }

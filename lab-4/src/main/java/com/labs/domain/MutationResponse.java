@@ -16,12 +16,4 @@ public class MutationResponse {
     public Boolean isSuccessful() {
         return isSuccessful;
     }
-
-    @Override
-    public String toString() {
-        return "MutationResponse{" +
-                "populationNode=" + populationNode +
-                ", isSuccessful=" + isSuccessful +
-                '}';
-    }
 }

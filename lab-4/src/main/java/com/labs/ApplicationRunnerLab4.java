@@ -12,7 +12,6 @@ public class ApplicationRunnerLab4 {
         int capacity = enterCapacity();
         KnapsackProblemService service = new KnapsackProblemService(capacity);
         PopulationNode solution = service.searchLoop(1000);
-        System.out.println("Solution found");
-        System.out.println(solution.toString());
+        System.out.println("Solution found ->" + solution.toString());
     }
 }

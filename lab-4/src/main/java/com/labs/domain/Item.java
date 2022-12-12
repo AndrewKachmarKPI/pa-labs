@@ -16,12 +16,4 @@ public class Item {
     public Integer getWeight() {
         return weight;
     }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "price=" + price +
-                ", weight=" + weight +
-                '}';
-    }
 }

@@ -6,13 +6,9 @@ import com.labs.domain.PopulationNode;
 
 import java.util.*;
 
-/**
- * Population select criteria (best in population + randomly selected)
- */
 public class KnapsackProblemService {
     private final Integer capacity;
     private static final Integer numberOfNodes = 100;
-
     private final List<Item> items;
     private final List<PopulationNode> currentPopulation = new ArrayList<>();
     private PopulationNode currentRecord; //F* rack with best price
@@ -23,16 +19,16 @@ public class KnapsackProblemService {
         }
         this.capacity = capacity;
         this.items = generateItems(100);
-        this.generateInitial();
+        generateInitialPopulation();
     }
 
     public PopulationNode searchLoop(Integer iterations) {
         for (int i = 0; i < iterations; i++) {
-            PopulationNode selectedNode = selection();//S0
-            PopulationNode afterCross = cross(selectedNode, currentRecord); //S1
-            MutationResponse mutationResponse = mutation(afterCross); //S2
+            PopulationNode selectedNode = populationSelection();
+            PopulationNode afterCross = populationCross(selectedNode, currentRecord);
+            MutationResponse mutationResponse = populationMutation(afterCross);
             PopulationNode nodeForImprovement = mutationResponse.isSuccessful() ? mutationResponse.getPopulationNode() : afterCross;
-            PopulationNode populationNode = localImprovement(nodeForImprovement);//S3
+            PopulationNode populationNode = localImprovement(nodeForImprovement);
             if (populationNode.getTotalPrice() > currentRecord.getTotalPrice() && populationNode.getTotalWeight() <= capacity) {
                 currentRecord = populationNode;
             }
@@ -41,9 +37,7 @@ public class KnapsackProblemService {
         return currentRecord;
     }
 
-
-    //STEP 1
-    public void generateInitial() {
+    public void generateInitialPopulation() {
         List<Integer> emptyPopulation = new ArrayList<>(Collections.nCopies(numberOfNodes, 0));
         for (int i = 0; i < numberOfNodes; i++) {
             List<Integer> population = new ArrayList<>(emptyPopulation);
@@ -54,52 +48,48 @@ public class KnapsackProblemService {
         currentRecord = getBestNodeOfPopulation(currentPopulation);
     }
 
-    //STEP 2
-    public PopulationNode selection() {
+    public PopulationNode populationSelection() {
         int nodeIndex = randomNumber(0, numberOfNodes);
         PopulationNode populationNode = currentPopulation.get(nodeIndex);
         if (populationNode.getNodeId().equals(currentRecord.getNodeId())) {
-            selection();
+            populationSelection();
         }
         return populationNode;
     }
 
-    //STEP 3
-    public PopulationNode cross(PopulationNode firstNode, PopulationNode secondNode) {
+    public PopulationNode populationCross(PopulationNode firstNode, PopulationNode secondNode) {
         List<Integer> selectedItems = new ArrayList<>();
         for (int i = 0; i < numberOfNodes; i++) {
             PopulationNode nodeForInsert = checkForCross() ? firstNode : secondNode;
-            selectedItems.add(nodeForInsert.getVector().get(i));
+            selectedItems.add(nodeForInsert.getItemsSelection().get(i));
         }
         PopulationNode newNode = new PopulationNode(selectedItems);
         newNode.countParameters(items);
         return newNode;
     }
 
-    //STEP 4
-    public MutationResponse mutation(PopulationNode populationNode) {
-        int firstGeneIndex = randomNumber(0, numberOfNodes);
-        int secondGeneIndex = randomNumber(0, numberOfNodes);
-        while (secondGeneIndex == firstGeneIndex) {
-            secondGeneIndex = randomNumber(0, numberOfNodes);
+    public MutationResponse populationMutation(PopulationNode populationNode) {
+        int firstNodeIndex = randomNumber(0, numberOfNodes);
+        int secondNodeIndex = randomNumber(0, numberOfNodes);
+        while (secondNodeIndex == firstNodeIndex) {
+            secondNodeIndex = randomNumber(0, numberOfNodes);
         }
         if (checkProbability(5) && isEnoughGenes(populationNode)) {
-            Integer firstGeneValue = populationNode.getVector().get(firstGeneIndex);
-            Integer secondGeneValue = populationNode.getVector().get(secondGeneIndex);
+            Integer firstGeneValue = populationNode.getItemsSelection().get(firstNodeIndex);
+            Integer secondGeneValue = populationNode.getItemsSelection().get(secondNodeIndex);
 
-            populationNode.addGene(firstGeneIndex, secondGeneValue);
-            populationNode.addGene(secondGeneIndex, firstGeneValue);
+            populationNode.selectItem(firstNodeIndex, secondGeneValue);
+            populationNode.selectItem(secondNodeIndex, firstGeneValue);
             populationNode.countParameters(items);
         }
         return new MutationResponse(populationNode, populationNode.getTotalWeight() < capacity);
     }
 
-    //STEP 5
     public PopulationNode localImprovement(PopulationNode populationNode) {
         int dif = randomNumber(0, 5);
         int xRange = randomNumber(0, numberOfNodes);
         int randomIndex = randomNumber(xRange, countRange(dif, xRange));
-        populationNode.addGene(randomIndex, 1);
+        populationNode.selectItem(randomIndex, 1);
         populationNode.countParameters(items);
         return populationNode;
     }
@@ -118,7 +108,6 @@ public class KnapsackProblemService {
         return currentPopulation.stream().filter(node -> node.getTotalPrice().equals(maxTotalPrice)).min(Comparator.comparing(PopulationNode::getTotalWeight)).orElseThrow(() -> new RuntimeException("Best node not found"));
     }
 
-
     public void replaceWorstPopulationNode(PopulationNode populationNode) {
         Integer minTotalPrice = currentPopulation.stream().min(Comparator.comparing(PopulationNode::getTotalPrice)).orElseThrow(() -> new RuntimeException("Min node not found")).getTotalPrice();
         PopulationNode worstNode = currentPopulation.stream().filter(node -> node.getTotalPrice().equals(minTotalPrice)).max(Comparator.comparing(PopulationNode::getTotalWeight)).orElseThrow(() -> new RuntimeException("Min node not found"));
@@ -126,7 +115,7 @@ public class KnapsackProblemService {
     }
 
     public boolean isEnoughGenes(PopulationNode populationNode) {
-        return populationNode.getVector().stream().filter(gene -> gene == 1).count() > 2;
+        return populationNode.getItemsSelection().stream().filter(gene -> gene == 1).count() > 2;
     }
 
     public int countRange(int dif, int xRange) {
@@ -156,9 +145,9 @@ public class KnapsackProblemService {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter backpack capacity:");
         int capacity = scanner.nextInt();
-        while (capacity < 0) {
-            System.out.print("Invalid capacity enter again:");
-            capacity = scanner.nextInt();
+        if (capacity < 0) {
+            System.out.println("Invalid capacity");
+            return enterCapacity();
         }
         return capacity;
     }

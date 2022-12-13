@@ -4,17 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter
+@Getter
+@Setter
 @ToString
 public final class CityNode {
     private Integer index;
     private Double probability;
 
     public CityNode(Integer index) {
-        if(index<0){
+        if (index < 0) {
             throw new RuntimeException("Invalid index");
         }
         this.index = index;
+    }
+
+    public CityNode() {
+        this.index = null;
     }
 
     public boolean isNodeFound() {

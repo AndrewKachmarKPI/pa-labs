@@ -108,7 +108,7 @@ public class SalesmanProblemSolverService {
 
     private CityNode getNextCityMoveForWildAnt(Ant ant) {
         List<CityNode> availableCities = ant.getAvailableCities();
-        CityNode nextCity = new CityNode(null);
+        CityNode nextCity = new CityNode();
         if (!availableCities.isEmpty()) {
             nextCity = availableCities.get(getRandomNumber(0, availableCities.size()));
         }
@@ -121,7 +121,7 @@ public class SalesmanProblemSolverService {
             double probability = getMoveProbability(ant, ant.getCurrentCityIndex(), cityNode.getIndex());
             cityNode.setProbability(probability);
         }
-        CityNode nextCity = new CityNode(null);
+        CityNode nextCity = new CityNode();
         if (!availableCities.isEmpty()) {
             nextCity = availableCities.stream().max(Comparator.comparing(CityNode::getProbability))
                     .orElseThrow(() -> new RuntimeException("City not found"));

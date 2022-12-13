@@ -13,37 +13,37 @@ import static org.assertj.core.api.Assertions.*;
 
 public class AStarSolverTest {
     @Test
-    public void findResultSucceedsWhenRandomInitialPlacement() {
-//      arrange
+    public void Check_FindResult_Succeeds_When_RandomInitialPlacement() {
+        //Arrange
         AStarSolver aStarSolver = new AStarSolver();
-//      act
+        //Action
         SearchResult searchResult = aStarSolver.aStarSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isTrue();
         assertThat(searchResult.getSolution().getPositions()).hasSize(8);
     }
 
     @Test
-    public void findResultSucceedsWhenCorrectPlacement() {
-//      arrange
+    public void Check_FindResult_Succeeds_When_CorrectPlacement() {
+        //Arrange
         List<QueenPosition> correctPlacement = getCorrectPlacement();
         AStarSolver aStarSolver = new AStarSolver(correctPlacement);
-//      act
+        //Action
         SearchResult searchResult = aStarSolver.aStarSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isTrue();
         assertThat(searchResult.getSolution().getPositions()).hasSize(8);
     }
 
 
     @Test
-    public void findResultFailsWhenEmptyPlacement() {
-//      arrange
+    public void Check_FindResult_Fails_When_EmptyPlacement() {
+        //Arrange
         List<QueenPosition> placement = new ArrayList<>();
         AStarSolver aStarSolver = new AStarSolver(placement);
-//      act
+        //Action
         SearchResult searchResult = aStarSolver.aStarSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isFalse();
         assertThat(searchResult.getMessage()).isEqualTo("failure");
     }

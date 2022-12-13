@@ -15,7 +15,7 @@ public class GameNode {
         this.positions = positions;
         this.depth = depth;
         if (countHeuristic) {
-            this.functionCost = countHeuristicCost();
+            this.functionCost = getHeuristicCost();
         }
     }
 
@@ -31,7 +31,7 @@ public class GameNode {
         return this.depth + this.functionCost;
     }
 
-    public Integer countHeuristicCost() {
+    public Integer getHeuristicCost() {
         Map<QueenPosition, QueenPosition> positionMap = new HashMap<>();
         this.positions.forEach(pos1 -> this.positions.forEach(pos2 -> {
             boolean isDuplicate = positionMap.containsKey(pos1) && positionMap.get(pos1).equals(pos2) ||

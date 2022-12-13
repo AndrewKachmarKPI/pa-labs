@@ -17,68 +17,68 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LDFSSolverTest {
     @Test
-    public void findResultSucceedsWhenCorrectPlacement() {
-//      arrange
+    public void Check_FindResult_Succeeds_When_CorrectPlacement() {
+        //Arrange
         int depth = 4;
         List<QueenPosition> placement = getCorrectPlacement();
         LDFSSolver ldfsSolver = new LDFSSolver(depth, placement);
-//      act
+        //Action
         SearchResult searchResult = ldfsSolver.depthLimitedSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isTrue();
         assertThat(searchResult.getSolution().getDepth()).isLessThan(depth);
         assertThat(searchResult.getSolution().getPositions()).hasSize(placement.size());
     }
 
     @Test
-    public void findResultFailsWhenSmallDepth() {
-//      arrange
+    public void Check_FindResult_Fails_When_SmallDepth() {
+        //Arrange
         int depth = 1;
         List<QueenPosition> placement = getRandomPlacement();
         LDFSSolver ldfsSolver = new LDFSSolver(depth, placement);
-//      act
+        //Action
         SearchResult searchResult = ldfsSolver.depthLimitedSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isFalse();
         assertThat(searchResult.getMessage()).isEqualTo("cutoff");
     }
 
     @Test
-    public void findResultFailsWhenEmptyPlacement() {
-//      arrange
+    public void Check_FindResult_Fails_When_EmptyPlacement() {
+        //Arrange
         int depth = 4;
         List<QueenPosition> placement = new ArrayList<>();
         LDFSSolver ldfsSolver = new LDFSSolver(depth, placement);
-//      act
+        //Action
         SearchResult searchResult = ldfsSolver.depthLimitedSearch();
-//      assert
+        //Assert
         assertThat(searchResult.isSuccess()).isFalse();
         assertThat(searchResult.getMessage()).isEqualTo("failure");
     }
 
 
     @Test
-    public void enterSearchDepthSucceedsWhenPositiveNumber() {
-//      arrange
+    public void Check_EnterSearchDepth_Succeeds_When_PositiveNumber() {
+        //Arrange
         String expectedDepth = "10";
         String userInput = String.format(expectedDepth, System.lineSeparator(), System.lineSeparator());
         ByteArrayInputStream bais = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(bais);
-//      act
+        //Action
         int actualDepth = GameUtils.enterDepth();
-//      assert
+        //Assert
         assertThat(actualDepth).isPositive();
         assertThat(String.valueOf(actualDepth)).isEqualTo(expectedDepth);
     }
 
     @Test
-    public void enterSearchDepthFailsWhenIncorrectDepthNumber() {
-//      arrange
+    public void Check_EnterSearchDepth_Fails_When_IncorrectDepthNumber() {
+        //Arrange
         String expectedDepth = "-10";
         String userInput = String.format(expectedDepth, System.lineSeparator(), System.lineSeparator());
         ByteArrayInputStream bais = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(bais);
-//      act / assert
+        //Action / Assert
         assertThatThrownBy(GameUtils::enterDepth).isInstanceOf(NoSuchElementException.class);
     }
 }

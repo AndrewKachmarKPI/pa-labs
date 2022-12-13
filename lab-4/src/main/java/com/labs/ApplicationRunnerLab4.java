@@ -8,8 +8,9 @@ import static com.labs.services.KnapsackProblemService.getCapacity;
 public class ApplicationRunnerLab4 {
     public static void main(String[] args) {
         int capacity = getCapacity();
+        int iterations = 1000;
         KnapsackProblemService service = new KnapsackProblemService(capacity);
-        PopulationNode knapsack = service.getPackedKnapsack(1000);
+        PopulationNode knapsack = service.getPackedKnapsack(iterations);
         System.out.println("Solution found ->" + knapsack.toString());
     }
 }

@@ -23,6 +23,9 @@ public class KnapsackProblemService {
         if (capacity <= 0) {
             throw new RuntimeException("Capacity should not be 0 or less");
         }
+        if (iterations <= 0) {
+            throw new RuntimeException("Iterations should not be 0 or less");
+        }
         for (int i = 0; i < iterations; i++) {
             PopulationNode selectedNode = getPopulationSelection();
             PopulationNode afterCross = getPopulationCross(selectedNode, currentRecordNode);

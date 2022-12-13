@@ -1,55 +1,59 @@
 import com.labs.domain.PopulationNode;
 import com.labs.services.KnapsackProblemService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class GeneticAlgorithmTest {
+class GeneticAlgorithmTest {
     @Test
-    public void Check_PackKnapsack_Succeeds() {
+    void Check_PackKnapsack_Succeeds() {
         //Arrange
-        int weight = 150;
+        int capacity = 150;
         int iterations = 1000;
-        KnapsackProblemService service = new KnapsackProblemService(weight);
+        KnapsackProblemService service = new KnapsackProblemService(capacity);
         //Act
         PopulationNode knapsack = service.getPackedKnapsack(iterations);
         //Assert
-        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(weight);
+        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(capacity);
         assertThat(knapsack.getTotalPrice()).isNotZero();
     }
 
     @Test
-    public void Check_PackKnapsack_Succeeds_When_BigCapacity() {
+    void Check_PackKnapsack_Succeeds_When_BigCapacity() {
         //Arrange
-        int weight = 1000;
+        int capacity = 1000;
         int iterations = 1000;
-        KnapsackProblemService service = new KnapsackProblemService(weight);
+        KnapsackProblemService service = new KnapsackProblemService(capacity);
         //Act
         PopulationNode knapsack = service.getPackedKnapsack(iterations);
         //Assert
-        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(weight);
+        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(capacity);
         assertThat(knapsack.getTotalPrice()).isNotZero();
     }
 
     @Test
-    public void Check_PackKnapsack_Fails_When_ZeroCapacity() {
+    void Check_PackKnapsack_Fails_When_ZeroCapacity() {
         //Arrange
+        int capacity = 0;
         int iterations = 1000;
-        KnapsackProblemService service = new KnapsackProblemService(0);
+        KnapsackProblemService service = new KnapsackProblemService(capacity);
         //Act
-        assertThatThrownBy(() -> service.getPackedKnapsack(iterations))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Capacity should not be 0 or less");
+        Exception exception = assertThrows(RuntimeException.class, () -> service.getPackedKnapsack(iterations));
+        //Assert
+        assertThat(exception.getMessage()).isEqualTo("Capacity should not be 0 or less");
     }
 
     @Test
-    public void Check_PackKnapsack_Fails_When_NegativeCapacity() {
+    void Check_PackKnapsack_Fails_When_NegativeCapacity() {
         //Arrange
+        int capacity = -100;
         int iterations = 1000;
-        KnapsackProblemService service = new KnapsackProblemService(-100);
+        KnapsackProblemService service = new KnapsackProblemService(capacity);
         //Act
-        assertThatThrownBy(() -> service.getPackedKnapsack(iterations))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Capacity should not be 0 or less");
+        Exception exception = assertThrows(RuntimeException.class, () -> service.getPackedKnapsack(iterations));
+        //Assert
+        assertThat(exception.getMessage()).isEqualTo("Capacity should not be 0 or less");
     }
 }

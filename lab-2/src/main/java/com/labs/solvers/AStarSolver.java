@@ -47,7 +47,8 @@ public class AStarSolver {
         return new SearchResult("failure", false);
     }
 
-    private void fillOpenedQueue(PriorityQueue<GameNode> openNodesQueue, PriorityQueue<GameNode> closedNodesQueue, List<GameNode> gameNodes) {
+    private void fillOpenedQueue(PriorityQueue<GameNode> openNodesQueue,
+                                 PriorityQueue<GameNode> closedNodesQueue, List<GameNode> gameNodes) {
         for (GameNode gameNode : gameNodes) {
             if (!closedNodesQueue.contains(gameNode)) {
                 openNodesQueue.add(gameNode);

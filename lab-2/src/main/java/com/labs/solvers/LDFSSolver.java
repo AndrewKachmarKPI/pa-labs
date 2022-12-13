@@ -11,9 +11,9 @@ import java.util.stream.IntStream;
 import static com.labs.utils.GameUtils.*;
 
 public class LDFSSolver {
-    private GameNode solution;
+    private GameNode solutionGameNode;
     private GameNode parentGameNode;
-    private List<List<QueenPosition>> checkedStates;
+    private List<GameNode> checkedQueenPositions;
 
     private Integer MAX_DEPTH;
     private static final String CUTOFF_MESSAGE = "cutoff";
@@ -25,15 +25,15 @@ public class LDFSSolver {
 
     public LDFSSolver(Integer MAX_DEPTH) {
         this.MAX_DEPTH = MAX_DEPTH;
-        this.parentGameNode = new GameNode(getInitialPlacement(QUEENS), 0,false);
-        this.checkedStates = new ArrayList<>();
+        this.parentGameNode = new GameNode(getInitialPlacement(QUEENS), 0, false);
+        this.checkedQueenPositions = new ArrayList<>();
         printResultPosition("START POSITION", parentGameNode.getPositions());
     }
 
     public LDFSSolver(Integer MAX_DEPTH, List<QueenPosition> placement) {
         this.MAX_DEPTH = MAX_DEPTH;
-        this.parentGameNode = new GameNode(placement, 0,false);
-        this.checkedStates = new ArrayList<>();
+        this.parentGameNode = new GameNode(placement, 0, false);
+        this.checkedQueenPositions = new ArrayList<>();
         printResultPosition("START POSITION", parentGameNode.getPositions());
     }
 
@@ -48,7 +48,7 @@ public class LDFSSolver {
         iterations++;
         boolean isCutoff = false;
         if (isPositionsValid(currentNode.getPositions()) && !currentNode.getPositions().isEmpty()) {
-            solution = currentNode;
+            solutionGameNode = currentNode;
             return new SearchResult(currentNode, true);
         }
         if (Objects.equals(currentNode.getDepth(), MAX_DEPTH)) {
@@ -62,7 +62,7 @@ public class LDFSSolver {
                 isCutoff = true;
             }
             if (result.isSuccess()) {
-                result.setSolution(solution);
+                result.setSolution(solutionGameNode);
                 return result;
             }
         }
@@ -70,33 +70,12 @@ public class LDFSSolver {
     }
 
     private List<GameNode> getGameNodes(GameNode currentState) {
-        List<GameNode> gameNodes = new ArrayList<>();
-        checkedStates.add(currentState.getPositions());
-
-        for (int currentCol = 0; currentCol < QUEENS; currentCol++) {
-            QueenPosition takenPositions = getCurrentPosition(currentState.getPositions(), currentCol);
-            if (takenPositions != null) {
-                List<QueenPosition> otherQueens = getAllNotEmptyPositions(currentState.getPositions(), currentCol);
-                List<Integer> rows = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
-                rows.remove(takenPositions.getyPos());
-
-                for (Integer row : rows) {
-                    List<QueenPosition> positions = new ArrayList<>(otherQueens);
-                    positions.add(new QueenPosition(currentCol, row));
-                    if (!isStateChecked(positions)) {
-                        gameNodes.add(new GameNode(positions, currentState.getDepth() + 1, false));
-                    }
-                }
-            }
-        }
+        checkedQueenPositions.add(new GameNode(currentState.getPositions()));
+        List<GameNode> gameNodes = getGeneratedGameNodes(currentState, checkedQueenPositions,false);
         if (gameNodes.isEmpty()) {
             fails++;
         }
         return gameNodes;
-    }
-
-    private boolean isStateChecked(List<QueenPosition> currentState) {
-        return checkedStates.stream().anyMatch(positions -> positions.equals(currentState));
     }
 
     public SearchPositionMetrics getSearchPositionMetrics() {

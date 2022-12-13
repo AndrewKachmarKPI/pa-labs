@@ -3,7 +3,6 @@ package com.labs.utils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static com.labs.utils.GameUtils.isConflict;
 
 public class GameNode {
@@ -17,6 +16,10 @@ public class GameNode {
         if (countHeuristic) {
             this.functionCost = getHeuristicCost();
         }
+    }
+
+    public GameNode(List<QueenPosition> positions) {
+        this.positions = positions;
     }
 
     public List<QueenPosition> getPositions() {

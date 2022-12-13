@@ -120,4 +120,41 @@ public class GameUtils {
         System.out.printf(pattern, "MEMORY STATES", metrics.getMemStates().toString());
         System.out.printf(pattern, "TIME", metrics.getTime().toString() + " ms");
     }
+
+    public static List<GameNode> getGeneratedGameNodes(GameNode currentState, List<GameNode> checkedQueenPositions, boolean isCountHeuristic) {
+        List<GameNode> gameNodes = new ArrayList<>();
+        for (int currentCol = 0; currentCol < QUEENS; currentCol++) {
+            QueenPosition takenPositions = getCurrentPosition(currentState.getPositions(), currentCol);
+            if (takenPositions != null) {
+                List<QueenPosition> otherQueens = getAllNotEmptyPositions(currentState.getPositions(), currentCol);
+                List<Integer> rows = getEmptyRows(takenPositions);
+                GenerateGameNodeParams params = new GenerateGameNodeParams(rows, otherQueens, currentState, currentCol, isCountHeuristic);
+                List<GameNode> filledGameNodes = getFilledGameNodes(params, checkedQueenPositions);
+                gameNodes.addAll(filledGameNodes);
+            }
+        }
+        return gameNodes;
+    }
+
+    private static List<GameNode> getFilledGameNodes(GenerateGameNodeParams params, List<GameNode> checkedQueenPositions) {
+        List<GameNode> gameNodes = new ArrayList<>();
+        for (Integer row : params.getRows()) {
+            List<QueenPosition> positions = new ArrayList<>(params.getQueenPositions());
+            positions.add(new QueenPosition(params.getCurrentColumn(), row));
+            if (!isStateChecked(positions, checkedQueenPositions)) {
+                gameNodes.add(new GameNode(positions, params.getCurrentGameNode().getDepth() + 1, params.isCountHeuristic()));
+            }
+        }
+        return gameNodes;
+    }
+
+    public static List<Integer> getEmptyRows(QueenPosition takenPosition) {
+        List<Integer> rows = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
+        rows.remove(takenPosition.getyPos());
+        return rows;
+    }
+
+    private static boolean isStateChecked(List<QueenPosition> queenPositions, List<GameNode> checkedQueenPositions) {
+        return checkedQueenPositions.stream().anyMatch(position -> position.getPositions().equals(queenPositions));
+    }
 }

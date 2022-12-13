@@ -1,12 +1,9 @@
 package com.labs.solvers;
 
 import com.labs.utils.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.labs.utils.GameUtils.*;
 
@@ -59,30 +56,8 @@ public class AStarSolver {
     }
 
     private List<GameNode> getGameNodes(GameNode currentNode) {
-        List<GameNode> gameNodes = new ArrayList<>();
         closedGameNodes.add(currentNode);
-
-        for (int currentCol = 0; currentCol < QUEENS; currentCol++) {
-            QueenPosition takenQueenPosition = getCurrentPosition(currentNode.getPositions(), currentCol);
-            if (takenQueenPosition != null) {
-                List<QueenPosition> otherQueenPositions = getAllNotEmptyPositions(currentNode.getPositions(), currentCol);
-                List<Integer> rows = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
-                rows.remove(takenQueenPosition.getyPos());
-
-                for (Integer row : rows) {
-                    List<QueenPosition> positions = new ArrayList<>(otherQueenPositions);
-                    positions.add(new QueenPosition(currentCol, row));
-                    if (!isStateChecked(positions)) {
-                        gameNodes.add(new GameNode(positions, currentNode.getDepth() + 1, true));
-                    }
-                }
-            }
-        }
-        return gameNodes;
-    }
-
-    private boolean isStateChecked(List<QueenPosition> currentState) {
-        return closedGameNodes.stream().anyMatch(state -> state.getPositions().equals(currentState));
+        return getGeneratedGameNodes(currentNode, closedGameNodes, true);
     }
 
     public SearchPositionMetrics getSearchPositionMetrics() {

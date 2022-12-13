@@ -11,6 +11,9 @@ public final class CityNode {
     private Double probability;
 
     public CityNode(Integer index) {
+        if(index<0){
+            throw new RuntimeException("Invalid index");
+        }
         this.index = index;
     }
 

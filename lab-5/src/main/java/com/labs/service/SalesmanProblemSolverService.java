@@ -3,8 +3,10 @@ package com.labs.service;
 import com.labs.domain.*;
 import com.labs.enums.AntPlacementType;
 import com.labs.enums.AntType;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static com.labs.service.GeneralMethodsService.*;
 
 public class SalesmanProblemSolverService {
@@ -30,17 +32,23 @@ public class SalesmanProblemSolverService {
 
         for (int i = 0; i < antAlgorithmParams.getColonyLife(); i++) {
             List<PathSearchResult> paths = getPathsForAllAnts();
-            PathSearchResult foundBestPath = paths.stream()
+            PathSearchResult pathSearchResult = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
                     .orElseThrow(() -> new RuntimeException("Path not found"));
-            System.out.println("COLONY LIFE ->" + (i + 1));
-            if (foundBestPath.getPathCost() < this.bestPath.getPathCost()) {
-                this.bestPath = foundBestPath;
-            }
+            updateBestPath(pathSearchResult);
             updatePheromoneLevel(paths);
-            this.ants.forEach(ant -> ant.clearMemory(antsInitialPlacement.get(ant.getAntId())));
+            clearAntMemory();
         }
         return bestPath;
+    }
+
+    private void updateBestPath(PathSearchResult pathSearchResult) {
+        if (pathSearchResult.getPathCost() < this.bestPath.getPathCost()) {
+            this.bestPath = pathSearchResult;
+        }
+    }
+    private void clearAntMemory() {
+        this.ants.forEach(ant -> ant.clearMemory(antsInitialPlacement.get(ant.getAntId())));
     }
 
     private void updatePheromoneLevel(List<PathSearchResult> pathSearchResults) {
@@ -48,7 +56,7 @@ public class SalesmanProblemSolverService {
             for (int j = 0; j < G_SIZE; j++) {
                 if (i != j) {
                     double pheromoneValue = (1 - antAlgorithmParams.getR()) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
-                    pheromoneMatrix[i][j] = round(pheromoneValue, 2);
+                    pheromoneMatrix[i][j] = getRoundedNumber(pheromoneValue, 2);
                 }
             }
         }
@@ -102,7 +110,7 @@ public class SalesmanProblemSolverService {
         List<CityNode> availableCities = ant.getAvailableCities();
         CityNode nextCity = new CityNode(null);
         if (!availableCities.isEmpty()) {
-            nextCity = availableCities.get(randomNumber(0, availableCities.size()));
+            nextCity = availableCities.get(getRandomNumber(0, availableCities.size()));
         }
         return nextCity;
     }
@@ -150,7 +158,7 @@ public class SalesmanProblemSolverService {
         int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
         for (int i = 0; i < distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix[i].length; j++) {
-                int distance = (i == j) ? Integer.MAX_VALUE : randomNumber(5, 150);
+                int distance = (i == j) ? Integer.MAX_VALUE : getRandomNumber(5, 150);
                 distanceMatrix[i][j] = distance;
             }
         }
@@ -161,7 +169,7 @@ public class SalesmanProblemSolverService {
         double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
         for (int i = 0; i < pheromoneMatrix.length; i++) {
             for (int j = 0; j < pheromoneMatrix.length; j++) {
-                double pheromone = (i == j) ? 0 : (round(randomDouble(0.1, 0.2), 2));
+                double pheromone = (i == j) ? 0 : (getRoundedNumber(getRandomDouble(0.1, 0.2), 2));
                 pheromoneMatrix[i][j] = pheromone;
             }
         }
@@ -187,13 +195,13 @@ public class SalesmanProblemSolverService {
             int cityIndex = 0;
 
             if (placementType == AntPlacementType.MANY_WITH_REPEAT) {
-                cityIndex = randomNumber(0, G_SIZE);
+                cityIndex = getRandomNumber(0, G_SIZE);
             } else {
                 if (ants.size() > G_SIZE) {
                     throw new RuntimeException("Ant size should be greater that " + G_SIZE);
                 }
                 while (antsInitialPlacement.containsValue(cityIndex)) {
-                    cityIndex = randomNumber(0, G_SIZE);
+                    cityIndex = getRandomNumber(0, G_SIZE);
                 }
             }
             ant.visitCity(cityIndex);

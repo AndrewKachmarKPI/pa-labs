@@ -1,7 +1,6 @@
 package com.labs.domain;
 
 import com.labs.enums.AntType;
-import com.labs.service.GeneralMethodsService;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -22,10 +21,13 @@ public class Ant {
     private double[][] visionMatrix;
 
     public Ant(Integer currentCityIndex, int[][] distances, AntType antType) {
+        if(currentCityIndex<0){
+            throw new RuntimeException("Invalid city index");
+        }
         this.antId = UUID.randomUUID().toString();
         this.currentCityIndex = currentCityIndex;
-        this.visitedCities = buildCities();
-        this.visionMatrix = buildVisionMatrix(distances);
+        this.visitedCities = getCities();
+        this.visionMatrix = getVisionMatrix(distances);
         this.antType = antType;
     }
 
@@ -48,7 +50,7 @@ public class Ant {
     }
 
     public void clearMemory(Integer cityIndex) {
-        this.visitedCities = buildCities();
+        this.visitedCities = getCities();
         visitCity(cityIndex);
         this.isFound = false;
     }
@@ -57,21 +59,21 @@ public class Ant {
         return visionMatrix[from][to];
     }
 
-    private double[][] buildVisionMatrix(int[][] distanceMatrix) {
+    private double[][] getVisionMatrix(int[][] distanceMatrix) {
         double[][] visionMatrix = new double[G_SIZE][G_SIZE];
         for (int i = 0; i < visionMatrix.length; i++) {
             for (int j = 0; j < visionMatrix.length; j++) {
                 if (i == j) {
                     visionMatrix[i][j] = 0;
                 } else {
-                    visionMatrix[i][j] = round((double) 1 / distanceMatrix[i][j], 3);
+                    visionMatrix[i][j] = getRoundedNumber((double) 1 / distanceMatrix[i][j], 3);
                 }
             }
         }
         return visionMatrix;
     }
 
-    private List<Integer> buildCities() {
+    private List<Integer> getCities() {
         return new ArrayList<>(Collections.nCopies(G_SIZE, 0));
     }
 }

@@ -17,6 +17,9 @@ public class PathSearchResult {
     private String antId;
 
     public PathSearchResult(int startPosition, String antId) {
+        if (antId.isEmpty() || startPosition < 0) {
+            throw new RuntimeException("Invalid path search result params");
+        }
         addCityIndex(startPosition, false);
         this.antId = antId;
     }

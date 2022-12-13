@@ -35,7 +35,7 @@ public class AStarSolver {
         while (!openNodesQueue.isEmpty() && !parentGameNode.getPositions().isEmpty()) {
             iterations++;
             GameNode currentNode = openNodesQueue.poll();
-            if (isPositionsValid(currentNode.getPositions())) {
+            if (currentNode != null && isPositionsValid(currentNode.getPositions())) {
                 time = System.currentTimeMillis() - start;
                 return new SearchResult(currentNode, true);
             }

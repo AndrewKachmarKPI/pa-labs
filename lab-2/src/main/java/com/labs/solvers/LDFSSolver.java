@@ -56,8 +56,8 @@ public class LDFSSolver {
         }
         List<GameNode> gameNodes = getGameNodes(currentNode);
         states += gameNodes.size();
-        for (GameNode successor : gameNodes) {
-            SearchResult result = recursiveDls(successor);
+        for (GameNode gameNode : gameNodes) {
+            SearchResult result = recursiveDls(gameNode);
             if (!result.isSuccess() && result.getMessage().equals(CUTOFF_MESSAGE)) {
                 isCutoff = true;
             }

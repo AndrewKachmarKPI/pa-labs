@@ -58,12 +58,9 @@ To run code you should execute such commands
 
 ## Lab5
 To run code you should execute such commands
-> #### Compile  FROM (**\pa-labs\lab-5\src\main\java) folder of lab
->  javac com/labs/*.java -d classes
 
-> #### Run  FROM (**\pa-labs\lab-5\src\main\java) folder of lab
-> ##### Run algorithm
->  java -cp classes com.labs.ApplicationRunnerLab5
+> #### Run code  FROM (**\pa-labs\lab-5) folder of lab
+>  mvn compile exec:java
 
 > #### Run Tests  FROM (**\pa-labs\lab-5) folder of lab
 >  mvn clean test

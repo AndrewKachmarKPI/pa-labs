@@ -47,7 +47,7 @@ public class LDFSSolver {
     private SearchResult recursiveDls(GameNode currentNode) {
         iterations++;
         boolean isCutoff = false;
-        if (validatePositions(currentNode.getPositions()) && !currentNode.getPositions().isEmpty()) {
+        if (isPositionsValid(currentNode.getPositions()) && !currentNode.getPositions().isEmpty()) {
             solution = currentNode;
             return new SearchResult(currentNode, true);
         }

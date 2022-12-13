@@ -8,7 +8,7 @@ public class GameUtils {
     public static final Integer QUEENS = 8;
     public static final Integer BOARD = 8;
 
-    public static boolean validatePositions(List<QueenPosition> positions) {
+    public static boolean isPositionsValid(List<QueenPosition> positions) {
         return getAllConflicts(positions).isEmpty();
     }
 

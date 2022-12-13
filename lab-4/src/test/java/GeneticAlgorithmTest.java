@@ -8,34 +8,46 @@ public class GeneticAlgorithmTest {
     private static final int iterations = 1000;
 
     @Test
-    public void knapsackProblemServicePositiveTestDefaultSize() {
+    public void packKnapsackSucceeds() {
+//      arrange
         int weight = 150;
         KnapsackProblemService service = new KnapsackProblemService(weight);
-        PopulationNode populationNode = service.searchLoop(iterations);
-        assertThat(populationNode.getTotalWeight()).isEqualTo(weight);
-        assertThat(populationNode.getTotalPrice()).isNotZero();
+//      act
+        PopulationNode knapsack = service.getPackedKnapsack(iterations);
+//      assert
+        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(weight);
+        assertThat(knapsack.getTotalPrice()).isNotZero();
     }
 
     @Test
-    public void knapsackProblemServicePositiveTestBigSize() {
+    public void packKnapsackSucceedsWhenBigCapacity() {
+//      arrange
         int weight = 1000;
         KnapsackProblemService service = new KnapsackProblemService(weight);
-        PopulationNode populationNode = service.searchLoop(iterations);
-        assertThat(populationNode.getTotalWeight()).isLessThanOrEqualTo(weight);
-        assertThat(populationNode.getTotalPrice()).isNotZero();
-        System.out.println(populationNode.getTotalWeight());
+//      act
+        PopulationNode knapsack = service.getPackedKnapsack(iterations);
+//      assert
+        assertThat(knapsack.getTotalWeight()).isLessThanOrEqualTo(weight);
+        assertThat(knapsack.getTotalPrice()).isNotZero();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void knapsackProblemServiceNegativeTestZeroCapacity() {
+    @Test
+    public void packKnapsackFailsWhenZeroCapacity() {
+        //      arrange
         KnapsackProblemService service = new KnapsackProblemService(0);
-        service.searchLoop(iterations);
+        //      act
+        assertThatThrownBy(() -> service.getPackedKnapsack(iterations))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Capacity should not be 0 or less");
     }
 
-    @Test(expected = RuntimeException.class)
-    public void knapsackProblemServiceNegativeTestNegativeCapacity() {
+    @Test
+    public void packKnapsackFailsWhenNegativeCapacity() {
+        //      arrange
         KnapsackProblemService service = new KnapsackProblemService(-100);
-        service.searchLoop(iterations);
+        //      act
+        assertThatThrownBy(() -> service.getPackedKnapsack(iterations))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Capacity should not be 0 or less");
     }
-
 }

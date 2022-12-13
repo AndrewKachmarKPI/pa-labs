@@ -14,15 +14,15 @@ public class KnapsackProblemService {
     private PopulationNode currentRecord; //F* rack with best price
 
     public KnapsackProblemService(int capacity) {
-        if (capacity <= 0) {
-            throw new RuntimeException("Capacity should not be 0");
-        }
         this.capacity = capacity;
-        this.items = generateItems(100);
+        this.items = getRandomItems(100);
         generateInitialPopulation();
     }
 
-    public PopulationNode searchLoop(Integer iterations) {
+    public PopulationNode getPackedKnapsack(Integer iterations) {
+        if (capacity <= 0) {
+            throw new RuntimeException("Capacity should not be 0 or less");
+        }
         for (int i = 0; i < iterations; i++) {
             PopulationNode selectedNode = populationSelection();
             PopulationNode afterCross = populationCross(selectedNode, currentRecord);
@@ -125,7 +125,7 @@ public class KnapsackProblemService {
         return xRange;
     }
 
-    public List<Item> generateItems(int count) {
+    public List<Item> getRandomItems(int count) {
         List<Item> items = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             items.add(new Item(randomNumber(2, 11), randomNumber(1, 6)));

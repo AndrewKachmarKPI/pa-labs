@@ -10,6 +10,9 @@ public class PopulationNode {
     private String nodeId;
 
     public PopulationNode(List<Integer> itemsSelection, Integer totalPrice, Integer totalWeight) {
+        if (totalPrice < 0 || totalWeight < 0 || itemsSelection.isEmpty()) {
+            throw new RuntimeException("Invalid population node params");
+        }
         this.itemsSelection = itemsSelection;
         this.totalPrice = totalPrice;
         this.totalWeight = totalWeight;
@@ -17,6 +20,9 @@ public class PopulationNode {
     }
 
     public PopulationNode(List<Integer> itemsSelection) {
+        if (itemsSelection.isEmpty()) {
+            throw new RuntimeException("Invalid population node params");
+        }
         this.itemsSelection = itemsSelection;
         this.totalPrice = 0;
         this.totalWeight = 0;
@@ -24,6 +30,9 @@ public class PopulationNode {
     }
 
     public void selectItem(Integer index, Integer value) {
+        if (index == null || value == null) {
+            throw new RuntimeException("Genes not found");
+        }
         this.itemsSelection.set(index, value);
     }
 

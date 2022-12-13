@@ -4,20 +4,18 @@ import com.labs.solvers.LDFSSolver;
 import com.labs.utils.GameUtils;
 import com.labs.utils.QueenPosition;
 import com.labs.utils.SearchResult;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import static com.labs.utils.SolverTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LDFSSolverTest {
+class LDFSSolverTest {
     @Test
-    public void Check_FindResult_Succeeds_When_CorrectPlacement() {
+    void Check_FindResult_Succeeds_When_CorrectPlacement() {
         //Arrange
         int depth = 4;
         List<QueenPosition> placement = getCorrectPlacement();
@@ -31,7 +29,7 @@ public class LDFSSolverTest {
     }
 
     @Test
-    public void Check_FindResult_Fails_When_SmallDepth() {
+    void Check_FindResult_Fails_When_SmallDepth() {
         //Arrange
         int depth = 1;
         List<QueenPosition> placement = getRandomPlacement();
@@ -44,7 +42,7 @@ public class LDFSSolverTest {
     }
 
     @Test
-    public void Check_FindResult_Fails_When_EmptyPlacement() {
+    void Check_FindResult_Fails_When_EmptyPlacement() {
         //Arrange
         int depth = 4;
         List<QueenPosition> placement = new ArrayList<>();
@@ -58,7 +56,7 @@ public class LDFSSolverTest {
 
 
     @Test
-    public void Check_EnterSearchDepth_Succeeds_When_PositiveNumber() {
+    void Check_EnterSearchDepth_Succeeds_When_PositiveNumber() {
         //Arrange
         String expectedDepth = "10";
         String userInput = String.format(expectedDepth, System.lineSeparator(), System.lineSeparator());
@@ -72,13 +70,15 @@ public class LDFSSolverTest {
     }
 
     @Test
-    public void Check_EnterSearchDepth_Fails_When_IncorrectDepthNumber() {
+    void Check_EnterSearchDepth_Fails_When_IncorrectDepthNumber() {
         //Arrange
         String expectedDepth = "-10";
         String userInput = String.format(expectedDepth, System.lineSeparator(), System.lineSeparator());
         ByteArrayInputStream bais = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(bais);
-        //Action / Assert
-        assertThatThrownBy(GameUtils::getEnterDepth).isInstanceOf(NoSuchElementException.class);
+        //Action
+        Exception exception = assertThrows(RuntimeException.class, GameUtils::getEnterDepth);
+        //Assert
+        assertThat(exception).isInstanceOf(NoSuchElementException.class);
     }
 }

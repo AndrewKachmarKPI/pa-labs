@@ -3,17 +3,15 @@ package com.labs;
 import com.labs.solvers.AStarSolver;
 import com.labs.utils.QueenPosition;
 import com.labs.utils.SearchResult;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.labs.utils.SolverTestUtils.getCorrectPlacement;
 import static org.assertj.core.api.Assertions.*;
 
-public class AStarSolverTest {
+class AStarSolverTest {
     @Test
-    public void Check_FindResult_Succeeds_When_RandomInitialPlacement() {
+    void Check_FindResult_Succeeds_When_RandomInitialPlacement() {
         //Arrange
         AStarSolver aStarSolver = new AStarSolver();
         //Action
@@ -24,7 +22,7 @@ public class AStarSolverTest {
     }
 
     @Test
-    public void Check_FindResult_Succeeds_When_CorrectPlacement() {
+    void Check_FindResult_Succeeds_When_CorrectPlacement() {
         //Arrange
         List<QueenPosition> correctPlacement = getCorrectPlacement();
         AStarSolver aStarSolver = new AStarSolver(correctPlacement);
@@ -37,7 +35,7 @@ public class AStarSolverTest {
 
 
     @Test
-    public void Check_FindResult_Fails_When_EmptyPlacement() {
+    void Check_FindResult_Fails_When_EmptyPlacement() {
         //Arrange
         List<QueenPosition> placement = new ArrayList<>();
         AStarSolver aStarSolver = new AStarSolver(placement);

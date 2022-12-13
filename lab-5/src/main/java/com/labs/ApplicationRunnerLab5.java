@@ -23,7 +23,6 @@ public class ApplicationRunnerLab5 {
         System.out.println("INPUT PARAMS ->" + antAlgorithmParams);
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, 100);
         PathSearchResult pathSearchResult = solverService.findBestPath();
-        System.out.println("RESULT -> " + pathSearchResult.getPathCost());
         System.out.println(pathSearchResult);
     }
 }

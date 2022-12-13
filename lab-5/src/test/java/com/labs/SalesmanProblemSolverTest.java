@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SalesmanProblemSolverTest {
     @Test
-    public void findSolutionPositiveTest() {
+    public void findBestPathSucceeds() {
         // arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
@@ -38,7 +38,7 @@ public class SalesmanProblemSolverTest {
     }
 
     @Test
-    public void findSolutionPositiveTestUnOptimalSolution() {
+    public void findBestPathSucceedsWhenUnOptimalInputParams() {
         // arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
@@ -64,7 +64,7 @@ public class SalesmanProblemSolverTest {
     }
 
     @Test
-    public void findSolutionNegativeTestInvalidPlacement() {
+    public void findBestPathFailsWhenInvalidPlacement() {
         // arrange
         int numberOfCities = 5;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
@@ -79,7 +79,7 @@ public class SalesmanProblemSolverTest {
     }
 
     @Test
-    public void findSolutionNegativeTestOneCity() {
+    public void findBestPathFailsWhenOneCity() {
         // arrange
         int numberOfCities = 1;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
@@ -102,7 +102,7 @@ public class SalesmanProblemSolverTest {
     }
 
     @Test
-    public void findSolutionNegativeTestPathsNotFound() {
+    public void findBestPathFailsWhenPathsNotFound() {
         int numberOfCities = 1;
         // arrange
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()

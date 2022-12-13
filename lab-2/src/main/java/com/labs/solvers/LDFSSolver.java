@@ -1,12 +1,9 @@
 package com.labs.solvers;
 
 import com.labs.utils.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.labs.utils.GameUtils.*;
 

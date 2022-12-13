@@ -3,7 +3,6 @@ package com.labs;
 import com.labs.solvers.LDFSSolver;
 import com.labs.utils.SearchPositionMetrics;
 import com.labs.utils.SearchResult;
-
 import static com.labs.utils.GameUtils.getEnterDepth;
 import static com.labs.utils.GameUtils.printSearchResultPositionAndMetrics;
 

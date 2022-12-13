@@ -1,11 +1,9 @@
 package com.labs.solvers;
 
 import com.labs.utils.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-
 import static com.labs.utils.GameUtils.*;
 
 public class AStarSolver {

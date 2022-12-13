@@ -10,6 +10,9 @@ public class GenerateGameNodeParams {
     private boolean isCountHeuristic;
 
     public GenerateGameNodeParams(List<Integer> rows, List<QueenPosition> queenPositions, GameNode currentGameNode, int currentColumn, boolean isCountHeuristic) {
+        if (rows.isEmpty() || queenPositions.isEmpty() || currentGameNode == null || currentColumn < 0) {
+           throw new RuntimeException("Invalid generate game node params");
+        }
         this.rows = rows;
         this.queenPositions = queenPositions;
         this.currentGameNode = currentGameNode;

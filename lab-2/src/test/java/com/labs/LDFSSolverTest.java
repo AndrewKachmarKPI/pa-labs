@@ -65,7 +65,7 @@ public class LDFSSolverTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(bais);
         //Action
-        int actualDepth = GameUtils.enterDepth();
+        int actualDepth = GameUtils.getEnterDepth();
         //Assert
         assertThat(actualDepth).isPositive();
         assertThat(String.valueOf(actualDepth)).isEqualTo(expectedDepth);
@@ -79,6 +79,6 @@ public class LDFSSolverTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(bais);
         //Action / Assert
-        assertThatThrownBy(GameUtils::enterDepth).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(GameUtils::getEnterDepth).isInstanceOf(NoSuchElementException.class);
     }
 }

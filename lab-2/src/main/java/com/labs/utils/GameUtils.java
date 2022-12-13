@@ -9,17 +9,17 @@ public class GameUtils {
     public static final Integer BOARD = 8;
 
     public static boolean isPositionsValid(List<QueenPosition> positions) {
-        return getAllConflicts(positions).isEmpty();
+        return getConflictsMap(positions).isEmpty();
     }
 
-    private static Map<QueenPosition, QueenPosition> getAllConflicts(List<QueenPosition> positions) {
-        Map<QueenPosition, QueenPosition> positionMap = new HashMap<>();
+    private static Map<QueenPosition, QueenPosition> getConflictsMap(List<QueenPosition> positions) {
+        Map<QueenPosition, QueenPosition> conflictsMap = new HashMap<>();
         positions.forEach(pos1 -> positions.forEach(pos2 -> {
             if (isConflict(pos1, pos2) && !pos1.equals(pos2)) {
-                positionMap.put(pos1, pos2);
+                conflictsMap.put(pos1, pos2);
             }
         }));
-        return positionMap;
+        return conflictsMap;
     }
 
     public static boolean isConflict(QueenPosition pos1, QueenPosition pos2) {
@@ -48,9 +48,9 @@ public class GameUtils {
         List<QueenPosition> positions = new ArrayList<>();
         List<Integer> cols = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
         for (Integer col : cols) {
-            QueenPosition position = new QueenPosition(col, randomNumber(0, queensSize));
+            QueenPosition position = new QueenPosition(col, getRandomNumber(0, queensSize));
             while (positions.contains(position)) {
-                position = randomPosition(queensSize);
+                position = getRandomPosition(queensSize);
             }
             positions.add(position);
         }
@@ -82,22 +82,22 @@ public class GameUtils {
         }
     }
 
-    public static QueenPosition randomPosition(int queensSize) {
-        return new QueenPosition(randomNumber(0, queensSize), randomNumber(0, queensSize));
+    public static QueenPosition getRandomPosition(int queensSize) {
+        return new QueenPosition(getRandomNumber(0, queensSize), getRandomNumber(0, queensSize));
     }
 
-    private static int randomNumber(int min, int max) {
+    private static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public static int enterDepth() {
+    public static int getEnterDepth() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Optimal limit 4");
         System.out.print("Enter LDFS depth limit:");
         int depth = scanner.nextInt();
         if (depth <= 0) {
             System.out.println("Invalid depth");
-            return enterDepth();
+            return getEnterDepth();
         }
         return depth;
     }

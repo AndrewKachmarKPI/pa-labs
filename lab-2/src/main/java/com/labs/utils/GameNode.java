@@ -11,6 +11,9 @@ public class GameNode {
     private Integer functionCost;
 
     public GameNode(List<QueenPosition> positions, Integer depth, Boolean countHeuristic) {
+        if (depth < 0) {
+            throw new RuntimeException("Game node params are not valid");
+        }
         this.positions = positions;
         this.depth = depth;
         if (countHeuristic) {

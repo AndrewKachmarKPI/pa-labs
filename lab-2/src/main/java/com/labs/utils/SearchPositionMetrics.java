@@ -8,6 +8,9 @@ public class SearchPositionMetrics {
     private Integer memStates = 0;
 
     public SearchPositionMetrics(Long time, Integer iterations, Integer fails, Integer states, Integer memStates) {
+        if (time < 0 || iterations < 0 || fails < 0 || states < 0 || memStates < 0) {
+            throw new RuntimeException("Invalid metrics");
+        }
         this.time = time;
         this.iterations = iterations;
         this.fails = fails;
@@ -16,6 +19,9 @@ public class SearchPositionMetrics {
     }
 
     public SearchPositionMetrics(Long time, Integer iterations, Integer fails, Integer states) {
+        if (time < 0 || iterations < 0 || fails < 0 || states < 0) {
+            throw new RuntimeException("Invalid metrics");
+        }
         this.time = time;
         this.iterations = iterations;
         this.fails = fails;

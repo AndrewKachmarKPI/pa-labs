@@ -12,6 +12,9 @@ public class SearchResult {
     }
 
     public SearchResult(String message, boolean isSuccess) {
+        if(message.isEmpty() || message.isBlank()){
+            throw new RuntimeException("Message should not be blank");
+        }
         this.message = message;
         this.isSuccess = isSuccess;
     }

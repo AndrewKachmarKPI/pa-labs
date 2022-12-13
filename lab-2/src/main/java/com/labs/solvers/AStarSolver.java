@@ -1,6 +1,7 @@
 package com.labs.solvers;
 
 import com.labs.utils.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -42,22 +43,27 @@ public class AStarSolver {
             closedNodesQueue.add(currentNode);
             memStates = closedNodesQueue.size();
             List<GameNode> gameNodes = getGameNodes(currentNode);
-            states += gameNodes.size();
-            for (GameNode gameNode : gameNodes) {
-                if (!closedNodesQueue.contains(gameNode)) {
-                    openNodesQueue.add(gameNode);
-                } else {
-                    fails++;
-                }
-            }
+            fillOpenedQueue(openNodesQueue, closedNodesQueue, gameNodes);
         }
         time = System.currentTimeMillis() - start;
         return new SearchResult("failure", false);
     }
 
+    private void fillOpenedQueue(PriorityQueue<GameNode> openNodesQueue, PriorityQueue<GameNode> closedNodesQueue, List<GameNode> gameNodes) {
+        for (GameNode gameNode : gameNodes) {
+            if (!closedNodesQueue.contains(gameNode)) {
+                openNodesQueue.add(gameNode);
+            } else {
+                fails++;
+            }
+        }
+    }
+
     private List<GameNode> getGameNodes(GameNode currentNode) {
         closedGameNodes.add(currentNode);
-        return getGeneratedGameNodes(currentNode, closedGameNodes, true);
+        List<GameNode> gameNodes = getGeneratedGameNodes(currentNode, closedGameNodes, true);
+        states += gameNodes.size();
+        return gameNodes;
     }
 
     public SearchPositionMetrics getSearchPositionMetrics() {

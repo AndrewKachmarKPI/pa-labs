@@ -55,7 +55,6 @@ public class LDFSSolver {
             return new SearchResult(CUTOFF_MESSAGE, false);
         }
         List<GameNode> gameNodes = getGameNodes(currentNode);
-        states += gameNodes.size();
         for (GameNode gameNode : gameNodes) {
             SearchResult result = recursiveDls(gameNode);
             if (!result.isSuccess() && result.getMessage().equals(CUTOFF_MESSAGE)) {
@@ -72,6 +71,7 @@ public class LDFSSolver {
     private List<GameNode> getGameNodes(GameNode currentState) {
         checkedQueenPositions.add(new GameNode(currentState.getPositions()));
         List<GameNode> gameNodes = getGeneratedGameNodes(currentState, checkedQueenPositions,false);
+        states += gameNodes.size();
         if (gameNodes.isEmpty()) {
             fails++;
         }

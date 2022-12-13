@@ -11,8 +11,8 @@ import java.util.stream.IntStream;
 import static com.labs.utils.GameUtils.*;
 
 public class AStarSolver {
-    private List<GameNode> closed = new ArrayList<>();
-    private GameNode parentNode;
+    private List<GameNode> closedGameNodes = new ArrayList<>();
+    private GameNode parentGameNode;
 
     private Long time = 0L;
     private Integer iterations = 0;
@@ -21,34 +21,34 @@ public class AStarSolver {
     private Integer memStates = 0;
 
     public AStarSolver() {
-        this.parentNode = new GameNode(getInitialPlacement(QUEENS), 0, true);
-        printResultPosition("START POSITION", parentNode.getPositions());
+        this.parentGameNode = new GameNode(getInitialPlacement(QUEENS), 0, true);
+        printResultPosition("START POSITION", parentGameNode.getPositions());
     }
 
     public AStarSolver(List<QueenPosition> placement) {
-        this.parentNode = new GameNode(placement, 0, true);
-        printResultPosition("START POSITION", parentNode.getPositions());
+        this.parentGameNode = new GameNode(placement, 0, true);
+        printResultPosition("START POSITION", parentGameNode.getPositions());
     }
 
     public SearchResult aStarSearch() {
         long start = System.currentTimeMillis();
-        PriorityQueue<GameNode> open = new PriorityQueue<>(new GameNodeComparator());
-        PriorityQueue<GameNode> closed = new PriorityQueue<>(new GameNodeComparator());
-        open.add(parentNode);
-        while (!open.isEmpty() && !parentNode.getPositions().isEmpty()) {
+        PriorityQueue<GameNode> openNodesQueue = new PriorityQueue<>(new GameNodeComparator());
+        PriorityQueue<GameNode> closedNodesQueue = new PriorityQueue<>(new GameNodeComparator());
+        openNodesQueue.add(parentGameNode);
+        while (!openNodesQueue.isEmpty() && !parentGameNode.getPositions().isEmpty()) {
             iterations++;
-            GameNode currentNode = open.poll();
+            GameNode currentNode = openNodesQueue.poll();
             if (isPositionsValid(currentNode.getPositions())) {
                 time = System.currentTimeMillis() - start;
                 return new SearchResult(currentNode, true);
             }
-            closed.add(currentNode);
-            memStates = closed.size();
-            List<GameNode> successors = getSuccessors(currentNode);
-            states += successors.size();
-            for (GameNode successor : successors) {
-                if (!closed.contains(successor)) {
-                    open.add(successor);
+            closedNodesQueue.add(currentNode);
+            memStates = closedNodesQueue.size();
+            List<GameNode> gameNodes = getGameNodes(currentNode);
+            states += gameNodes.size();
+            for (GameNode gameNode : gameNodes) {
+                if (!closedNodesQueue.contains(gameNode)) {
+                    openNodesQueue.add(gameNode);
                 } else {
                     fails++;
                 }
@@ -58,31 +58,31 @@ public class AStarSolver {
         return new SearchResult("failure", false);
     }
 
-    private List<GameNode> getSuccessors(GameNode currentState) {
-        List<GameNode> successors = new ArrayList<>();
-        closed.add(currentState);
+    private List<GameNode> getGameNodes(GameNode currentNode) {
+        List<GameNode> gameNodes = new ArrayList<>();
+        closedGameNodes.add(currentNode);
 
         for (int currentCol = 0; currentCol < QUEENS; currentCol++) {
-            QueenPosition takenPositions = getCurrentPosition(currentState.getPositions(), currentCol);
-            if (takenPositions != null) {
-                List<QueenPosition> otherQueens = getAllNotEmptyPositions(currentState.getPositions(), currentCol);
+            QueenPosition takenQueenPosition = getCurrentPosition(currentNode.getPositions(), currentCol);
+            if (takenQueenPosition != null) {
+                List<QueenPosition> otherQueenPositions = getAllNotEmptyPositions(currentNode.getPositions(), currentCol);
                 List<Integer> rows = IntStream.rangeClosed(0, 7).boxed().collect(Collectors.toList());
-                rows.remove(takenPositions.getyPos());
+                rows.remove(takenQueenPosition.getyPos());
 
                 for (Integer row : rows) {
-                    List<QueenPosition> positions = new ArrayList<>(otherQueens);
+                    List<QueenPosition> positions = new ArrayList<>(otherQueenPositions);
                     positions.add(new QueenPosition(currentCol, row));
                     if (!isStateChecked(positions)) {
-                        successors.add(new GameNode(positions, currentState.getDepth() + 1, true));
+                        gameNodes.add(new GameNode(positions, currentNode.getDepth() + 1, true));
                     }
                 }
             }
         }
-        return successors;
+        return gameNodes;
     }
 
     private boolean isStateChecked(List<QueenPosition> currentState) {
-        return closed.stream().anyMatch(state -> state.getPositions().equals(currentState));
+        return closedGameNodes.stream().anyMatch(state -> state.getPositions().equals(currentState));
     }
 
     public SearchPositionMetrics getSearchPositionMetrics() {

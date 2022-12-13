@@ -103,8 +103,8 @@ public class SalesmanProblemSolverTest {
 
     @Test
     public void findBestPathFailsWhenPathsNotFound() {
-        int numberOfCities = 1;
         // arrange
+        int numberOfCities = 1;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
                 .numberOfOrdinaryAnts(0)
                 .colonyLife(1)

@@ -92,7 +92,6 @@ public class GameUtils {
 
     public static int getEnterDepth() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Optimal limit 4");
         System.out.print("Enter LDFS depth limit:");
         int depth = scanner.nextInt();
         if (depth <= 0) {

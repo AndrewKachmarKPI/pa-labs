@@ -5,6 +5,7 @@ import com.labs.domain.PathSearchResult;
 import com.labs.enums.AntPlacementType;
 import com.labs.service.SalesmanProblemSolverService;
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,8 +15,8 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1)
-                .B(3)
+                .A(1.0)
+                .B(3.0)
                 .R(0.3)
                 .L_MIN(2200)
                 .numberOfOrdinaryAnts(200)
@@ -23,9 +24,9 @@ class SalesmanProblemSolverTest {
                 .numberOfWildAnts(40)
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         //Act
-        PathSearchResult pathSearchResult = solverService.getBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath(numberOfCities);
         //Assert
         String firstCity = pathSearchResult.getPath().toString().split("-")[0];
 
@@ -41,18 +42,18 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(0)
-                .B(0)
-                .R(0)
+                .A(0.0)
+                .B(0.0)
+                .R(0.0)
                 .L_MIN(0)
                 .numberOfOrdinaryAnts(100)
                 .numberOfEliteAnts(0)
                 .numberOfWildAnts(0)
-                .colonyLife(0)
+                .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         //Act
-        PathSearchResult pathSearchResult = solverService.getBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath(numberOfCities);
         //Assert
         String firstCity = pathSearchResult.getPath().toString().split("-")[0];
         assertThat(pathSearchResult.getPath().toString()).startsWith(firstCity).endsWith(firstCity);
@@ -70,9 +71,9 @@ class SalesmanProblemSolverTest {
                 .numberOfOrdinaryAnts(10)
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         //Act
-        Exception exception = assertThrows(RuntimeException.class, solverService::getBestPath);
+        Exception exception = assertThrows(RuntimeException.class, () -> solverService.getBestPath(numberOfCities));
         //Assert
         assertThat(exception.getMessage()).isEqualTo("Ant size should be greater that 5");
     }
@@ -82,18 +83,18 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 1;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1)
-                .B(1)
-                .R(1)
+                .A(1.0)
+                .B(1.0)
+                .R(1.0)
                 .L_MIN(1)
                 .numberOfOrdinaryAnts(1)
                 .numberOfEliteAnts(1)
                 .numberOfWildAnts(1)
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         //Act
-        PathSearchResult pathSearchResult = solverService.getBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath(numberOfCities);
         //Assert
         assertThat(pathSearchResult.getPath().toString()).isEmpty();
         assertThat(pathSearchResult.getPathCost()).isNotNull();
@@ -101,17 +102,38 @@ class SalesmanProblemSolverTest {
     }
 
     @Test
-    void findBestPathFailsWhenPathsNotFound() {
+    void Check_FindBestPath_Fails_When_ZeroAnts() {
         //Arrange
         int numberOfCities = 1;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
                 .numberOfOrdinaryAnts(0)
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         //Act
-        Exception exception = assertThrows(RuntimeException.class, solverService::getBestPath);
+        Exception exception = assertThrows(RuntimeException.class, () -> solverService.getBestPath(numberOfCities));
         //Assert
         assertThat(exception.getMessage()).isEqualTo("Path not found");
+    }
+
+    @Test
+    void Check_FindBestPath_Fails_When_Negative_NumberOfCities() {
+        //Arrange
+        int numberOfCities = -100;
+        AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
+                .A(1.0)
+                .B(1.0)
+                .R(1.0)
+                .L_MIN(1)
+                .numberOfOrdinaryAnts(1)
+                .numberOfEliteAnts(1)
+                .numberOfWildAnts(1)
+                .colonyLife(1)
+                .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
+        //Act
+        Exception exception = assertThrows(RuntimeException.class, () -> solverService.getBestPath(numberOfCities));
+        //Assert
+        assertThat(exception.getMessage()).isEqualTo("Invalid city size");
     }
 }

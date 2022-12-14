@@ -11,8 +11,8 @@ import com.labs.service.SalesmanProblemSolverService;
 public class ApplicationRunnerLab5 {
     public static void main(String[] args) {
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1)
-                .B(6)
+                .A(1.0)
+                .B(6.0)
                 .R(0.5)
                 .L_MIN(2200)
                 .numberOfOrdinaryAnts(200)
@@ -20,9 +20,10 @@ public class ApplicationRunnerLab5 {
                 .numberOfWildAnts(40)
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
-        System.out.println("INPUT PARAMS ->" + antAlgorithmParams);
-        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, 100);
-        PathSearchResult pathSearchResult = solverService.getBestPath();
+        int numberOfCities = 300;
+        System.out.println("Input params ->" + antAlgorithmParams + " Cities ->" + numberOfCities);
+        SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
+        PathSearchResult pathSearchResult = solverService.getBestPath(numberOfCities);
         System.out.println(pathSearchResult);
     }
 }

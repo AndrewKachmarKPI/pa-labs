@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static com.labs.service.GeneralMethodsService.*;
 
 public class SalesmanProblemSolverService {
-    public static int G_SIZE = 300;
+    public static int G_SIZE;
     private final AntAlgorithmParams antAlgorithmParams;
 
     private List<Ant> ants = new ArrayList<>();
@@ -20,13 +20,16 @@ public class SalesmanProblemSolverService {
     private final Map<String, Integer> antsInitialPlacement = new HashMap<>();
     private PathSearchResult bestPath = new PathSearchResult();
 
-    public SalesmanProblemSolverService(AntAlgorithmParams antAlgorithmParams, int numberOfCities) {
-        G_SIZE = numberOfCities;
+    public SalesmanProblemSolverService(AntAlgorithmParams antAlgorithmParams) {
         antAlgorithmParams.checkParamsValidity();
         this.antAlgorithmParams = antAlgorithmParams;
     }
 
-    public PathSearchResult getBestPath() {
+    public PathSearchResult getBestPath(int numberOfCities) {
+        if (numberOfCities <= 0) {
+            throw new RuntimeException("Invalid city size");
+        }
+        G_SIZE = numberOfCities;
         distanceMatrix = getDistanceMatrix();
         pheromoneMatrix = getPheromoneMatrix();
         ants = getAnts(distanceMatrix, antAlgorithmParams);
@@ -97,7 +100,7 @@ public class SalesmanProblemSolverService {
     private PathSearchResult getAntPath(Ant ant) {
         int initialPosition = ant.getCurrentCityIndex();
         PathSearchResult antPath = new PathSearchResult(initialPosition, ant.getAntId());
-        while (ant.getIsFound()) {
+        while (!ant.getIsFound()) {
             CityNode nextCityNode = (ant.getAntType() == AntType.WILD) ? getNextCityMoveForWildAnt(ant) : getNextCityMove(ant);
             if (nextCityNode.isNodeFound()) {
                 ant.visitCity(nextCityNode.getIndex());

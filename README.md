@@ -32,35 +32,35 @@ Also you can check your maven installation executing
 
 ## Lab2
 To run code you should execute such commands
-> #### Compile  FROM (**\pa-labs\lab-2\src\main\java) folder of lab
+> #### Compile  FROM (**\lab-2\src\main\java) folder of lab
 >  javac com/labs/*.java -d classes
 
-> #### Run  FROM (**\pa-labs\lab-2\src\main\java) folder of lab
+> #### Run  FROM (**\lab-2\src\main\java) folder of lab
 > ##### Run A* algorithm
 >  java -cp classes com.labs.AStarRunner
 > ##### Run LDFS algorithm
 >  java -cp classes com.labs.LDFSRunner
 
-> #### Run Tests  FROM (**\pa-labs\lab-2) folder of lab
+> #### Run Tests  FROM (**\lab-2) folder of lab
 >  mvn clean test
 
 ## Lab4
 To run code you should execute such commands
-> #### Compile  FROM (**\pa-labs\lab-4\src\main\java) folder of lab
+> #### Compile  FROM (**\lab-4\src\main\java) folder of lab
 >  javac com/labs/*.java -d classes
 
-> #### Run  FROM (**\pa-labs\lab-4\src\main\java) folder of lab
+> #### Run  FROM (**\lab-4\src\main\java) folder of lab
 > ##### Run algorithm
 >  java -cp classes com.labs.ApplicationRunnerLab4
 
-> #### Run Tests  FROM (**\pa-labs\lab-4) folder of lab
+> #### Run Tests  FROM (**\lab-4) folder of lab
 >  mvn clean test
 
 ## Lab5
 To run code you should execute such commands
 
-> #### Run code  FROM (**\pa-labs\lab-5) folder of lab
+> #### Run code  FROM (**\lab-5) folder of lab
 >  mvn compile exec:java
 
-> #### Run Tests  FROM (**\pa-labs\lab-5) folder of lab
+> #### Run Tests  FROM (**\lab-5) folder of lab
 >  mvn clean test

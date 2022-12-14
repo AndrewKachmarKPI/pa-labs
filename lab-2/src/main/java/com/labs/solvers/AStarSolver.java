@@ -42,6 +42,7 @@ public class AStarSolver {
             memStates = closedNodesQueue.size();
             List<GameNode> gameNodes = getGameNodes(currentNode);
             fillOpenedQueue(openNodesQueue, closedNodesQueue, gameNodes);
+            printResultPosition("pos", currentNode.getPositions());
         }
         time = System.currentTimeMillis() - start;
         return new SearchResult("failure", false);

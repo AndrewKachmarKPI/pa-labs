@@ -16,15 +16,17 @@ public class SalesmanProblemSolverService {
     private List<Ant> ants = new ArrayList<>();
     private int[][] distanceMatrix = new int[G_SIZE][G_SIZE];
     private double[][] pheromoneMatrix = new double[G_SIZE][G_SIZE];
-    private Map<String, Integer> antsInitialPlacement = new HashMap<>();
+
+    private final Map<String, Integer> antsInitialPlacement = new HashMap<>();
     private PathSearchResult bestPath = new PathSearchResult();
 
     public SalesmanProblemSolverService(AntAlgorithmParams antAlgorithmParams, int numberOfCities) {
         G_SIZE = numberOfCities;
+        antAlgorithmParams.checkParamsValidity();
         this.antAlgorithmParams = antAlgorithmParams;
     }
 
-    public PathSearchResult findBestPath() {
+    public PathSearchResult getBestPath() {
         distanceMatrix = getDistanceMatrix();
         pheromoneMatrix = getPheromoneMatrix();
         ants = getAnts(distanceMatrix, antAlgorithmParams);
@@ -47,6 +49,7 @@ public class SalesmanProblemSolverService {
             this.bestPath = pathSearchResult;
         }
     }
+
     private void clearAntMemory() {
         this.ants.forEach(ant -> ant.clearMemory(antsInitialPlacement.get(ant.getAntId())));
     }
@@ -94,7 +97,7 @@ public class SalesmanProblemSolverService {
     private PathSearchResult getAntPath(Ant ant) {
         int initialPosition = ant.getCurrentCityIndex();
         PathSearchResult antPath = new PathSearchResult(initialPosition, ant.getAntId());
-        while (Boolean.FALSE.equals(ant.getIsFound())) {
+        while (ant.getIsFound()) {
             CityNode nextCityNode = (ant.getAntType() == AntType.WILD) ? getNextCityMoveForWildAnt(ant) : getNextCityMove(ant);
             if (nextCityNode.isNodeFound()) {
                 ant.visitCity(nextCityNode.getIndex());
@@ -176,7 +179,7 @@ public class SalesmanProblemSolverService {
         return pheromoneMatrix;
     }
 
-    private static List<Ant> getAnts(int[][] distanceMatrix, AntAlgorithmParams antAlgorithmParams) {
+    private List<Ant> getAnts(int[][] distanceMatrix, AntAlgorithmParams antAlgorithmParams) {
         List<Ant> ants = new ArrayList<>();
         for (int i = 0; i < antAlgorithmParams.getNumberOfOrdinaryAnts(); i++) {
             ants.add(new Ant(0, distanceMatrix, AntType.ORDINARY));
@@ -193,7 +196,6 @@ public class SalesmanProblemSolverService {
     private void placeAnts(List<Ant> ants, AntPlacementType placementType) {
         for (Ant ant : ants) {
             int cityIndex = 0;
-
             if (placementType == AntPlacementType.MANY_WITH_REPEAT) {
                 cityIndex = getRandomNumber(0, G_SIZE);
             } else {

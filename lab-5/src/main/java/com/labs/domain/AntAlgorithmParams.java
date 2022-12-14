@@ -19,4 +19,11 @@ public class AntAlgorithmParams {
     private int numberOfWildAnts = 0;
     private int colonyLife = 1;
     private AntPlacementType antPlacementType;
+
+    public void checkParamsValidity() {
+        if (this.A <= 0.0 || this.B <= 0.0 || this.L_MIN <= 0 || this.R <= 0 || this.numberOfOrdinaryAnts < 0 ||
+                this.numberOfEliteAnts < 0 || this.numberOfWildAnts < 0 || this.colonyLife <= 0 || this.antPlacementType == null) {
+            throw new RuntimeException("AntAlgorithmParams invalid");
+        }
+    }
 }

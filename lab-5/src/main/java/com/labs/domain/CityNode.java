@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public final class CityNode {
+public class CityNode {
     private Integer index;
     private Double probability;
 

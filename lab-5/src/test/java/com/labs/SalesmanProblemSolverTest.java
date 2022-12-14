@@ -25,7 +25,7 @@ class SalesmanProblemSolverTest {
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
         //Act
-        PathSearchResult pathSearchResult = solverService.findBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath();
         //Assert
         String firstCity = pathSearchResult.getPath().toString().split("-")[0];
 
@@ -52,7 +52,7 @@ class SalesmanProblemSolverTest {
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
         //Act
-        PathSearchResult pathSearchResult = solverService.findBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath();
         //Assert
         String firstCity = pathSearchResult.getPath().toString().split("-")[0];
         assertThat(pathSearchResult.getPath().toString()).startsWith(firstCity).endsWith(firstCity);
@@ -72,7 +72,7 @@ class SalesmanProblemSolverTest {
                 .antPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
         //Act
-        Exception exception = assertThrows(RuntimeException.class, solverService::findBestPath);
+        Exception exception = assertThrows(RuntimeException.class, solverService::getBestPath);
         //Assert
         assertThat(exception.getMessage()).isEqualTo("Ant size should be greater that 5");
     }
@@ -93,7 +93,7 @@ class SalesmanProblemSolverTest {
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
         //Act
-        PathSearchResult pathSearchResult = solverService.findBestPath();
+        PathSearchResult pathSearchResult = solverService.getBestPath();
         //Assert
         assertThat(pathSearchResult.getPath().toString()).isEmpty();
         assertThat(pathSearchResult.getPathCost()).isNotNull();
@@ -110,7 +110,7 @@ class SalesmanProblemSolverTest {
                 .antPlacementType(AntPlacementType.MANY_WITHOUT_REPEAT).build();
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams, numberOfCities);
         //Act
-        Exception exception = assertThrows(RuntimeException.class, solverService::findBestPath);
+        Exception exception = assertThrows(RuntimeException.class, solverService::getBestPath);
         //Assert
         assertThat(exception.getMessage()).isEqualTo("Path not found");
     }

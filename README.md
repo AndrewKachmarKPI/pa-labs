@@ -46,12 +46,8 @@ To run code you should execute such commands
 
 ## Lab4
 To run code you should execute such commands
-> #### Compile  FROM (**\lab-4\src\main\java) folder of lab
->  javac com/labs/*.java -d classes
-
-> #### Run  FROM (**\lab-4\src\main\java) folder of lab
-> ##### Run algorithm
->  java -cp classes com.labs.ApplicationRunnerLab4
+> #### Run code  FROM (**\lab-4) folder of lab
+>  mvn compile exec:java
 
 > #### Run Tests  FROM (**\lab-4) folder of lab
 >  mvn clean test

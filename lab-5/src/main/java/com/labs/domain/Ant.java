@@ -2,14 +2,12 @@ package com.labs.domain;
 
 import com.labs.enums.AntType;
 import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.labs.service.GeneralMethodsService.*;
-import static com.labs.service.SalesmanProblemSolverService.*;
+import static com.labs.service.SalesmanProblemSolverService.G_SIZE;
 
 @Getter
 public class Ant {
@@ -20,14 +18,14 @@ public class Ant {
     private Boolean isFound = false;
     private double[][] visionMatrix;
 
-    public Ant(Integer currentCityIndex, int[][] distances, AntType antType) {
-        if(currentCityIndex<0){
+    public Ant(Integer currentCityIndex, double[][] visionMatrix, AntType antType) {
+        if (currentCityIndex < 0) {
             throw new RuntimeException("Invalid city index");
         }
         this.antId = UUID.randomUUID().toString();
         this.currentCityIndex = currentCityIndex;
         this.visitedCities = getCities();
-        this.visionMatrix = getVisionMatrix(distances);
+        this.visionMatrix = visionMatrix;
         this.antType = antType;
     }
 
@@ -57,20 +55,6 @@ public class Ant {
 
     public double getVisionAtPath(int from, int to) {
         return visionMatrix[from][to];
-    }
-
-    private double[][] getVisionMatrix(int[][] distanceMatrix) {
-        double[][] visionMatrix = new double[G_SIZE][G_SIZE];
-        for (int i = 0; i < visionMatrix.length; i++) {
-            for (int j = 0; j < visionMatrix.length; j++) {
-                if (i == j) {
-                    visionMatrix[i][j] = 0;
-                } else {
-                    visionMatrix[i][j] = getRoundedNumber((double) 1 / distanceMatrix[i][j], 3);
-                }
-            }
-        }
-        return visionMatrix;
     }
 
     private List<Integer> getCities() {

@@ -1,6 +1,5 @@
 package com.labs.domain;
 
-
 import com.labs.enums.AntPlacementType;
 import lombok.*;
 

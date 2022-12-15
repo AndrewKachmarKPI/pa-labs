@@ -3,11 +3,8 @@ package com.labs.service;
 import com.labs.domain.*;
 import com.labs.enums.AntPlacementType;
 import com.labs.enums.AntType;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.labs.service.GeneralMethodsService.*;
 
 public class SalesmanProblemSolverService {
     public static int G_SIZE;
@@ -32,7 +29,7 @@ public class SalesmanProblemSolverService {
         G_SIZE = numberOfCities;
         distanceMatrix = getDistanceMatrix();
         pheromoneMatrix = getPheromoneMatrix();
-        ants = getAnts(distanceMatrix, antAlgorithmParams);
+        ants = getAnts(antAlgorithmParams);
         placeAnts(ants, antAlgorithmParams.getAntPlacementType());
 
         for (int i = 0; i < antAlgorithmParams.getColonyLife(); i++) {
@@ -182,16 +179,31 @@ public class SalesmanProblemSolverService {
         return pheromoneMatrix;
     }
 
-    private List<Ant> getAnts(int[][] distanceMatrix, AntAlgorithmParams antAlgorithmParams) {
+    private double[][] getVisionMatrix(int[][] distanceMatrix) {
+        double[][] visionMatrix = new double[G_SIZE][G_SIZE];
+        for (int i = 0; i < visionMatrix.length; i++) {
+            for (int j = 0; j < visionMatrix.length; j++) {
+                if (i == j) {
+                    visionMatrix[i][j] = 0;
+                } else {
+                    visionMatrix[i][j] = getRoundedNumber((double) 1 / distanceMatrix[i][j], 3);
+                }
+            }
+        }
+        return visionMatrix;
+    }
+
+    private List<Ant> getAnts(AntAlgorithmParams antAlgorithmParams) {
         List<Ant> ants = new ArrayList<>();
+        double[][] visionMatrix = getVisionMatrix(distanceMatrix);
         for (int i = 0; i < antAlgorithmParams.getNumberOfOrdinaryAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.ORDINARY));
+            ants.add(new Ant(0, visionMatrix, AntType.ORDINARY));
         }
         for (int i = 0; i < antAlgorithmParams.getNumberOfEliteAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.ELITE));
+            ants.add(new Ant(0, visionMatrix, AntType.ELITE));
         }
         for (int i = 0; i < antAlgorithmParams.getNumberOfWildAnts(); i++) {
-            ants.add(new Ant(0, distanceMatrix, AntType.WILD));
+            ants.add(new Ant(0, visionMatrix, AntType.WILD));
         }
         return ants;
     }
@@ -216,5 +228,21 @@ public class SalesmanProblemSolverService {
 
     private double getPheromoneAtPath(int from, int to) {
         return pheromoneMatrix[from][to];
+    }
+
+    public int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public double getRandomDouble(double min, double max) {
+        return (Math.random() * (max - min)) + min;
+    }
+
+    public double getRoundedNumber(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }

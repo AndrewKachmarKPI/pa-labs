@@ -20,8 +20,8 @@
 
 ## Runner guide
 _________________  
-To be able to run code you should have prepared environment installed JDK and JVM   
-To be able to run tests you should install Maven   
+To be able to run code and tests you should have prepared environment installed JDK, JVM and Maven  
+
 Also you can check your java installation executing
 > java -version
 

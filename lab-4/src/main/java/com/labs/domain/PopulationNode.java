@@ -68,10 +68,7 @@ public class PopulationNode {
 
     public String toString() {
         return "PopulationNode{" +
-                "itemsSelection=" + itemsSelection +
-                ", totalPrice=" + totalPrice +
-                ", totalWeight=" + totalWeight +
-                ", nodeId='" + nodeId + '\'' +
-                '}';
+                "totalPrice=" + totalPrice +
+                ", totalWeight=" + totalWeight + '}' + "\n";
     }
 }

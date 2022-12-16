@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@ToString
 public class PathSearchResult {
     private List<Integer> pathIndexes = new ArrayList<>();
     private StringBuilder path = new StringBuilder();
@@ -37,5 +36,13 @@ public class PathSearchResult {
         for (int i = 0; i < pathIndexes.size() - 1; i++) {
             this.pathCost += distances[pathIndexes.get(i)][pathIndexes.get(i + 1)];
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PathSearchResult{" +
+                "pathCost=" + pathCost +
+                ", antId='" + antId + '\'' +
+                '}';
     }
 }

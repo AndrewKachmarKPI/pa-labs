@@ -23,7 +23,7 @@ public class ApplicationRunnerLab5 {
         int numberOfCities = 300;
         System.out.println("Input params ->" + antAlgorithmParams + " Cities ->" + numberOfCities);
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
-        PathSearchResult pathSearchResult = solverService.getBestPath(numberOfCities);
-        System.out.println(pathSearchResult);
+        PathSearchResult bestPathSearchResult = solverService.getBestPath(numberOfCities);
+        System.out.println("Best path ->" + bestPathSearchResult);
     }
 }

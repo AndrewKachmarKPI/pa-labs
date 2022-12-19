@@ -27,8 +27,9 @@ public class KnapsackProblemService {
             throw new RuntimeException("Iterations should not be 0 or less");
         }
         for (int i = 0; i < iterations; i++) {
-            PopulationNode selectedNode = getPopulationSelection();
-            PopulationNode afterCross = getPopulationCross(selectedNode, currentRecordNode);
+            PopulationNode selectedNode = getPopulationSelection(); //random + current best
+            PopulationNode bestNode = getBestNodeOfPopulation(currentPopulation);
+            PopulationNode afterCross = getPopulationCross(selectedNode, bestNode);
 
             MutationResponse mutationResponse = getPopulationMutation(afterCross);
             PopulationNode nodeForImprovement = mutationResponse.isSuccessful() ? mutationResponse.getPopulationNode() : afterCross;

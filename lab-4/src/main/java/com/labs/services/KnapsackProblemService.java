@@ -43,6 +43,7 @@ public class KnapsackProblemService {
 
     public void updateCurrentRecord(PopulationNode populationNode) {
         if (populationNode.getTotalPrice() > currentRecordNode.getTotalPrice() && populationNode.getTotalWeight() <= capacity) {
+            System.out.println("Fount new record ->" + populationNode.getTotalPrice() + "," + populationNode.getTotalWeight());
             currentRecordNode = populationNode;
             currentPopulation.add(currentRecordNode);
         }

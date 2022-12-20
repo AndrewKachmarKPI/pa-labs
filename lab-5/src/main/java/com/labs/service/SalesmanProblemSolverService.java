@@ -90,10 +90,10 @@ public class SalesmanProblemSolverService {
         List<PathSearchResult> paths = new ArrayList<>();
         System.out.println("Searching path for all ants size->" + ants.size());
         for (Ant ant : ants) {
-            System.out.println("Search path for ant-> type=" + ant.getAntType() + " antId=" + ant.getAntId());
             PathSearchResult pathSearchResult = getAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);
+            System.out.println("Search path for ant-> type=" + ant.getAntType() + " antId=" + pathSearchResult.getAntId() + " pathCost->" + pathSearchResult.getPathCost());
         }
         return paths;
     }

@@ -11,7 +11,7 @@ public class ApplicationRunnerLab4 {
         int iterations = 1000;
         KnapsackProblemService service = new KnapsackProblemService(capacity);
         System.out.println("Genetic algorithm");
-        System.out.println("Input params -> iterations -" + iterations + " capacity -" + capacity);
+        System.out.println("Input params -> iterations ->" + iterations + " capacity ->" + capacity);
         PopulationNode resultPopulationNode = service.getPackedKnapsack(iterations);
         System.out.println("Knapsack packed ->" + resultPopulationNode.toString());
     }

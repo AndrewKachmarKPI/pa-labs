@@ -15,7 +15,7 @@ public class KnapsackProblemService {
 
     public KnapsackProblemService(int capacity) {
         this.capacity = capacity;
-        this.items = getRandomItems(100);
+        this.items = getRandomItems(numberOfNodes);
         generateInitialPopulation();
     }
 

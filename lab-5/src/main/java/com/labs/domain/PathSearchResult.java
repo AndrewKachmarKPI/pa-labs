@@ -38,7 +38,6 @@ public class PathSearchResult {
         }
     }
 
-    @Override
     public String toString() {
         return "PathSearchResult{" +
                 "pathCost=" + pathCost +

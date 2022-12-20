@@ -88,8 +88,8 @@ public class SalesmanProblemSolverService {
 
     private List<PathSearchResult> getPathsForAllAnts() {
         List<PathSearchResult> paths = new ArrayList<>();
+        System.out.println("Searching path for all ants size->" + ants.size());
         for (Ant ant : ants) {
-            System.out.println("Find path for ant->" + ant.getAntId());
             PathSearchResult pathSearchResult = getAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);

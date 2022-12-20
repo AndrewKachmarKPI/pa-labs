@@ -51,12 +51,12 @@ public class BTreeNode {
         if (index >= 0) {
             int i;
             for (i = index; i < numberOfKeys - 1; i++) {
-                this.key[i] = this.key[i + 1];
+                setEntryAtIndex(i, this, i + 1);
                 if (!isLeafNode && i >= index + childIndex) {
                     childNodes[i] = childNodes[i + 1];
                 }
             }
-            this.key[i] = 0;
+            clearEntryByIndex(i);
             if (!isLeafNode) {
                 if (i >= index + childIndex) {
                     childNodes[i] = childNodes[i + 1];
@@ -73,6 +73,7 @@ public class BTreeNode {
         }
         for (int i = numberOfKeys - 1; i >= 0; i--) {
             this.key[i + 1] = this.key[i];
+            this.values[i + 1] = this.values[i];
             if (!isLeafNode) {
                 childNodes[i + 1] = childNodes[i];
             }

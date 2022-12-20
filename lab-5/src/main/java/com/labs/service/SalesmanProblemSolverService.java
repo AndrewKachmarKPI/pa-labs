@@ -34,7 +34,7 @@ public class SalesmanProblemSolverService {
         placeAnts(ants, antAlgorithmParams.getAntPlacementType());
 
         for (int i = 0; i < antAlgorithmParams.getColonyLife(); i++) {
-            System.out.println("Colony life ->" + i + 1);
+            System.out.println("Colony life ->" + (i + 1));
             List<PathSearchResult> paths = getPathsForAllAnts();
             PathSearchResult pathSearchResult = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
@@ -90,6 +90,7 @@ public class SalesmanProblemSolverService {
         List<PathSearchResult> paths = new ArrayList<>();
         System.out.println("Searching path for all ants size->" + ants.size());
         for (Ant ant : ants) {
+            System.out.println("Search path for ant-> type=" + ant.getAntType() + " antId=" + ant.getAntId());
             PathSearchResult pathSearchResult = getAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);

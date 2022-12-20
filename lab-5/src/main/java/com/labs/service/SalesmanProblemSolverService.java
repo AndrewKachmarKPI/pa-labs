@@ -60,7 +60,7 @@ public class SalesmanProblemSolverService {
         for (int i = 0; i < G_SIZE; i++) {
             for (int j = 0; j < G_SIZE; j++) {
                 if (i != j) {
-                    double pheromoneValue = (1 - antAlgorithmParams.getR()) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
+                    double pheromoneValue = (1 - antAlgorithmParams.getEvaporation()) * pheromoneMatrix[i][j] + getAntPheromoneLevel(pathSearchResults, i, j);
                     pheromoneMatrix[i][j] = getRoundedNumber(pheromoneValue, 2);
                 }
             }
@@ -76,10 +76,10 @@ public class SalesmanProblemSolverService {
                         .filter(ant -> ant.getAntId().equals(searchResult.getAntId()))
                         .findAny()
                         .orElseThrow(() -> new RuntimeException("Ant with id " + searchResult.getAntId() + " not found"));
-                pheromoneLevel += (double) antAlgorithmParams.getL_MIN() / searchResult.getPathCost();
+                pheromoneLevel += (double) antAlgorithmParams.getOrderOfPrice() / searchResult.getPathCost();
 
                 if (pathAnt.getAntType() == AntType.ELITE) {
-                    pheromoneLevel += (double) antAlgorithmParams.getL_MIN() / searchResult.getPathCost();
+                    pheromoneLevel += (double) antAlgorithmParams.getOrderOfPrice() / searchResult.getPathCost();
                 }
             }
         }
@@ -136,8 +136,8 @@ public class SalesmanProblemSolverService {
     }
 
     private double getMoveProbability(Ant ant, int from, int to) {
-        double pheromoneValue = Math.pow(getPheromoneAtPath(from, to), antAlgorithmParams.getA());
-        double visionValue = Math.pow(ant.getVisionAtPath(from, to), antAlgorithmParams.getB());
+        double pheromoneValue = Math.pow(getPheromoneAtPath(from, to), antAlgorithmParams.getAlpha());
+        double visionValue = Math.pow(ant.getVisionAtPath(from, to), antAlgorithmParams.getBetta());
         double antsValue = getAntCitiesSum(ant, from);
         double moveProbability = 0;
         if (antsValue != 0) {
@@ -153,8 +153,8 @@ public class SalesmanProblemSolverService {
                 .collect(Collectors.toList());
         double antCitiesSum = 0.0;
         for (Integer index : availableCitiesIndexes) {
-            double pheromoneValue = Math.pow(getPheromoneAtPath(from, index), antAlgorithmParams.getA());
-            double visionValue = Math.pow(ant.getVisionAtPath(from, index), antAlgorithmParams.getB());
+            double pheromoneValue = Math.pow(getPheromoneAtPath(from, index), antAlgorithmParams.getAlpha());
+            double visionValue = Math.pow(ant.getVisionAtPath(from, index), antAlgorithmParams.getBetta());
             antCitiesSum += (pheromoneValue * visionValue);
         }
         return antCitiesSum;

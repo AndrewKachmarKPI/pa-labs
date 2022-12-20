@@ -9,10 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AntAlgorithmParams {
-    private double A;
-    private double B;
-    private int L_MIN;
-    private double R;
+    private double alpha;
+    private double betta;
+    private int orderOfPrice;
+    private double evaporation;
     private int numberOfOrdinaryAnts;
     private int numberOfEliteAnts = 0;
     private int numberOfWildAnts = 0;
@@ -20,7 +20,7 @@ public class AntAlgorithmParams {
     private AntPlacementType antPlacementType;
 
     public void checkParamsValidity() {
-        if (this.A < 0.0 || this.B < 0.0 || this.L_MIN < 0 || this.R < 0 || this.numberOfOrdinaryAnts < 0 ||
+        if (this.alpha < 0.0 || this.betta < 0.0 || this.orderOfPrice < 0 || this.evaporation < 0 || this.numberOfOrdinaryAnts < 0 ||
                 this.numberOfEliteAnts < 0 || this.numberOfWildAnts < 0 || this.colonyLife <= 0 || this.antPlacementType == null) {
             throw new RuntimeException("AntAlgorithmParams invalid");
         }

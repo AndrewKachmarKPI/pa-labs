@@ -15,10 +15,10 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1.0)
-                .B(3.0)
-                .R(0.3)
-                .L_MIN(2200)
+                .alpha(1.0)
+                .betta(3.0)
+                .evaporation(0.3)
+                .orderOfPrice(2200)
                 .numberOfOrdinaryAnts(200)
                 .numberOfEliteAnts(20)
                 .numberOfWildAnts(40)
@@ -42,10 +42,10 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(0.0)
-                .B(0.0)
-                .R(0.0)
-                .L_MIN(0)
+                .alpha(0.0)
+                .betta(0.0)
+                .evaporation(0.0)
+                .orderOfPrice(0)
                 .numberOfOrdinaryAnts(100)
                 .numberOfEliteAnts(0)
                 .numberOfWildAnts(0)
@@ -83,10 +83,10 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = 1;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1.0)
-                .B(1.0)
-                .R(1.0)
-                .L_MIN(1)
+                .alpha(1.0)
+                .betta(1.0)
+                .evaporation(1.0)
+                .orderOfPrice(1)
                 .numberOfOrdinaryAnts(1)
                 .numberOfEliteAnts(1)
                 .numberOfWildAnts(1)
@@ -121,10 +121,10 @@ class SalesmanProblemSolverTest {
         //Arrange
         int numberOfCities = -100;
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1.0)
-                .B(1.0)
-                .R(1.0)
-                .L_MIN(1)
+                .alpha(1.0)
+                .betta(1.0)
+                .evaporation(1.0)
+                .orderOfPrice(1)
                 .numberOfOrdinaryAnts(1)
                 .numberOfEliteAnts(1)
                 .numberOfWildAnts(1)

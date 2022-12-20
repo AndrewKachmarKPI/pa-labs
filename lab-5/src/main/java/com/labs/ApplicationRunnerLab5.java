@@ -11,10 +11,10 @@ import com.labs.service.SalesmanProblemSolverService;
 public class ApplicationRunnerLab5 {
     public static void main(String[] args) {
         AntAlgorithmParams antAlgorithmParams = AntAlgorithmParams.builder()
-                .A(1.0)
-                .B(6.0)
-                .R(0.5)
-                .L_MIN(2200)
+                .alpha(1.0)
+                .betta(6.0)
+                .evaporation(0.5)
+                .orderOfPrice(2200)
                 .numberOfOrdinaryAnts(200)
                 .numberOfEliteAnts(20)
                 .numberOfWildAnts(40)

@@ -3,6 +3,7 @@ package com.labs.service;
 import com.labs.domain.*;
 import com.labs.enums.AntPlacementType;
 import com.labs.enums.AntType;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class SalesmanProblemSolverService {
         placeAnts(ants, antAlgorithmParams.getAntPlacementType());
 
         for (int i = 0; i < antAlgorithmParams.getColonyLife(); i++) {
+            System.out.println("Colony life ->" + i + 1);
             List<PathSearchResult> paths = getPathsForAllAnts();
             PathSearchResult pathSearchResult = paths.stream()
                     .min(Comparator.comparing(PathSearchResult::getPathCost))
@@ -87,6 +89,7 @@ public class SalesmanProblemSolverService {
     private List<PathSearchResult> getPathsForAllAnts() {
         List<PathSearchResult> paths = new ArrayList<>();
         for (Ant ant : ants) {
+            System.out.println("Find path for ant->" + ant.getAntId());
             PathSearchResult pathSearchResult = getAntPath(ant);
             pathSearchResult.countPathCost(distanceMatrix);
             paths.add(pathSearchResult);

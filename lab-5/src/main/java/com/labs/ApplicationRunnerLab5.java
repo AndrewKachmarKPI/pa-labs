@@ -21,9 +21,11 @@ public class ApplicationRunnerLab5 {
                 .colonyLife(1)
                 .antPlacementType(AntPlacementType.MANY_WITH_REPEAT).build();
         int numberOfCities = 300;
-        System.out.println("Input params ->" + antAlgorithmParams + " Cities ->" + numberOfCities);
+        System.out.println("Ant algorithm");
+        System.out.println("Input params ->" + antAlgorithmParams);
+        System.out.println("Cities ->" + numberOfCities);
         SalesmanProblemSolverService solverService = new SalesmanProblemSolverService(antAlgorithmParams);
         PathSearchResult bestPathSearchResult = solverService.getBestPath(numberOfCities);
-        System.out.println("Best path ->" + bestPathSearchResult);
+        System.out.println("Found best path ->" + bestPathSearchResult);
     }
 }

@@ -1,0 +1,25 @@
+.invalid {
+    -fx-border-color: red;
+}
+
+.icon-btn{
+    -fx-background-size: 25px 25px;
+    -fx-padding: 10px;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-min-width: 60px;
+}
+#loadButton {
+    -fx-background-size: 50px 50px;
+    -fx-background-image: url(com/labs/images/folder.png);
+}
+#searchEntryButton {
+    -fx-background-image: url(com/labs/images/search.png);
+}
+#saveButton {
+    -fx-background-image: url(com/labs/images/diskette.png);
+}
+#deleteEntryButton{
+    -fx-background-image: url(com/labs/images/trash.png);
+}
+

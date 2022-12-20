@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="403.0"
+          prefWidth="610.0" rowValignment="TOP" xmlns="http://javafx.com/javafx/11.0.14-internal"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.labs.ApplicationController">
+    <ToolBar prefHeight="41.0" prefWidth="610.0">
+        <TextField fx:id="searchInput" onKeyReleased="#onSearchInputChange" prefHeight="35.0" prefWidth="149.0"
+                   promptText="Search by key"/>
+        <Button fx:id="searchEntryButton" mnemonicParsing="false" onMouseClicked="#onSearchEntryButtonClick"
+                styleClass="icon-btn"/>
+        <Button fx:id="loadButton" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#onLoadNewEntryButtonClick"
+                styleClass="icon-btn">
+        </Button>
+        <Button fx:id="deleteEntryButton" mnemonicParsing="false" onMouseClicked="#onDeleteEntryButtonClick"
+                prefHeight="25.0" prefWidth="0.0" styleClass="icon-btn"/>
+    </ToolBar>
+    <ScrollPane prefHeight="357.0" prefWidth="400.0" hbarPolicy="NEVER">
+        <TableView fx:id="entryTable" prefHeight="355.0" prefWidth="400.0"/>
+    </ScrollPane>
+    <VBox prefHeight="167.0" prefWidth="200.0">
+        <FlowPane.margin>
+            <Insets left="5.0"/>
+        </FlowPane.margin>
+        <VBox prefHeight="178.0" prefWidth="200.0" spacing="5.0">
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <Label text="Key"/>
+            <TextField fx:id="keyInput" onKeyReleased="#onKeyInputValidate" prefHeight="35.0" prefWidth="190.0"
+                       promptText="Entry key"/>
+            <Label text="Value"/>
+            <TextField fx:id="valueInput" onKeyReleased="#onValueInputValidate" prefHeight="35.0" prefWidth="190.0"
+                       promptText="Entry value">
+                <VBox.margin>
+                    <Insets bottom="10.0"/>
+                </VBox.margin>
+            </TextField>
+            <Button fx:id="addEntryButton" mnemonicParsing="false" onAction="#onAddEntryButtonClick" prefHeight="25.0"
+                    prefWidth="190.0" text="Add"/>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+        </VBox>
+    </VBox>
+    <HBox prefHeight="100.0" prefWidth="200.0"/>
+</FlowPane>

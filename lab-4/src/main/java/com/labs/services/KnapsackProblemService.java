@@ -172,5 +172,4 @@ public class KnapsackProblemService {
                 ",mutation with ->5%" + "}";
         System.out.println(inputParams);
     }
-
 }

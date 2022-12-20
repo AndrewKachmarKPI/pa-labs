@@ -46,8 +46,11 @@ To run code you should execute such commands
 
 ## Lab4
 To Build and Run code you should execute such commands
-> #### Build and Run code  FROM (**\lab-4) folder of lab
->  mvn compile exec:java
+> #### Build code  FROM (**\lab-4) folder of lab
+>  mvn clean package
+
+> #### Run code  FROM (**\lab-4) folder of lab
+>  java -jar target/pa-labs-0.0.1-SNAPSHOT.jar
 
 > #### Run Tests  FROM (**\lab-4) folder of lab
 >  mvn clean test
@@ -55,8 +58,11 @@ To Build and Run code you should execute such commands
 ## Lab5
 To Build and Run code you should execute such commands
 
-> #### Build and Run code  FROM (**\lab-5) folder of lab
->  mvn compile exec:java
+> #### Build code  FROM (**\lab-5) folder of lab
+>  mvn clean package
+
+> #### Run code  FROM (**\lab-5) folder of lab
+>  java -jar target/pa-labs-0.0.1-SNAPSHOT.jar
 
 > #### Run Tests  FROM (**\lab-5) folder of lab
 >  mvn clean test

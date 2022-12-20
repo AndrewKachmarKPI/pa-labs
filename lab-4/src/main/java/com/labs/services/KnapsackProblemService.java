@@ -161,4 +161,16 @@ public class KnapsackProblemService {
         }
         return capacity;
     }
+
+    public void printParams(int iterations) {
+        System.out.println("Genetic algorithm");
+        String inputParams = "Input params {" +
+                "iterations ->" + iterations +
+                ",capacity ->" + capacity +
+                ",numberOfItems ->100" +
+                ",items weight ->(random from 1 to 5)" +
+                ",mutation with ->5%" + "}";
+        System.out.println(inputParams);
+    }
+
 }

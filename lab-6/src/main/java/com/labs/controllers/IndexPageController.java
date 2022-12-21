@@ -1,9 +1,12 @@
 package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
+import com.labs.domain.GameProperties;
 import com.labs.enums.FieldSize;
 import com.labs.enums.GameComplexity;
 import com.labs.enums.PlayerType;
+import com.labs.service.GameService;
+import com.labs.serviceImpl.GameServiceImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class IndexPageController {
+    private GameService gameService;
     @FXML
     public Button playBtn;
     @FXML
@@ -43,6 +47,7 @@ public class IndexPageController {
         setPlayerTypeComboBoxes();
         setDefaultPlayerColors();
         setFieldSizeComboBox();
+        gameService = GameServiceImpl.getInstance();
     }
 
     private void setGameComplexityComboBox() {
@@ -58,7 +63,7 @@ public class IndexPageController {
 
     private void setDefaultPlayerColors() {
         firstPlayerColor.setValue(Color.RED);
-        secondPlayerColor.setValue(Color.BLUE);
+        secondPlayerColor.setValue(Color.GREEN);
     }
 
     private void setFieldSizeComboBox() {
@@ -70,9 +75,19 @@ public class IndexPageController {
     @FXML
     public void onPlayButtonClick() throws IOException {
         if (isSettingsFormValid()) {
+            GameProperties gameProperties = GameProperties.builder()
+                    .firstPlayerType(firstPlayerType.getValue())
+                    .secondPlayerType(secondPlayerType.getValue())
+                    .firstPlayerColor(firstPlayerColor.getValue())
+                    .secondPlayerColor(secondPlayerColor.getValue())
+                    .gameComplexity(gameComplexityComboBox.getValue())
+                    .gameFieldSize(FieldSize.getByTitle(fieldSizeComboBox.getValue())).build();
+            gameService.startGame(gameProperties);
+
             FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
             Stage stage = (Stage) playBtn.getScene().getWindow();
             Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("dotsAndBoxes.css");
             stage.setScene(scene);
         }
     }

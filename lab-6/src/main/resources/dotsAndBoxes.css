@@ -1,8 +1,11 @@
-.logoBox {
+.icon-btn{
     -fx-background-size: 25px 25px;
     -fx-padding: 10px;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-min-width: 60px;
-    -fx-background-image: url(com/labs/images/logo.png);
+}
+#homeBtn {
+    -fx-background-size: 30px 30px;
+    -fx-background-image: url(com/labs/images/home.png);
 }

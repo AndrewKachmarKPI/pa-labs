@@ -78,10 +78,12 @@ public class IndexPageController {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .type(firstPlayerType.getValue())
-                    .color(firstPlayerColor.getValue()).build();
+                    .color(firstPlayerColor.getValue())
+                    .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
                     .type(secondPlayerType.getValue())
-                    .color(secondPlayerColor.getValue()).build();
+                    .color(secondPlayerColor.getValue())
+                    .score(0).build();
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)
                     .secondPlayer(secondPlayer)

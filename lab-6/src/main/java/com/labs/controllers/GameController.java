@@ -11,6 +11,7 @@ import com.labs.serviceImpl.GameServiceImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class GameController {
     public TextField secondPlayerAmount;
     public Button homeBtn;
     public GridPane pane;
-    public Pane dotsPane;
+    public BorderPane dotsPane;
     private GameService gameService;
     private GameProperties gameProperties;
 
@@ -73,11 +75,27 @@ public class GameController {
 
 
     private void buildGameField() {
+        int size = gameProperties.getGameFieldSize().getSize() * 10;
         double colWidth = ((double) 1 / gameProperties.getGameFieldSize().getSize()) * 100;
-        int size = gameProperties.getGameFieldSize().getSize();
+        dotsPane.setPrefSize(size, size);
 
-        HBox hBox = new HBox(getCircle(), new Button("line"),getCircle() );
-        dotsPane.getChildren().add(hBox);
+        BorderPane borderPane = new BorderPane();
+        Node topNode = getHorizontalNode();
+        Node bottomNode = getHorizontalNode();
+        Node leftNode = getBorderEdge(false);
+        Node rightNode = getBorderEdge(false);
+        BorderPane.setAlignment(topNode, Pos.CENTER);
+        BorderPane.setAlignment(bottomNode, Pos.CENTER);
+        BorderPane.setAlignment(leftNode, Pos.CENTER);
+        BorderPane.setAlignment(rightNode, Pos.CENTER);
+
+        borderPane.setTop(topNode);
+        borderPane.setBottom(bottomNode);
+        borderPane.setCenter(new Rectangle(40, 40, Color.CORAL));
+        borderPane.setLeft(leftNode);
+        borderPane.setRight(rightNode);
+
+        dotsPane.setCenter(borderPane);
     }
 
     private BorderPane getBox() {
@@ -104,5 +122,19 @@ public class GameController {
         Circle circle = new Circle(8, Color.BLACK);
         circle.getStyleClass().add("circle");
         return circle;
+    }
+
+    private Node getHorizontalNode() {
+        return new HBox(getCircle(), getBorderEdge(true), getCircle());
+    }
+
+    private Node getBorderEdge(boolean isHorizontal) {
+        Button button = new Button();
+        if (isHorizontal) {
+            button.setPrefSize(40, 5);
+        } else {
+            button.setPrefSize(5, 40);
+        }
+        return button;
     }
 }

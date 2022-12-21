@@ -1,4 +1,86 @@
 package com.labs.controllers;
 
+import com.labs.DotsAndBoxesApplication;
+import com.labs.enums.FieldSize;
+import com.labs.enums.GameComplexity;
+import com.labs.enums.PlayerType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class IndexPageController {
+    @FXML
+    public Button playBtn;
+    @FXML
+    public ColorPicker firstPlayerColor;
+    @FXML
+    public ComboBox<PlayerType> firstPlayerType;
+    @FXML
+    public ColorPicker secondPlayerColor;
+    @FXML
+    public ComboBox<PlayerType> secondPlayerType;
+    @FXML
+    public ComboBox<GameComplexity> gameComplexityComboBox;
+    @FXML
+    public ComboBox<String> fieldSizeComboBox;
+
+
+    @FXML
+    void initialize() {
+        setGameComplexityComboBox();
+        setPlayerTypeComboBoxes();
+        setDefaultPlayerColors();
+        setFieldSizeComboBox();
+    }
+
+    private void setGameComplexityComboBox() {
+        ObservableList<GameComplexity> gameComplexities = FXCollections.observableArrayList(GameComplexity.values());
+        gameComplexityComboBox.setItems(gameComplexities);
+    }
+
+    private void setPlayerTypeComboBoxes() {
+        ObservableList<PlayerType> playerTypes = FXCollections.observableArrayList(PlayerType.values());
+        firstPlayerType.setItems(playerTypes);
+        secondPlayerType.setItems(playerTypes);
+    }
+
+    private void setDefaultPlayerColors() {
+        firstPlayerColor.setValue(Color.RED);
+        secondPlayerColor.setValue(Color.BLUE);
+    }
+
+    private void setFieldSizeComboBox() {
+        List<String> sizes = Arrays.stream(FieldSize.values()).map(FieldSize::getTitle).collect(Collectors.toList());
+        ObservableList<String> filedSizes = FXCollections.observableArrayList(sizes);
+        fieldSizeComboBox.setItems(filedSizes);
+    }
+
+    @FXML
+    public void onPlayButtonClick() throws IOException {
+        if (isSettingsFormValid()) {
+            FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
+            Stage stage = (Stage) playBtn.getScene().getWindow();
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+        }
+    }
+
+    private boolean isSettingsFormValid() {
+        return !firstPlayerType.selectionModelProperty().get().isEmpty() &&
+                !secondPlayerType.selectionModelProperty().get().isEmpty() &&
+                !gameComplexityComboBox.selectionModelProperty().get().isEmpty() &&
+                !fieldSizeComboBox.selectionModelProperty().get().isEmpty();
+    }
 }

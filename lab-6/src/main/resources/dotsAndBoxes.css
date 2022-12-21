@@ -1,0 +1,8 @@
+.logoBox {
+    -fx-background-size: 25px 25px;
+    -fx-padding: 10px;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-min-width: 60px;
+    -fx-background-image: url(com/labs/images/logo.png);
+}

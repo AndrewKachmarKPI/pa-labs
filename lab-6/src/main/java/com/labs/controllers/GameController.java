@@ -10,6 +10,7 @@ import com.labs.service.GameService;
 import com.labs.serviceImpl.GameServiceImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,7 +27,8 @@ public class GameController {
     public TextField firstPlayerAmount;
     public TextField secondPlayerAmount;
     public Button homeBtn;
-    public Pane pane;
+    public GridPane pane;
+    public Pane dotsPane;
     private GameService gameService;
     private GameProperties gameProperties;
 
@@ -69,11 +71,13 @@ public class GameController {
         stage.setScene(scene);
     }
 
+
     private void buildGameField() {
         double colWidth = ((double) 1 / gameProperties.getGameFieldSize().getSize()) * 100;
         int size = gameProperties.getGameFieldSize().getSize();
-        pane.setPrefSize(colWidth, colWidth);
-        pane.getChildren().add(getBox());
+
+        HBox hBox = new HBox(getCircle(), new Button("line"),getCircle() );
+        dotsPane.getChildren().add(hBox);
     }
 
     private BorderPane getBox() {

@@ -1,6 +1,7 @@
 package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
+import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
 import com.labs.enums.FieldSize;
 import com.labs.enums.GameComplexity;
@@ -75,11 +76,15 @@ public class IndexPageController {
     @FXML
     public void onPlayButtonClick() throws IOException {
         if (isSettingsFormValid()) {
+            GamePlayer firstPlayer = GamePlayer.builder()
+                    .type(firstPlayerType.getValue())
+                    .color(firstPlayerColor.getValue()).build();
+            GamePlayer secondPlayer = GamePlayer.builder()
+                    .type(secondPlayerType.getValue())
+                    .color(secondPlayerColor.getValue()).build();
             GameProperties gameProperties = GameProperties.builder()
-                    .firstPlayerType(firstPlayerType.getValue())
-                    .secondPlayerType(secondPlayerType.getValue())
-                    .firstPlayerColor(firstPlayerColor.getValue())
-                    .secondPlayerColor(secondPlayerColor.getValue())
+                    .firstPlayer(firstPlayer)
+                    .secondPlayer(secondPlayer)
                     .gameComplexity(gameComplexityComboBox.getValue())
                     .gameFieldSize(FieldSize.getByTitle(fieldSizeComboBox.getValue())).build();
             gameService.startGame(gameProperties);

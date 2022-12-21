@@ -1,6 +1,7 @@
 package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
+import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
 import com.labs.service.GameService;
 import com.labs.serviceImpl.GameServiceImpl;
@@ -27,13 +28,13 @@ public class GameController {
         gameProperties = gameService.getGameProperties();
 
         System.out.println(gameProperties);
-        setStartAmountInput(firstPlayerAmount, gameProperties.getFirstPlayerColor().hashCode());
-        setStartAmountInput(secondPlayerAmount, gameProperties.getSecondPlayerColor().hashCode());
+        setPlayerScore(firstPlayerAmount, gameProperties.getFirstPlayer());
+        setPlayerScore(secondPlayerAmount, gameProperties.getSecondPlayer());
     }
 
-    private void setStartAmountInput(TextField amountInput, Integer colorHashCode) {
-        String inputStyle = "-fx-text-inner-color: " + "#" + Integer.toHexString(colorHashCode) + ";";
-        amountInput.setText("0");
+    private void setPlayerScore(TextField amountInput, GamePlayer gamePlayer) {
+        String inputStyle = "-fx-text-inner-color: " + "#" + Integer.toHexString(gamePlayer.getColor().hashCode()) + ";";
+        amountInput.setText(gamePlayer.getScore().toString());
         amountInput.setStyle(inputStyle);
     }
 

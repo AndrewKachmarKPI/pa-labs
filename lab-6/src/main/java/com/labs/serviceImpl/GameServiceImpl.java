@@ -6,9 +6,14 @@ import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
 import com.labs.solvers.HumanSolver;
+import javafx.animation.FillTransition;
+import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,7 @@ public class GameServiceImpl implements GameService {
         }
         return gameInstance;
     }
+
     public static GameServiceImpl getNewInstance() {
         return new GameServiceImpl();
     }
@@ -63,7 +69,7 @@ public class GameServiceImpl implements GameService {
     private void checkNextMove() {
         if (gameBoard.isAllBoxesClosed()) {
             stopGame();
-        }else{
+        } else {
             GamePlayer currentPlayer = getCurrentPlayer();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
                 String boxId = findBorderForSelect(); //FIXME REPLACE WITH ALGORITHM

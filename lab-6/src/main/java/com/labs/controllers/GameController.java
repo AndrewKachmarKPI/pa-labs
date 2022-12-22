@@ -219,7 +219,6 @@ public class GameController implements Observer {
         }
     }
 
-
     @Override
     public void onStopGame(GamePlayer gamePlayer) {
         winLabel.setText(gamePlayer.getTitle() + " wins with score ->" + gamePlayer.getScore());

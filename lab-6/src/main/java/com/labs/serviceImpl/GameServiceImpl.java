@@ -113,16 +113,11 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-
     private void closeGameBox(GameBox gameBox) {
         gameBox.closeGameBox(currentPlayer());
         if (gameBoard.isAllBoxesClosed()) {
             stopGame();
         }
-    }
-
-    private boolean isAllBoxesClosed() {
-        return gameBoard.getGameBoxList().stream().noneMatch(GameBox::isNotOccupied);
     }
 
     private void stopGame() {

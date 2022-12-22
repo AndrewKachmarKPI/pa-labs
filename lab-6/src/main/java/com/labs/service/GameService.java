@@ -19,4 +19,6 @@ public interface GameService {
     GameBoard getGameBoard();
 
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
+
+    void selectBoxBorder(String boxBorderId);
 }

@@ -1,9 +1,7 @@
 package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
-import com.labs.domain.GameBoard;
-import com.labs.domain.GamePlayer;
-import com.labs.domain.GameProperties;
+import com.labs.domain.*;
 import com.labs.enums.FieldSize;
 import com.labs.enums.GameComplexity;
 import com.labs.enums.PlayerType;
@@ -42,7 +40,6 @@ public class GameController {
 
     private GameService gameService;
     private GameProperties gameProperties;
-    private GameBoard gameBoard;
 
     @FXML
     void initialize() {
@@ -51,10 +48,12 @@ public class GameController {
         GamePlayer firstPlayer = GamePlayer.builder()
                 .type(PlayerType.HUMAN)
                 .color(Color.CORAL)
+                .title("Player 1")
                 .score(0).build();
         GamePlayer secondPlayer = GamePlayer.builder()
                 .type(PlayerType.HUMAN)
                 .color(Color.RED)
+                .title("Player 2")
                 .score(0).build();
         this.gameProperties = GameProperties.builder()
                 .firstPlayer(firstPlayer)
@@ -102,11 +101,9 @@ public class GameController {
                 gameBoard.getChildren().addAll(horizontalLine);
             }
         }
-//        gameBoard.getChildren().addAll(horizontalLine);
-
         BorderPane.setAlignment(gameBoard, Pos.CENTER);
         boardPanel.setCenter(gameBoard);
-        this.gameBoard = gameService.buildGameBoard(allButtons, allBoxes, gameBoard);
+        gameService.buildGameBoard(allButtons, allBoxes, gameBoard);
     }
 
     private boolean isNotLastRow(int i, int size) {
@@ -185,18 +182,13 @@ public class GameController {
         return borderPane;
     }
 
-    //BUTTON ACTIONS
     private void onBorderSelect(MouseEvent event) {
-        Button button = (Button) event.getSource();
-        if (!button.isDisabled()) {
-            button.setStyle(bgStyle + "#000000");
-            button.setDisable(true);
-        }
+       gameService.selectBoxBorder(((Button) event.getSource()).getId());
     }
 
     private void onBorderHover(MouseEvent event) {
         GamePlayer activePlayer = getActiveGamePlayer();
-        Button button = getButtonById(((Button) event.getSource()).getId());
+        Button button = getUiButtonById(((Button) event.getSource()).getId());
         if (!button.isDisabled()) {
             button.cursorProperty().set(Cursor.HAND);
             button.setStyle(bgStyle + getHexColor(activePlayer.getColor()));
@@ -204,14 +196,14 @@ public class GameController {
     }
 
     private void onBorderUnHover(MouseEvent event) {
-        Button button = getButtonById(((Button) event.getSource()).getId());
+        Button button = getUiButtonById(((Button) event.getSource()).getId());
         if (!button.isDisabled()) {
             button.cursorProperty().set(Cursor.HAND);
             button.setStyle(bgStyle + getHexColor(Color.LIGHTGRAY));
         }
     }
 
-    private Button getButtonById(String id) {
+    private Button getUiButtonById(String id) {
         return allButtons.stream().filter(btn -> btn.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Btn not found"));
     }

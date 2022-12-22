@@ -79,10 +79,12 @@ public class IndexPageController {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .type(firstPlayerType.getValue())
                     .color(firstPlayerColor.getValue())
+                    .title("Player 1")
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
                     .type(secondPlayerType.getValue())
                     .color(secondPlayerColor.getValue())
+                    .title("Player 2")
                     .score(0).build();
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)

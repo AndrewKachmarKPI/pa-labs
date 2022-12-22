@@ -13,5 +13,9 @@ import java.util.List;
 public class GameBoard {
     private VBox gameBoard;
     private int size;
-    private List<Box> boxList;
+    private List<GameBox> gameBoxList;
+
+    public boolean isAllBoxesClosed() {
+        return gameBoxList.stream().noneMatch(GameBox::isNotOccupied);
+    }
 }

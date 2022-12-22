@@ -1,9 +1,6 @@
 package com.labs.serviceImpl;
 
-import com.labs.domain.Box;
-import com.labs.domain.BoxBorder;
-import com.labs.domain.GameBoard;
-import com.labs.domain.GameProperties;
+import com.labs.domain.*;
 import com.labs.service.GameService;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -13,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GameServiceImpl implements GameService {
     private static GameServiceImpl gameInstance;
     private GameProperties gameProperties;
     private GameBoard gameBoard;
+    private static final String bgStyle = "-fx-background-color:";
 
     public static GameServiceImpl getInstance() {
         if (gameInstance == null) {
@@ -44,10 +41,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard) {
-        GameBoard board = GameBoard.builder()
-                .size(gameProperties.getGameFieldSize().getSize())
-                .gameBoard(gameBoard).build();
-        List<Box> boxList = new ArrayList<>();
+        List<GameBox> gameBoxList = new ArrayList<>();
         for (BorderPane box : boxes) {
             Integer boxRow = Integer.valueOf(box.getId().split("")[0]);
             Integer boxCol = Integer.valueOf(box.getId().split("")[1]);
@@ -91,18 +85,59 @@ public class GameServiceImpl implements GameService {
             boxBorders.add(new BoxBorder(leftBorder));
             boxBorders.add(new BoxBorder(rightBorder));
 
-            boxList.add(getGameBox(box, boxBorders));
+            gameBoxList.add(getGameBox(box, boxBorders));
         }
-        boxList.forEach(System.out::println);
-        return board;
+        this.gameBoard = GameBoard.builder()
+                .size(gameProperties.getGameFieldSize().getSize())
+                .gameBoard(gameBoard)
+                .gameBoxList(gameBoxList).build();
+        return this.gameBoard;
+    }
+
+    @Override
+    public void selectBoxBorder(String boxBorderId) {
+        for (GameBox gameBox : gameBoard.getGameBoxList()) {
+            Optional<BoxBorder> box = gameBox.getBoxBorders().stream()
+                    .filter(boxBorder -> boxBorder.getButton().getId().equals(boxBorderId))
+                    .filter(boxBorder -> !boxBorder.isSelected())
+                    .findFirst();
+            if (box.isPresent()) {
+                box.get().setSelected(true);
+                box.get().setSelectedBy(currentPlayer().getTitle());
+                box.get().getButton().setStyle(bgStyle + "#000000");
+                box.get().getButton().setDisable(true);
+            }
+            if (box.isPresent() && gameBox.isAllBorderBoxSelected()) {
+                closeGameBox(gameBox);
+            }
+        }
     }
 
 
-    private Box getGameBox(BorderPane box, List<BoxBorder> boxBorders) {
-        return Box.builder()
+    private void closeGameBox(GameBox gameBox) {
+        gameBox.closeGameBox(currentPlayer());
+        if (gameBoard.isAllBoxesClosed()) {
+            stopGame();
+        }
+    }
+
+    private boolean isAllBoxesClosed() {
+        return gameBoard.getGameBoxList().stream().noneMatch(GameBox::isNotOccupied);
+    }
+
+    private void stopGame() {
+        System.out.println("STOP GAME");
+    }
+
+    private GameBox getGameBox(BorderPane box, List<BoxBorder> boxBorders) {
+        return GameBox.builder()
                 .isOccupied(false)
                 .occupiedBy("")
                 .box(box)
                 .boxBorders(boxBorders).build();
+    }
+
+    private GamePlayer currentPlayer() {
+        return gameProperties.getFirstPlayer();
     }
 }

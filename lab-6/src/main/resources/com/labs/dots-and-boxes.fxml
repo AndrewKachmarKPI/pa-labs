@@ -12,6 +12,8 @@
             <ToolBar prefHeight="42.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                 <Button fx:id="homeBtn" mnemonicParsing="false" onMouseClicked="#onHomeButtonClick" prefHeight="30.0"
                         prefWidth="16.0" styleClass="icon-btn"/>
+                <Button fx:id="reloadGameBtn" mnemonicParsing="false" onMouseClicked="#onReloadBtnClick"
+                        prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn"/>
             </ToolBar>
         </bottom>
         <top>
@@ -43,7 +45,7 @@
                         </VBox>
                     </HBox>
                 </ToolBar>
-                <Label alignment="CENTER" prefHeight="56.0" prefWidth="597.0" fx:id="winLabel">
+                <Label fx:id="winLabel" alignment="CENTER" prefHeight="56.0" prefWidth="597.0">
                     <font>
                         <Font size="24.0"/>
                     </font>

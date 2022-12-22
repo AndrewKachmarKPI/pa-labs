@@ -36,6 +36,7 @@ public class GameController implements Observer {
     public Button homeBtn;
     public BorderPane boardPanel;
     public Label winLabel;
+    public Button reloadGameBtn;
     private List<Button> allButtons = new ArrayList<>();
     private List<BorderPane> allBoxes = new ArrayList<>();
     private static final String bgStyle = "-fx-background-color:";
@@ -48,23 +49,8 @@ public class GameController implements Observer {
     @FXML
     void initialize() {
         gameService = GameServiceImpl.getInstance();
-//        this.gameProperties = gameService.getGameProperties();
-        GamePlayer firstPlayer = GamePlayer.builder()
-                .type(PlayerType.HUMAN)
-                .color(Color.CORAL)
-                .title("Player 1")
-                .score(0).build();
-        GamePlayer secondPlayer = GamePlayer.builder()
-                .type(PlayerType.HUMAN)
-                .color(Color.RED)
-                .title("Player 2")
-                .score(0).build();
-        this.gameProperties = GameProperties.builder()
-                .firstPlayer(firstPlayer)
-                .secondPlayer(secondPlayer)
-                .gameComplexity(GameComplexity.EASY)
-                .gameFieldSize(FieldSize.S).build();
-        gameService.saveSettings(gameProperties, this);
+        gameService.saveSettings(this);
+        this.gameProperties = gameService.getGameProperties();
 
         setPlayerScore(firstPlayerAmount, gameProperties.getFirstPlayer());
         setPlayerScore(secondPlayerAmount, gameProperties.getSecondPlayer());
@@ -81,11 +67,28 @@ public class GameController implements Observer {
     }
 
     public void onHomeButtonClick() throws IOException {
+        gameService.clearGame();
         FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("index.fxml"));
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add("dotsAndBoxes.css");
         stage.setScene(scene);
+    }
+
+    public void onReloadBtnClick() {
+        allButtons = new ArrayList<>();
+        allBoxes = new ArrayList<>();
+        winLabel.setText("");
+        firstPlayerAmount.setText("");
+        secondPlayerAmount.setText("");
+        moveInput.setText("");
+        gameService = GameServiceImpl.getNewInstance();
+        currentPlayer = null;
+        gameProperties.getFirstPlayer().setScore(0);
+        gameProperties.getSecondPlayer().setScore(0);
+        gameService.saveSettings(gameProperties, this);
+        buildGameField();
+        gameService.startGame();
     }
 
     //BUILD FIELD

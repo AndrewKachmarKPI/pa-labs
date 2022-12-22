@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -48,6 +49,9 @@ public class GameBox {
         return !isOccupied;
     }
 
+    public List<BoxBorder> getAllNotSelectedBorders() {
+        return boxBorders.stream().filter(BoxBorder::isNotSelected).collect(Collectors.toList());
+    }
 
     public void closeGameBox(GamePlayer closedByPlayer) {
         Rectangle rectangle = (Rectangle) box.getCenter();

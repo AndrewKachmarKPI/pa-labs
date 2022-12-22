@@ -19,4 +19,7 @@ public class BoxBorder {
         this.isSelected = false;
         this.selectedBy = "";
     }
+    public boolean isNotSelected(){
+        return !this.isSelected;
+    }
 }

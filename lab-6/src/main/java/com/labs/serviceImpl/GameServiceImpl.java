@@ -30,6 +30,10 @@ public class GameServiceImpl implements GameService {
         }
         return gameInstance;
     }
+    public static GameServiceImpl getNewInstance() {
+        return new GameServiceImpl();
+    }
+
 
     @Override
     public void saveSettings(GameProperties gameProperties, Observer observer) {
@@ -59,10 +63,12 @@ public class GameServiceImpl implements GameService {
     private void checkNextMove() {
         if (gameBoard.isAllBoxesClosed()) {
             stopGame();
-        }
-        GamePlayer currentPlayer = getCurrentPlayer();
-        if (currentPlayer.getType() == PlayerType.COMPUTER) {
-
+        }else{
+            GamePlayer currentPlayer = getCurrentPlayer();
+            if (currentPlayer.getType() == PlayerType.COMPUTER) {
+                String boxId = findBorderForSelect(); //FIXME REPLACE WITH ALGORITHM
+                selectBoxBorderByPlayer(boxId);
+            }
         }
     }
 
@@ -224,5 +230,24 @@ public class GameServiceImpl implements GameService {
         for (Observer observer : observers) {
             observer.onPlayerScoreChange(gamePlayer.getTitle(), gamePlayer.getScore());
         }
+    }
+
+    @Override
+    public void clearGame() {
+        gameInstance = new GameServiceImpl();
+    }
+
+    //TODO WRITE ALGORITHM
+
+    private String findBorderForSelect() {
+        List<BoxBorder> gameBoxList = new ArrayList<>();
+        for (GameBox gameBox : gameBoard.getGameBoxList()) {
+            gameBoxList.addAll(gameBox.getAllNotSelectedBorders());
+        }
+        return gameBoxList.get(getRandomNumber(0, gameBoxList.size())).getButton().getId();
+    }
+
+    private int getRandomNumber(int max, int min) {
+        return (int) (Math.random() * (max - min) + min);
     }
 }

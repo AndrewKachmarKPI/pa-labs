@@ -33,4 +33,6 @@ public interface GameService {
     void notifyPlayerChange();
 
     void notifyPlayerScoreChange(GamePlayer gamePlayer);
+
+    void clearGame();
 }

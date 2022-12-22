@@ -3,32 +3,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<FlowPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="531.0" prefWidth="594.0" rowValignment="BOTTOM" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.labs.controllers.GameController">
-    <ToolBar prefHeight="94.0" prefWidth="595.0">
-        <HBox alignment="CENTER" prefHeight="0.0" prefWidth="200.0" spacing="10.0">
-            <VBox alignment="CENTER" prefHeight="77.0" prefWidth="178.0" spacing="10.0">
-                <Label alignment="CENTER" prefHeight="17.0" prefWidth="100.0" text="Move by" />
-                <TextField fx:id="moveInput" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="124.0" />
-            </VBox>
-        </HBox>
-        <Separator orientation="VERTICAL" prefHeight="84.0" prefWidth="0.0" />
-        <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="84.0" prefWidth="371.0" spacing="10.0">
-            <VBox alignment="CENTER" prefHeight="47.0" prefWidth="100.0" spacing="10.0">
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="100.0" text="Player 1" />
-                <TextField fx:id="firstPlayerAmount" editable="false" prefHeight="30.0" prefWidth="100.0" />
-            </VBox>
-            <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="22.0" />
-            <VBox alignment="CENTER" layoutX="84.0" layoutY="10.0" prefHeight="77.0" prefWidth="100.0" spacing="10.0">
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="100.0" text="Player 2" />
-                <TextField fx:id="secondPlayerAmount" editable="false" prefHeight="30.0" prefWidth="70.0" />
-            </VBox>
-        </HBox>
-    </ToolBar>
-   <BorderPane fx:id="boardPanel" prefHeight="334.0" prefWidth="327.0">
-      <center>
-         <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="14.0" prefWidth="99.0" text="Button" BorderPane.alignment="CENTER" />
-      </center></BorderPane>
-    <ToolBar prefHeight="45.0" prefWidth="593.0">
-        <Button fx:id="homeBtn" mnemonicParsing="false" onMouseClicked="#onHomeButtonClick" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" />
-    </ToolBar>
+<FlowPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" rowValignment="BOTTOM" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.labs.controllers.GameController">
+   <BorderPane fx:id="boardPanel" prefHeight="599.0" prefWidth="595.0">
+      <bottom>
+          <ToolBar prefHeight="42.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <Button fx:id="homeBtn" mnemonicParsing="false" onMouseClicked="#onHomeButtonClick" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" />
+          </ToolBar>
+      </bottom>
+      <top>
+          <ToolBar prefHeight="94.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <HBox alignment="CENTER" prefHeight="0.0" prefWidth="200.0" spacing="10.0">
+                  <VBox alignment="CENTER" prefHeight="77.0" prefWidth="178.0" spacing="10.0">
+                      <Label alignment="CENTER" prefHeight="17.0" prefWidth="100.0" text="Move by" />
+                      <TextField fx:id="moveInput" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="124.0" />
+                  </VBox>
+              </HBox>
+              <Separator orientation="VERTICAL" prefHeight="84.0" prefWidth="0.0" />
+              <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="84.0" prefWidth="371.0" spacing="10.0">
+                  <VBox alignment="CENTER" prefHeight="84.0" prefWidth="160.0" spacing="10.0">
+                      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="100.0" text="Player 1 score" />
+                      <TextField fx:id="firstPlayerAmount" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="100.0" />
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="22.0" />
+                  <VBox alignment="CENTER" layoutX="84.0" layoutY="10.0" prefHeight="84.0" prefWidth="160.0" spacing="10.0">
+                      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="100.0" text="Player 2 score" />
+                      <TextField fx:id="secondPlayerAmount" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="70.0" />
+                  </VBox>
+              </HBox>
+          </ToolBar>
+      </top></BorderPane>
 </FlowPane>

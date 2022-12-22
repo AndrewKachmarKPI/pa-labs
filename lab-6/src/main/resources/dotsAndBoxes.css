@@ -16,3 +16,23 @@
     -fx-min-width: 10px;
     -fx-min-heigt: 10px;
 }
+
+/*<Button layoutX="129.0" layoutY="87.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="10.0" prefWidth="70.0" />*/
+
+
+.circle {
+    -fx-border-radius: 8;
+    -fx-background-color: BLACK;
+}
+
+.h-btn {
+    -fx-background-radius: 0;
+    -fx-pref-height: 16;
+    -fx-pref-width: 70;
+}
+
+.v-btn {
+    -fx-background-radius: 0;
+    -fx-pref-height: 70;
+    -fx-pref-width: 16;
+}

@@ -11,6 +11,7 @@ import com.labs.serviceImpl.GameServiceImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,17 +21,19 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameController {
     public TextField moveInput;
     public TextField firstPlayerAmount;
     public TextField secondPlayerAmount;
     public Button homeBtn;
-    public GridPane pane;
-    public BorderPane dotsPane;
+    public BorderPane boardPanel;
     private GameService gameService;
     private GameProperties gameProperties;
 
@@ -77,64 +80,72 @@ public class GameController {
     private void buildGameField() {
         int size = gameProperties.getGameFieldSize().getSize() * 10;
         double colWidth = ((double) 1 / gameProperties.getGameFieldSize().getSize()) * 100;
-        dotsPane.setPrefSize(size, size);
 
-        BorderPane borderPane = new BorderPane();
-        Node topNode = getHorizontalNode();
-        Node bottomNode = getHorizontalNode();
-        Node leftNode = getBorderEdge(false);
-        Node rightNode = getBorderEdge(false);
-        BorderPane.setAlignment(topNode, Pos.CENTER);
-        BorderPane.setAlignment(bottomNode, Pos.CENTER);
-        BorderPane.setAlignment(leftNode, Pos.CENTER);
-        BorderPane.setAlignment(rightNode, Pos.CENTER);
-
-        borderPane.setTop(topNode);
-        borderPane.setBottom(bottomNode);
-        borderPane.setCenter(new Rectangle(40, 40, Color.CORAL));
-        borderPane.setLeft(leftNode);
-        borderPane.setRight(rightNode);
-
-        dotsPane.setCenter(borderPane);
-    }
-
-    private BorderPane getBox() {
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(getBoxBoarder(true));
-        borderPane.setBottom(getBoxBoarder(true));
-        borderPane.setLeft(getBoxBoarder(false));
-        borderPane.setRight(getBoxBoarder(false));
-        borderPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        return borderPane;
-    }
-
-    private Node getBoxBoarder(boolean isHorizontal) {
-        Button button = new Button();
-        if (isHorizontal) {
-            button.setPrefSize(Double.MAX_VALUE, 5);
-        } else {
-            button.setPrefSize(5, Double.MAX_VALUE);
+        VBox vBox = new VBox();
+        for (int i = 0; i < gameProperties.getGameFieldSize().getSize(); i++) {
+            HBox hor = getHorizontalLine();
+            HBox ver = getVerticalLine();
+            vBox.getChildren().addAll(hor, ver);
         }
-        return button;
+        vBox.getChildren().add(getHorizontalLine());
+        boardPanel.setCenter(vBox);
     }
+
+    private HBox getVerticalLine() {
+        HBox hBox = new HBox();
+        int size = gameProperties.getGameFieldSize().getSize();
+        for (int i = 0; i < size + 1; i++) {
+            Button button = getBorderButton(false);
+            hBox.getChildren().add(button);
+            if (i + 1 != size + 1) {
+                hBox.getChildren().add(getBox());
+            }
+        }
+        return hBox;
+    }
+
+    private HBox getHorizontalLine() {
+        HBox hBox = new HBox();
+        List<Node> rowNodes = new ArrayList<>();
+        int size = gameProperties.getGameFieldSize().getSize();
+        for (int i = 0; i < size + 1; i++) {
+            rowNodes.add(getCircle());
+            if (i + 1 != size + 1) {
+                Button button = getBorderButton(true);
+                rowNodes.add(button);
+            }
+        }
+        hBox.getChildren().addAll(rowNodes);
+        return hBox;
+    }
+
 
     private Circle getCircle() {
         Circle circle = new Circle(8, Color.BLACK);
-        circle.getStyleClass().add("circle");
+        circle.setLayoutX(10);
         return circle;
     }
 
-    private Node getHorizontalNode() {
-        return new HBox(getCircle(), getBorderEdge(true), getCircle());
-    }
-
-    private Node getBorderEdge(boolean isHorizontal) {
+    private Button getBorderButton(boolean isHorizontal) {
         Button button = new Button();
         if (isHorizontal) {
-            button.setPrefSize(40, 5);
+            button.setMinHeight(Button.USE_PREF_SIZE);
+            button.getStyleClass().add("h-btn");
         } else {
-            button.setPrefSize(5, 40);
+            button.getStyleClass().add("v-btn");
         }
         return button;
+    }
+
+    private BorderPane getBox() {
+        Rectangle rectangle = new Rectangle();
+        rectangle.setWidth(70);
+        rectangle.setHeight(70);
+        rectangle.setFill(Color.GREEN);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setMinHeight(70);
+        borderPane.setMinHeight(70);
+        borderPane.setCenter(rectangle);
+        return borderPane;
     }
 }

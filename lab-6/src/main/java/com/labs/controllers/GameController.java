@@ -70,7 +70,7 @@ public class GameController {
     }
 
     private void setPlayerScore(TextField amountInput, GamePlayer gamePlayer) {
-        String inputStyle = "-fx-text-inner-color: " + "#" + Integer.toHexString(gamePlayer.getColor().hashCode()) + ";";
+        String inputStyle = "-fx-text-inner-color: " + getHexColor(gamePlayer.getColor());
         amountInput.setText(gamePlayer.getScore().toString());
         amountInput.setStyle(inputStyle);
     }
@@ -189,7 +189,6 @@ public class GameController {
     private void onBorderUnHover(MouseEvent event) {
         Button button = getButtonById(((Button) event.getSource()).getId());
         if (!button.isDisabled()) {
-            System.out.println(":");
             button.cursorProperty().set(Cursor.HAND);
             button.setStyle("-fx-background-color: " + getHexColor(Color.LIGHTGRAY));
         }

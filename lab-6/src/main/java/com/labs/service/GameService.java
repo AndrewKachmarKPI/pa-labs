@@ -1,6 +1,7 @@
 package com.labs.service;
 
 import com.labs.domain.GameBoard;
+import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -12,7 +13,13 @@ public interface GameService {
     String HORIZONTAL = "H";
     String VERTICAL = "V";
 
-    void startGame(GameProperties gameProperties);
+    void startGame();
+
+    void saveSettings(Observer observer);
+
+    void saveSettings(GameProperties gameProperties, Observer observer);
+
+    void saveSettings(GameProperties gameProperties);
 
     GameProperties getGameProperties();
 
@@ -20,5 +27,10 @@ public interface GameService {
 
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
 
-    void selectBoxBorder(String boxBorderId);
+    void selectBoxBorderByPlayer(String boxBorderId);
+
+
+    void notifyPlayerChange();
+
+    void notifyPlayerScoreChange(GamePlayer gamePlayer);
 }

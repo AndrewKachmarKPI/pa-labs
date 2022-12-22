@@ -6,6 +6,7 @@ import com.labs.enums.FieldSize;
 import com.labs.enums.GameComplexity;
 import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
+import com.labs.service.Observer;
 import com.labs.serviceImpl.GameServiceImpl;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -27,12 +29,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameController {
+public class GameController implements Observer {
     public TextField moveInput;
     public TextField firstPlayerAmount;
     public TextField secondPlayerAmount;
     public Button homeBtn;
     public BorderPane boardPanel;
+    public Label winLabel;
     private List<Button> allButtons = new ArrayList<>();
     private List<BorderPane> allBoxes = new ArrayList<>();
     private static final String bgStyle = "-fx-background-color:";
@@ -40,6 +43,7 @@ public class GameController {
 
     private GameService gameService;
     private GameProperties gameProperties;
+    private GamePlayer currentPlayer;
 
     @FXML
     void initialize() {
@@ -60,19 +64,20 @@ public class GameController {
                 .secondPlayer(secondPlayer)
                 .gameComplexity(GameComplexity.EASY)
                 .gameFieldSize(FieldSize.S).build();
-        gameService.startGame(gameProperties);
+        gameService.saveSettings(gameProperties, this);
 
-        System.out.println(gameProperties);
         setPlayerScore(firstPlayerAmount, gameProperties.getFirstPlayer());
         setPlayerScore(secondPlayerAmount, gameProperties.getSecondPlayer());
 
         buildGameField();
+        gameService.startGame();
     }
 
     private void setPlayerScore(TextField amountInput, GamePlayer gamePlayer) {
         String inputStyle = "-fx-text-inner-color: " + getHexColor(gamePlayer.getColor());
         amountInput.setText(gamePlayer.getScore().toString());
         amountInput.setStyle(inputStyle);
+        amountInput.setId(gamePlayer.getTitle());
     }
 
     public void onHomeButtonClick() throws IOException {
@@ -81,10 +86,6 @@ public class GameController {
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add("dotsAndBoxes.css");
         stage.setScene(scene);
-    }
-
-    private GamePlayer getActiveGamePlayer() {
-        return gameProperties.getFirstPlayer();
     }
 
     //BUILD FIELD
@@ -97,7 +98,7 @@ public class GameController {
             if (isNotLastRow(i, size)) {
                 HBox verticalLine = getVerticalLine(i);
                 gameBoard.getChildren().addAll(horizontalLine, verticalLine);
-            }else{
+            } else {
                 gameBoard.getChildren().addAll(horizontalLine);
             }
         }
@@ -182,22 +183,18 @@ public class GameController {
         return borderPane;
     }
 
-    private void onBorderSelect(MouseEvent event) {
-       gameService.selectBoxBorder(((Button) event.getSource()).getId());
-    }
 
     private void onBorderHover(MouseEvent event) {
-        GamePlayer activePlayer = getActiveGamePlayer();
         Button button = getUiButtonById(((Button) event.getSource()).getId());
-        if (!button.isDisabled()) {
+        if (!button.isDisabled() && currentPlayer.getType() != PlayerType.COMPUTER) {
             button.cursorProperty().set(Cursor.HAND);
-            button.setStyle(bgStyle + getHexColor(activePlayer.getColor()));
+            button.setStyle(bgStyle + getHexColor(currentPlayer.getColor()));
         }
     }
 
     private void onBorderUnHover(MouseEvent event) {
         Button button = getUiButtonById(((Button) event.getSource()).getId());
-        if (!button.isDisabled()) {
+        if (!button.isDisabled() && currentPlayer.getType() != PlayerType.COMPUTER) {
             button.cursorProperty().set(Cursor.HAND);
             button.setStyle(bgStyle + getHexColor(Color.LIGHTGRAY));
         }
@@ -210,5 +207,33 @@ public class GameController {
 
     private String getHexColor(Color color) {
         return "#" + Integer.toHexString(color.hashCode()) + ";";
+    }
+
+    // ACTIONS
+    private void onBorderSelect(MouseEvent event) {
+        if (currentPlayer.getType() != PlayerType.COMPUTER) {
+            gameService.selectBoxBorderByPlayer(((Button) event.getSource()).getId());
+        }
+    }
+
+
+    @Override
+    public void onStopGame(GamePlayer gamePlayer) {
+        winLabel.setText(gamePlayer.getTitle() + " win with score ->" + gamePlayer.getScore());
+    }
+
+    @Override
+    public void onPlayerChange(GamePlayer gamePlayer) {
+        currentPlayer = gamePlayer;
+        moveInput.setText(gamePlayer.getTitle());
+    }
+
+    @Override
+    public void onPlayerScoreChange(String playerTitle, Integer score) {
+        if (this.firstPlayerAmount.getId().equals(playerTitle)) {
+            this.firstPlayerAmount.setText(score.toString());
+        } else {
+            this.secondPlayerAmount.setText(score.toString());
+        }
     }
 }

@@ -91,7 +91,7 @@ public class IndexPageController {
                     .secondPlayer(secondPlayer)
                     .gameComplexity(gameComplexityComboBox.getValue())
                     .gameFieldSize(FieldSize.getByTitle(fieldSizeComboBox.getValue())).build();
-            gameService.startGame(gameProperties);
+            gameService.saveSettings(gameProperties);
 
             FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
             Stage stage = (Stage) playBtn.getScene().getWindow();

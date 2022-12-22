@@ -1,7 +1,11 @@
 package com.labs.serviceImpl;
 
 import com.labs.domain.*;
+import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
+import com.labs.service.Observer;
+import com.labs.solvers.AlphaBettaSolver;
+import com.labs.solvers.HumanSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -15,7 +19,10 @@ public class GameServiceImpl implements GameService {
     private static GameServiceImpl gameInstance;
     private GameProperties gameProperties;
     private GameBoard gameBoard;
+    private String currentPlayerTitle;
     private static final String bgStyle = "-fx-background-color:";
+    private List<Observer> observers = new ArrayList<>();
+
 
     public static GameServiceImpl getInstance() {
         if (gameInstance == null) {
@@ -25,8 +32,47 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void startGame(GameProperties gameProperties) {
+    public void saveSettings(GameProperties gameProperties, Observer observer) {
+        this.observers.add(observer);
+        this.saveSettings(gameProperties);
+    }
+
+    @Override
+    public void saveSettings(GameProperties gameProperties) {
         this.gameProperties = gameProperties;
+        setGameSolverForPlayer(gameProperties.getFirstPlayer());
+        setGameSolverForPlayer(gameProperties.getSecondPlayer());
+    }
+
+    @Override
+    public void saveSettings(Observer observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void startGame() {
+        this.currentPlayerTitle = gameProperties.getFirstPlayer().getTitle();
+        notifyPlayerChange();
+        checkNextMove();
+    }
+
+    private void checkNextMove() {
+        if (gameBoard.isAllBoxesClosed()) {
+            stopGame();
+        }
+        GamePlayer currentPlayer = getCurrentPlayer();
+        if (currentPlayer.getType() == PlayerType.COMPUTER) {
+
+        }
+    }
+
+    private void changeCurrentPlayer() {
+        if (this.gameProperties.getFirstPlayer().getTitle().equals(currentPlayerTitle)) {
+            currentPlayerTitle = this.gameProperties.getSecondPlayer().getTitle();
+        } else {
+            currentPlayerTitle = this.gameProperties.getFirstPlayer().getTitle();
+        }
+        notifyPlayerChange();
     }
 
     @Override
@@ -95,7 +141,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void selectBoxBorder(String boxBorderId) {
+    public void selectBoxBorderByPlayer(String boxBorderId) {
+        boolean isClosed = false;
         for (GameBox gameBox : gameBoard.getGameBoxList()) {
             Optional<BoxBorder> box = gameBox.getBoxBorders().stream()
                     .filter(boxBorder -> boxBorder.getButton().getId().equals(boxBorderId))
@@ -103,25 +150,34 @@ public class GameServiceImpl implements GameService {
                     .findFirst();
             if (box.isPresent()) {
                 box.get().setSelected(true);
-                box.get().setSelectedBy(currentPlayer().getTitle());
+                box.get().setSelectedBy(getCurrentPlayer().getTitle());
                 box.get().getButton().setStyle(bgStyle + "#000000");
                 box.get().getButton().setDisable(true);
             }
             if (box.isPresent() && gameBox.isAllBorderBoxSelected()) {
-                closeGameBox(gameBox);
+                gameBox.closeGameBox(getCurrentPlayer());
+                GamePlayer gamePlayer = getCurrentPlayer();
+                gamePlayer.updateScore();
+                notifyPlayerScoreChange(gamePlayer);
+                isClosed = true;
             }
         }
-    }
-
-    private void closeGameBox(GameBox gameBox) {
-        gameBox.closeGameBox(currentPlayer());
-        if (gameBoard.isAllBoxesClosed()) {
-            stopGame();
+        if (!isClosed) {
+            changeCurrentPlayer();
         }
+        checkNextMove();
     }
 
     private void stopGame() {
-        System.out.println("STOP GAME");
+        for (Observer observer : observers) {
+            observer.onStopGame(getWinPlayer());
+        }
+    }
+
+    private GamePlayer getWinPlayer() {
+        GamePlayer firstPlayer = gameProperties.getFirstPlayer();
+        GamePlayer secondPlayer = gameProperties.getSecondPlayer();
+        return firstPlayer.getScore() > secondPlayer.getScore() ? firstPlayer : secondPlayer;
     }
 
     private GameBox getGameBox(BorderPane box, List<BoxBorder> boxBorders) {
@@ -132,7 +188,41 @@ public class GameServiceImpl implements GameService {
                 .boxBorders(boxBorders).build();
     }
 
-    private GamePlayer currentPlayer() {
-        return gameProperties.getFirstPlayer();
+    private GamePlayer getCurrentPlayer() {
+        GamePlayer gamePlayer;
+        if (this.gameProperties.getFirstPlayer().getTitle().equals(currentPlayerTitle)) {
+            gamePlayer = this.gameProperties.getFirstPlayer();
+        } else {
+            gamePlayer = this.gameProperties.getSecondPlayer();
+        }
+        return gamePlayer;
+    }
+
+    private void setGameSolverForPlayer(GamePlayer gamePlayer) {
+        switch (gamePlayer.getType()) {
+            case HUMAN: {
+                gamePlayer.setGameSolver(new HumanSolver());
+                break;
+            }
+            case COMPUTER: {
+                gamePlayer.setGameSolver(new AlphaBettaSolver());
+                break;
+            }
+        }
+    }
+
+
+    @Override
+    public void notifyPlayerChange() {
+        for (Observer observer : observers) {
+            observer.onPlayerChange(getCurrentPlayer());
+        }
+    }
+
+    @Override
+    public void notifyPlayerScoreChange(GamePlayer gamePlayer) {
+        for (Observer observer : observers) {
+            observer.onPlayerScoreChange(gamePlayer.getTitle(), gamePlayer.getScore());
+        }
     }
 }

@@ -6,14 +6,10 @@ import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
 import com.labs.solvers.HumanSolver;
-import javafx.animation.FillTransition;
-import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +166,6 @@ public class GameServiceImpl implements GameService {
                 gameBox.closeGameBox(getCurrentPlayer());
                 GamePlayer gamePlayer = getCurrentPlayer();
                 gamePlayer.updateScore();
-                notifyPlayerScoreChange(gamePlayer);
                 isClosed = true;
             }
         }
@@ -244,16 +239,16 @@ public class GameServiceImpl implements GameService {
     }
 
     //TODO WRITE ALGORITHM
-
-    private String findBorderForSelect() {
-        List<BoxBorder> gameBoxList = new ArrayList<>();
-        for (GameBox gameBox : gameBoard.getGameBoxList()) {
-            gameBoxList.addAll(gameBox.getAllNotSelectedBorders());
-        }
-        return gameBoxList.get(getRandomNumber(0, gameBoxList.size())).getButton().getId();
-    }
-
     private int getRandomNumber(int max, int min) {
         return (int) (Math.random() * (max - min) + min);
+    }
+
+    private final static int MIN = Integer.MIN_VALUE, MAX = Integer.MAX_VALUE;
+    private Integer treeLevel = 1;
+
+    private String findBorderForSelect() {
+        String borderBoxId = "H00";
+
+        return borderBoxId;
     }
 }

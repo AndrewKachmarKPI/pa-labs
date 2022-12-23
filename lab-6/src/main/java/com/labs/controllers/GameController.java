@@ -2,8 +2,6 @@ package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
 import com.labs.domain.*;
-import com.labs.enums.FieldSize;
-import com.labs.enums.GameComplexity;
 import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
 import com.labs.service.Observer;

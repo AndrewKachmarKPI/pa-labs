@@ -4,7 +4,7 @@ import com.labs.DotsAndBoxesApplication;
 import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
 import com.labs.enums.FieldSize;
-import com.labs.enums.GameComplexity;
+import com.labs.enums.GameDifficulty;
 import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
 import com.labs.serviceImpl.GameServiceImpl;
@@ -37,7 +37,7 @@ public class IndexPageController {
     @FXML
     public ComboBox<PlayerType> secondPlayerType;
     @FXML
-    public ComboBox<GameComplexity> gameComplexityComboBox;
+    public ComboBox<GameDifficulty> gameComplexityComboBox;
     @FXML
     public ComboBox<String> fieldSizeComboBox;
 
@@ -52,7 +52,7 @@ public class IndexPageController {
     }
 
     private void setGameComplexityComboBox() {
-        ObservableList<GameComplexity> gameComplexities = FXCollections.observableArrayList(GameComplexity.values());
+        ObservableList<GameDifficulty> gameComplexities = FXCollections.observableArrayList(GameDifficulty.values());
         gameComplexityComboBox.setItems(gameComplexities);
     }
 
@@ -64,7 +64,7 @@ public class IndexPageController {
 
     private void setDefaultPlayerColors() {
         firstPlayerColor.setValue(Color.RED);
-        secondPlayerColor.setValue(Color.GREEN);
+        secondPlayerColor.setValue(Color.LIME);
     }
 
     private void setFieldSizeComboBox() {
@@ -89,7 +89,7 @@ public class IndexPageController {
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)
                     .secondPlayer(secondPlayer)
-                    .gameComplexity(gameComplexityComboBox.getValue())
+                    .gameDifficulty(gameComplexityComboBox.getValue())
                     .gameFieldSize(FieldSize.getByTitle(fieldSizeComboBox.getValue())).build();
             gameService.saveSettings(gameProperties);
 

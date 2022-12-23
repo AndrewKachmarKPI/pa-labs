@@ -1,7 +1,7 @@
 package com.labs.domain;
 
 import com.labs.enums.FieldSize;
-import com.labs.enums.GameComplexity;
+import com.labs.enums.GameDifficulty;
 import lombok.*;
 
 
@@ -13,6 +13,6 @@ import lombok.*;
 public class GameProperties {
     private GamePlayer firstPlayer;
     private GamePlayer secondPlayer;
-    private GameComplexity gameComplexity;
+    private GameDifficulty gameDifficulty;
     private FieldSize gameFieldSize;
 }

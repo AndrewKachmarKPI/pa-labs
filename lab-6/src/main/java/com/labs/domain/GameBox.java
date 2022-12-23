@@ -71,4 +71,8 @@ public class GameBox {
         fill.setShape(rectangle);
         fill.play();
     }
+
+    public List<BoxBorder> getEmptyBoxBorders() {
+        return boxBorders.stream().filter(BoxBorder::isNotSelected).collect(Collectors.toList());
+    }
 }

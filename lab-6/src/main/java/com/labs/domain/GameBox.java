@@ -25,6 +25,24 @@ public class GameBox {
     private BorderPane box;
     private List<BoxBorder> boxBorders = new ArrayList<>();
 
+    public GameBox(GameBox gameBox) {
+        this.isOccupied = gameBox.isOccupied;
+        this.occupiedBy = gameBox.occupiedBy;
+        this.box = gameBox.box;
+        this.boxBorders = gameBox.boxBorders;
+    }
+
+    public GameBox(GameBox gameBox, List<BoxBorder> boxBorders, String selectBy) {
+        this.isOccupied = gameBox.isOccupied;
+        this.occupiedBy = gameBox.occupiedBy;
+        this.box = gameBox.box;
+        this.boxBorders = boxBorders;
+        if (getAllNotSelectedBorders().isEmpty()) {
+            this.isOccupied = true;
+            this.occupiedBy = selectBy;
+        }
+    }
+
     @Override
     public String toString() {
         return "Box{" +
@@ -36,7 +54,7 @@ public class GameBox {
     }
 
     public Button getButtonById(String id) {
-        return boxBorders.stream().filter(boxBorder -> boxBorder.getButton().getId().equals(id)).findFirst()
+        return boxBorders.stream().filter(boxBorder -> boxBorder.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Btn not found")).getButton();
     }
 
@@ -75,4 +93,25 @@ public class GameBox {
     public List<BoxBorder> getEmptyBoxBorders() {
         return boxBorders.stream().filter(BoxBorder::isNotSelected).collect(Collectors.toList());
     }
+
+    public boolean hasBorderWithId(String id) {
+        return boxBorders.stream().anyMatch(boxBorder -> boxBorder.getId().equals(id));
+    }
+
+    public GameBox copyGameBoxWithoutBorders() {
+        return GameBox.builder()
+                .isOccupied(this.isOccupied)
+                .occupiedBy(this.occupiedBy)
+                .box(this.box)
+                .boxBorders(new ArrayList<>()).build();
+    }
+
+    public GameBox copyGameBox() {
+        return GameBox.builder()
+                .isOccupied(this.isOccupied)
+                .occupiedBy(this.occupiedBy)
+                .box(this.box)
+                .boxBorders(this.boxBorders).build();
+    }
+
 }

@@ -5,16 +5,14 @@ import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
+import com.labs.solvers.GameSolver;
 import com.labs.solvers.HumanSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class GameServiceImpl implements GameService {
     private static GameServiceImpl gameInstance;
@@ -59,7 +57,17 @@ public class GameServiceImpl implements GameService {
     public void startGame() {
         this.currentPlayerTitle = gameProperties.getFirstPlayer().getTitle();
         notifyPlayerChange();
-        checkNextMove();
+
+
+        GameBoardNode gameBoardNode = GameBoardNode.builder()
+                .boardId(UUID.randomUUID().toString())
+                .currentState(gameBoard.getGameBoxList())
+                .successors(new ArrayList<>())
+                .depth(0)
+                .functionCost(0).build();
+        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode);
+        gameSolver.alphaBettaMiniMax();
+//        checkNextMove();
     }
 
     private void checkNextMove() {
@@ -153,7 +161,7 @@ public class GameServiceImpl implements GameService {
         boolean isClosed = false;
         for (GameBox gameBox : gameBoard.getGameBoxList()) {
             Optional<BoxBorder> box = gameBox.getBoxBorders().stream()
-                    .filter(boxBorder -> boxBorder.getButton().getId().equals(boxBorderId))
+                    .filter(boxBorder -> boxBorder.getId().equals(boxBorderId))
                     .filter(boxBorder -> !boxBorder.isSelected())
                     .findFirst();
             if (box.isPresent()) {
@@ -212,7 +220,7 @@ public class GameServiceImpl implements GameService {
                 break;
             }
             case COMPUTER: {
-                gamePlayer.setGameSolver(new AlphaBettaSolver());
+                gamePlayer.setGameSolver(new AlphaBettaSolver(new GameBoardNode()));
                 break;
             }
         }

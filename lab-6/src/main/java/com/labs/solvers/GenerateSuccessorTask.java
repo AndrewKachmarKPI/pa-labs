@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AllArgsConstructor
 public class GenerateSuccessorTask implements Callable<GameBoardNode> {
@@ -32,19 +34,15 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         currentState.setSuccessors(successors);
     }
 
-    public boolean buildGameTree(GameBoardNode currentState, String generateBy) {
-        List<GameBoardNode> successors = generateSuccessors(currentState, generateBy);
-        currentState.setSuccessors(successors);
+    public void buildGameTree(GameBoardNode currentState, String generateBy) {
+        buildFirstLayer(currentState, generateBy);
         if (currentState.isLeaf()) {
-            return true;
+            return;
         }
         for (GameBoardNode successor : currentState.getSuccessors()) {
-            boolean isLeaf = buildGameTree(successor, getGenerateBy(generateBy));
-            if (isLeaf) {
-                break;
-            }
+            buildGameTree(successor, getGenerateBy(generateBy));
         }
-        return false;
+        // build only first layer
     }
 
     private List<GameBoardNode> generateSuccessors(GameBoardNode currentState, String generateBy) {
@@ -91,5 +89,11 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
 
     public String getGenerateBy(String generateBy) {
         return generateBy.equals("MAX") ? "MIN" : "MAX";
+    }
+
+    private List<GameBoardNode> getSuccessors(GameBoardNode currentState, String generateBy) throws Exception {
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        Callable<GameBoardNode> task = new GenerateSuccessorTask(generateBy, currentState, false);
+        return executorService.submit(task).get().getSuccessors();
     }
 }

@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @AllArgsConstructor
 public class GenerateSuccessorTask implements Callable<GameBoardNode> {
     private String generateBy;
     private GameBoardNode currentState;
     private boolean isRecursive;
+    private static int depth = 2;
+
 
     @Override
     public GameBoardNode call() {
@@ -36,7 +36,7 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
 
     public void buildGameTree(GameBoardNode currentState, String generateBy) {
         buildFirstLayer(currentState, generateBy);
-        if (currentState.isLeaf()) {
+        if (currentState.isLeaf() || depth == currentState.getDepth()) {
             return;
         }
         for (GameBoardNode successor : currentState.getSuccessors()) {
@@ -89,11 +89,5 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
 
     public String getGenerateBy(String generateBy) {
         return generateBy.equals("MAX") ? "MIN" : "MAX";
-    }
-
-    private List<GameBoardNode> getSuccessors(GameBoardNode currentState, String generateBy) throws Exception {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> task = new GenerateSuccessorTask(generateBy, currentState, false);
-        return executorService.submit(task).get().getSuccessors();
     }
 }

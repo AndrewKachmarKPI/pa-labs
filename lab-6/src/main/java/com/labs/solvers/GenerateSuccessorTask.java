@@ -14,11 +14,22 @@ import java.util.concurrent.Callable;
 public class GenerateSuccessorTask implements Callable<GameBoardNode> {
     private String generateBy;
     private GameBoardNode currentState;
+    private boolean isRecursive;
 
     @Override
-    public GameBoardNode call() throws Exception {
-        buildGameTree(currentState, generateBy);
+    public GameBoardNode call() {
+        if (isRecursive) {
+            buildGameTree(currentState, generateBy);
+        } else {
+            buildFirstLayer(currentState, generateBy);
+        }
+        System.out.println("GENERATED");
         return currentState;
+    }
+
+    public void buildFirstLayer(GameBoardNode currentState, String generateBy) {
+        List<GameBoardNode> successors = generateSuccessors(currentState, generateBy);
+        currentState.setSuccessors(successors);
     }
 
     public boolean buildGameTree(GameBoardNode currentState, String generateBy) {
@@ -33,7 +44,7 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
                 break;
             }
         }
-        return true;
+        return false;
     }
 
     private List<GameBoardNode> generateSuccessors(GameBoardNode currentState, String generateBy) {

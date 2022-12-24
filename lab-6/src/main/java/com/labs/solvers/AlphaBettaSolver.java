@@ -36,7 +36,7 @@ public class AlphaBettaSolver implements GameSolver {
             List<GameBoardNode> successors = getFirstSuccessors(currentState, generateBy);
 
             for (GameBoardNode successor : successors) {
-                callables.add(new GenerateSuccessorTask(generateBy, successor));
+                callables.add(new GenerateSuccessorTask(generateBy, successor, true));
             }
             successors.clear();
 
@@ -53,7 +53,7 @@ public class AlphaBettaSolver implements GameSolver {
 
     private List<GameBoardNode> getFirstSuccessors(GameBoardNode currentState, String generateBy) throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> task = new GenerateSuccessorTask(generateBy, currentState);
+        Callable<GameBoardNode> task = new GenerateSuccessorTask(generateBy, currentState,false);
         return executorService.submit(task).get().getSuccessors();
     }
 

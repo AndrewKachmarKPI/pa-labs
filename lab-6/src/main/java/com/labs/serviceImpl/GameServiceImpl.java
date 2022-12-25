@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 public class GameServiceImpl implements GameService {
     private static GameServiceImpl gameInstance;
+
     private GameProperties gameProperties;
     private GameBoard gameBoard;
     private String currentPlayerTitle;

@@ -2,20 +2,14 @@ package com.labs.solvers;
 
 import com.labs.domain.BoxBorder;
 import com.labs.domain.GameBoardNode;
-import com.labs.domain.GameBox;
 import com.labs.enums.GameDifficulty;
 import com.labs.enums.PlayerType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
-
-// If alpha >= beta then prune
-// If alpha < beta DON'T prune
 public class AlphaBettaSolver implements GameSolver {
     private GameBoardNode rootState;
     private GameDifficulty difficulty;
@@ -25,16 +19,11 @@ public class AlphaBettaSolver implements GameSolver {
         this.difficulty = difficulty;
     }
 
-    public String getNextMove() throws ExecutionException, InterruptedException {
+    public String getNextMove() throws ExecutionException, InterruptedException { //FIXME NOT FINISHED
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
         GameBoardNode bestNode = alphaBetaSearch(rootState, difficulty.getDifficulty(), alpha, beta);
         BoxBorder border = getBestBoxBorder(rootState, bestNode);
-
-        rootState = new GameBoardNode(bestNode);
-
-        System.out.println("NODE->" + bestNode);
-        System.out.println("BEST BORDER->" + border);
         return border.getId();
     }
 
@@ -111,6 +100,7 @@ public class AlphaBettaSolver implements GameSolver {
         return executorService.submit(task).get().getSuccessors();
     }
 
+    //BEST BOX
     private BoxBorder getBestBoxBorder(GameBoardNode currentState, GameBoardNode boardNode) {
         List<BoxBorder> currentStateBoxBorders = currentState.getDistinctAllBoxBorders();
 

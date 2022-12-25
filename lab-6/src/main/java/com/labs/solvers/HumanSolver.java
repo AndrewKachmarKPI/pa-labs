@@ -1,4 +1,4 @@
 package com.labs.solvers;
 
-public class HumanSolver implements GameSolver{
+public class HumanSolver{
 }

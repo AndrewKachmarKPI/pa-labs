@@ -17,7 +17,7 @@ public class GamePlayer {
     private PlayerType type;
     private Color color;
     private String title;
-    private AlphaBettaSolver gameSolver;
+    private GameSolver gameSolver;
 
     public void updateScore() {
         this.score += 10;

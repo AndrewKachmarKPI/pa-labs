@@ -46,7 +46,7 @@ public class MiniMaxSolver extends GameSolver {
                 neighbours[i] = new Pair(moves.get(i), heuristic(newBoard, (newBoard.getScore(color) > board.getScore(color) ? color : Board.toggleColor(color))));
             }
             Arrays.sort(neighbours);
-            moves = new ArrayList<Edge>();
+            moves = new ArrayList<>();
             if (referenceColor != color)
                 for (int i = 0; i < size; i++)
                     moves.add(neighbours[i].getEdge());

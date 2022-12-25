@@ -22,5 +22,5 @@ public abstract class GameSolver {
         return value;
     }
 
-    public abstract Edge getNextMove(final Board board, int color );
+    public abstract Edge getNextMove(final Board board, int color);
 }

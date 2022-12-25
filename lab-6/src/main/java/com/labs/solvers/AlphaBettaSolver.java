@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 
-public class AlphaBettaSolver implements GameSolver {
+public class AlphaBettaSolver {
     private GameBoardNode rootState;
     private GameDifficulty difficulty;
 

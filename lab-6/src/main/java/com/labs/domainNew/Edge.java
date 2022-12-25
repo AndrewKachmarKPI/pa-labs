@@ -1,16 +1,23 @@
 package com.labs.domainNew;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Edge {
 
     private int x, y;
     private boolean horizontal;
 
-    Edge() {
+    public Edge() {
         x = y = -1;
         horizontal = false;
     }
 
-    Edge(int x, int y, boolean horizontal) {
+    public Edge(int x, int y, boolean horizontal) {
         this.x = x;
         this.y = y;
         this.horizontal = horizontal;
@@ -30,7 +37,7 @@ public class Edge {
 
     @Override
     public String toString() {
-        return ((horizontal ? "H " : "V ") + x + " " + y);
+        return ((horizontal ? "H" : "V") + x + "" + y);
     }
 
 }

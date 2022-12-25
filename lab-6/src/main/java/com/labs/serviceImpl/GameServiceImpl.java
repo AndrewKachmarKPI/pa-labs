@@ -1,13 +1,10 @@
 package com.labs.serviceImpl;
 
 import com.labs.domain.*;
-import com.labs.domainNew.Board;
-import com.labs.domainNew.Edge;
 import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
-import com.labs.solvers.MiniMaxSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -57,7 +54,6 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void startGame() {
-        board = new Board(gameProperties.getGameFieldSize().getSize());    //TODO REMOVE
         setGameSolverForPlayer(gameProperties.getFirstPlayer());
         setGameSolverForPlayer(gameProperties.getSecondPlayer());
 
@@ -72,9 +68,11 @@ public class GameServiceImpl implements GameService {
         } else {
             GamePlayer currentPlayer = getCurrentPlayer();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
-                Edge edge = currentPlayer.getGameSolver().getNextMove(board, turn);
-                System.out.println("FOUND->" + edge);
-                selectBoxBorderByPlayer(edge.toString());
+                try {
+                    selectBoxBorderByPlayer(currentPlayer.getGameSolver().getNextMove());
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -82,10 +80,8 @@ public class GameServiceImpl implements GameService {
 
     private void changeCurrentPlayer() {
         if (this.gameProperties.getFirstPlayer().getTitle().equals(currentPlayerTitle)) {
-            turn = Board.RED;
             currentPlayerTitle = this.gameProperties.getSecondPlayer().getTitle();
         } else {
-            turn = Board.BLUE;
             currentPlayerTitle = this.gameProperties.getFirstPlayer().getTitle();
         }
         notifyPlayerChange();
@@ -180,7 +176,6 @@ public class GameServiceImpl implements GameService {
         if (!isClosed) {
             changeCurrentPlayer();
         }
-        onSelectBorder(boxBorderId);    //TODO REMOVE
         checkNextMove();
     }
 
@@ -215,26 +210,23 @@ public class GameServiceImpl implements GameService {
     }
 
     private void setGameSolverForPlayer(GamePlayer gamePlayer) {
-//        GameBoardNode gameBoardNode = GameBoardNode.builder()
-//                .moveBy(getCurrentPlayer().getType())
-//                .humanScore(0)
-//                .computerScore(0)
-//                .boardId(UUID.randomUUID().toString())
-//                .currentState(gameBoard.getGameBoxList())
-//                .successors(new ArrayList<>())
-//                .depth(0)
-//                .functionCost(0).build();
-//        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode, gameProperties.getGameDifficulty());
-        int n = gameProperties.getGameFieldSize().getSize();    //TODO REMOVE
-        isSetHEdge = new boolean[n - 1][n];    //TODO REMOVE
-        isSetVEdge = new boolean[n][n - 1];    //TODO REMOVE
+        GameBoardNode gameBoardNode = GameBoardNode.builder()
+                .moveBy(getCurrentPlayer().getType())
+                .humanScore(0)
+                .computerScore(0)
+                .boardId(UUID.randomUUID().toString())
+                .currentState(gameBoard.getGameBoxList())
+                .successors(new ArrayList<>())
+                .depth(0)
+                .functionCost(0).build();
+        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode, gameProperties.getGameDifficulty());
         switch (gamePlayer.getType()) {
             case HUMAN: {
                 gamePlayer.setGameSolver(null);
                 break;
             }
             case COMPUTER: {
-                gamePlayer.setGameSolver(new MiniMaxSolver());
+                gamePlayer.setGameSolver(gameSolver);
                 break;
             }
         }
@@ -261,41 +253,5 @@ public class GameServiceImpl implements GameService {
 
     private int getRandomNumber(int max, int min) {
         return (int) (Math.random() * (max - min) + min);
-    }
-
-
-    //TODO WRITE ALGORITHM
-
-    //TODO REMOVE
-    private Board board;
-    private boolean[][] isSetHEdge, isSetVEdge;
-    private int turn;
-
-    private void onSelectBorder(String boxBorderId) {
-        Edge edge = getEdge(boxBorderId);
-        int x = edge.getX(), y = edge.getY();
-        if (edge.isHorizontal()) {
-            if (isSetHEdge[x][y]) return;
-            board.setHEdge(x, y, turn);
-            isSetHEdge[x][y] = true;
-        } else {
-            if (isSetVEdge[x][y]) return;
-            board.setVEdge(x, y, turn);
-            isSetVEdge[x][y] = true;
-        }
-    }
-
-    private Edge getEdge(String boxBorderId) {
-        Edge edge = new Edge();
-        if (boxBorderId.contains(HORIZONTAL)) {
-            boxBorderId = boxBorderId.replace(HORIZONTAL, "");
-            edge.setHorizontal(true);
-        } else {
-            boxBorderId = boxBorderId.replace(VERTICAL, "");
-            edge.setHorizontal(false);
-        }
-        edge.setX(Integer.parseInt(boxBorderId.split("")[0]));
-        edge.setY(Integer.parseInt(boxBorderId.split("")[1]));
-        return edge;
     }
 }

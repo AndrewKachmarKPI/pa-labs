@@ -29,7 +29,7 @@ public class AlphaBettaSolver {
     }
 
     public GameBoardNode alphaBetaSearch(GameBoardNode currentBoard, Integer difficulty, int alpha, int beta) throws ExecutionException, InterruptedException {
-        currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
+//        currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
         generateChild(currentBoard);
 
         if (currentBoard.getDepth() >= difficulty || currentBoard.isLeaf()) {
@@ -42,6 +42,7 @@ public class AlphaBettaSolver {
             bestNode.setFunctionCost(Integer.MIN_VALUE);
 
             GameBoardNode boardNode;
+            currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
             for (GameBoardNode successor : currentBoard.getSuccessors()) {
                 boardNode = alphaBetaSearch(successor, difficulty - 1, alpha, beta);
                 if (boardNode.getFunctionCost() > bestNode.getFunctionCost())
@@ -54,6 +55,7 @@ public class AlphaBettaSolver {
         } else {
             bestNode.setFunctionCost(Integer.MAX_VALUE);
             GameBoardNode boardNode;
+            currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
             for (GameBoardNode successor : currentBoard.getSuccessors()) {
                 boardNode = alphaBetaSearch(successor, difficulty - 1, alpha, beta);
                 if (boardNode.getFunctionCost() < bestNode.getFunctionCost())

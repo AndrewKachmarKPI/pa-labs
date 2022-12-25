@@ -8,24 +8,18 @@ import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
 public class GenerateSuccessorTask implements Callable<GameBoardNode> {
-    private String generateBy;
     private GameBoardNode currentState;
-    private boolean isFirstLayer;
+    private PlayerType moveBy;
     private static int depth = 2;
 
 
     @Override
     public GameBoardNode call() {
-        if (isFirstLayer) {
-            buildFirstLayer(currentState, generateBy);
-        } else {
-            buildGameTree(currentState, generateBy);
-        }
+        buildFirstLayer(currentState, moveBy.toString());
         return currentState;
     }
 
@@ -34,23 +28,12 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         currentState.setSuccessors(successors);
     }
 
-    public void buildGameTree(GameBoardNode currentState, String generateBy) {
-        buildFirstLayer(currentState, generateBy);
-        if (currentState.isLeaf() || depth == currentState.getDepth()) {
-            return;
-        }
-        for (GameBoardNode successor : currentState.getSuccessors()) {
-            buildGameTree(successor, getGenerateBy(generateBy));
-        }
-    }
-
     private List<GameBoardNode> generateSuccessors(GameBoardNode currentState, String generateBy) {
         List<GameBoardNode> successors = new ArrayList<>();
         List<BoxBorder> currentEmptyBorders = new ArrayList<>(currentState.getDistinctBoxBorders());
 
         for (BoxBorder currentEmptyBorder : currentEmptyBorders) {
-            GameBoardNode boardNode = new GameBoardNode(currentState.getBoardId(), UUID.randomUUID().toString(), currentState.getDepth() + 1, currentState.getFunctionCost(),
-                    generateBy, currentState.getHumanScore(), currentState.getComputerScore());
+            GameBoardNode boardNode = new GameBoardNode(currentState);
             List<GameBox> newBoardState = new ArrayList<>(getSuccessorGameBoxes(currentState, boardNode, currentEmptyBorder, generateBy));
             boardNode.setCurrentState(newBoardState);
             successors.add(boardNode);
@@ -68,7 +51,9 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
                 newBox = new GameBox(gameBox, getSelectedBorder(newBox.getBoxBorders(), borderForSelect.getId(), selectBy), selectBy);
             }
             if (newBox.isBoxFilled()) {
+                System.out.println("UPDATE SCORE");
                 boardNode.updateScore(selectBy);
+                System.out.println(boardNode);
             }
             gameBoxes.add(newBox);
         }
@@ -91,7 +76,17 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         return newBorders;
     }
 
-    public String getGenerateBy(String generateBy) {
+    public String getMoveBy(String generateBy) {
         return generateBy.equals(PlayerType.COMPUTER.toString()) ? PlayerType.HUMAN.toString() : PlayerType.COMPUTER.toString();
+    }
+
+    public void buildGameTree(GameBoardNode currentState, String generateBy) {
+        buildFirstLayer(currentState, generateBy);
+        if (currentState.isLeaf() || depth == currentState.getDepth()) {
+            return;
+        }
+        for (GameBoardNode successor : currentState.getSuccessors()) {
+            buildGameTree(successor, getMoveBy(generateBy));
+        }
     }
 }

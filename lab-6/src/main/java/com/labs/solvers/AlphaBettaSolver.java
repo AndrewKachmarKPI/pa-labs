@@ -19,7 +19,8 @@ public class AlphaBettaSolver implements GameSolver {
         this.difficulty = difficulty;
     }
 
-    public String getNextMove() throws ExecutionException, InterruptedException { //FIXME NOT FINISHED
+
+    public String getNextMove() throws ExecutionException, InterruptedException {
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
         GameBoardNode bestNode = alphaBetaSearch(rootState, difficulty.getDifficulty(), alpha, beta);
@@ -28,11 +29,14 @@ public class AlphaBettaSolver implements GameSolver {
     }
 
     public GameBoardNode alphaBetaSearch(GameBoardNode currentBoard, Integer difficulty, int alpha, int beta) throws ExecutionException, InterruptedException {
-        generateChild(currentBoard, currentBoard.getMoveBy().toString());
+        currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
+        generateChild(currentBoard);
+
         if (currentBoard.getDepth() >= difficulty || currentBoard.isLeaf()) {
             currentBoard.setFunctionCost(currentBoard.getHumanScore() + currentBoard.getComputerScore());
             return currentBoard;
         }
+
         GameBoardNode bestNode = new GameBoardNode();
         if (currentBoard.getMoveBy() == PlayerType.COMPUTER) {
             bestNode.setFunctionCost(Integer.MIN_VALUE);
@@ -64,39 +68,43 @@ public class AlphaBettaSolver implements GameSolver {
         return bestNode;
     }
 
-    private void generateChild(GameBoardNode currentBoard, String generateBy) throws ExecutionException, InterruptedException {
+    private void generateChild(GameBoardNode currentBoard) throws ExecutionException, InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> gameBoardNodeCallable = new GenerateSuccessorTask(generateBy, currentBoard, true);
+        Callable<GameBoardNode> gameBoardNodeCallable = new GenerateSuccessorTask(currentBoard, currentBoard.getMoveBy());
         executorService.submit(gameBoardNodeCallable).get();
+    }
+
+    public PlayerType getMoveBy(PlayerType moveBy) {
+        return moveBy.equals(PlayerType.COMPUTER) ? PlayerType.HUMAN : PlayerType.COMPUTER;
     }
 
 
     //BUILD TREE
     public void buildGameTree(GameBoardNode currentState, String generateBy) {
-        try {
-            ExecutorService executorService = Executors.newFixedThreadPool(24);
-            List<Callable<GameBoardNode>> callables = new ArrayList<>();
-            List<GameBoardNode> successors = getFirstSuccessors(currentState, generateBy);
-
-            for (GameBoardNode successor : successors) {
-                callables.add(new GenerateSuccessorTask(generateBy, successor, true));
-            }
-            successors.clear();
-
-            List<Future<GameBoardNode>> futures = executorService.invokeAll(callables);
-            for (Future<GameBoardNode> future : futures) {
-                successors.add(future.get());
-            }
-
-            currentState.setSuccessors(successors);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ExecutorService executorService = Executors.newFixedThreadPool(24);
+//            List<Callable<GameBoardNode>> callables = new ArrayList<>();
+//            List<GameBoardNode> successors = getFirstSuccessors(currentState);
+//
+//            for (GameBoardNode successor : successors) {
+////                callables.add(new GenerateSuccessorTask(successor));
+//            }
+//            successors.clear();
+//
+//            List<Future<GameBoardNode>> futures = executorService.invokeAll(callables);
+//            for (Future<GameBoardNode> future : futures) {
+//                successors.add(future.get());
+//            }
+//
+//            currentState.setSuccessors(successors);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
-    private List<GameBoardNode> getFirstSuccessors(GameBoardNode currentState, String generateBy) throws Exception {
+    private List<GameBoardNode> getFirstSuccessors(GameBoardNode currentState) throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> task = new GenerateSuccessorTask(generateBy, currentState, false);
+        Callable<GameBoardNode> task = new GenerateSuccessorTask(currentState, getMoveBy(currentState.getMoveBy()));
         return executorService.submit(task).get().getSuccessors();
     }
 
@@ -119,4 +127,55 @@ public class AlphaBettaSolver implements GameSolver {
         }
         return newBorder;
     }
+
+    private GameBoardNode getNodeByFuncCost(GameBoardNode state, int funcCost) {
+        if (state.getFunctionCost().equals(funcCost)) {
+            return state;
+        }
+        for (GameBoardNode successor : state.getSuccessors()) {
+            getNodeByFuncCost(successor, funcCost);
+        }
+        throw new RuntimeException("NOT FOUND");
+    }
+
+    public int alphaBetaSearchFunc(GameBoardNode currentBoard, int depth, int alpha, int beta) throws ExecutionException, InterruptedException {
+        generateChild(currentBoard);
+
+        if (currentBoard.getDepth() >= depth || currentBoard.isLeaf()) {
+            currentBoard.setFunctionCost(currentBoard.getHumanScore() + currentBoard.getComputerScore());
+            return currentBoard.getFunctionCost();
+        }
+
+
+        if (currentBoard.getMoveBy() == PlayerType.COMPUTER) {
+            int bestValue = Integer.MIN_VALUE;
+            int value;
+            for (GameBoardNode successor : currentBoard.getSuccessors()) {
+                value = alphaBetaSearchFunc(successor, depth - 1, alpha, beta);
+                if (value > bestValue)
+                    bestValue = value;
+                if (bestValue > alpha)
+                    alpha = bestValue;
+                if (beta <= alpha)
+                    break;
+            }
+            currentBoard.setFunctionCost(bestValue);
+            return bestValue;
+        } else {
+            int bestValue = Integer.MAX_VALUE;
+            int value;
+            for (GameBoardNode successor : currentBoard.getSuccessors()) {
+                value = alphaBetaSearchFunc(successor, depth - 1, alpha, beta);
+                if (value < bestValue)
+                    bestValue = value;
+                if (bestValue < beta)
+                    beta = bestValue;
+                if (beta <= alpha)
+                    break;
+            }
+            currentBoard.setFunctionCost(bestValue);
+            return bestValue;
+        }
+    }
+
 }

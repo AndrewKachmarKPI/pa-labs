@@ -63,7 +63,7 @@ public class GameBox {
     }
 
     public boolean isBoxFilled() {
-        return boxBorders.stream().noneMatch(BoxBorder::isNotSelected);
+        return boxBorders.stream().filter(BoxBorder::isSelected).count() == 4;
     }
 
     public boolean isAllBorderBoxSelected() {

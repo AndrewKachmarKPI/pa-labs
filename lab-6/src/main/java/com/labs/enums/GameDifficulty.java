@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum GameDifficulty {
-    EASY(3),
+    EASY(4),
     MEDIUM(4),
     HARD(6);
     private Integer difficulty;

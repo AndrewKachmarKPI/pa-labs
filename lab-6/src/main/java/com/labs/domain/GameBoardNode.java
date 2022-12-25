@@ -37,16 +37,15 @@ public class GameBoardNode {
         this.computerScore = computerScore;
     }
 
-    public GameBoardNode(GameBoardNode gameBoardNode) {
-        this.parentId = gameBoardNode.parentId;
-        this.boardId = gameBoardNode.boardId;
-        this.currentState = gameBoardNode.currentState;
-        this.successors = gameBoardNode.successors;
-        this.depth = gameBoardNode.depth;
-        this.functionCost = gameBoardNode.functionCost;
-        this.moveBy = gameBoardNode.moveBy;
-        this.humanScore = gameBoardNode.humanScore;
-        this.computerScore = gameBoardNode.computerScore;
+    public GameBoardNode(GameBoardNode currentState) {
+        this.parentId = currentState.parentId;
+        this.boardId = UUID.randomUUID().toString();
+        this.successors = new ArrayList<>();
+        this.depth = currentState.depth + 1;
+        this.functionCost = currentState.functionCost;
+        this.moveBy = currentState.moveBy;
+        this.humanScore = currentState.humanScore;
+        this.computerScore = currentState.computerScore;
     }
 
     public List<BoxBorder> getDistinctBoxBorders() {

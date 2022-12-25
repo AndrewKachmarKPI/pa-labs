@@ -5,12 +5,9 @@ import com.labs.enums.PlayerType;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
-import com.labs.solvers.GameSolver;
-import com.labs.solvers.HumanSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -68,8 +65,9 @@ public class GameServiceImpl implements GameService {
         } else {
             GamePlayer currentPlayer = getCurrentPlayer();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
+                AlphaBettaSolver solver = currentPlayer.getGameSolver();
                 try {
-                    String boxId = currentPlayer.getGameSolver().getNextMove();
+                    String boxId = solver.getNextMove();
                     selectBoxBorderByPlayer(boxId);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
@@ -231,7 +229,6 @@ public class GameServiceImpl implements GameService {
             }
         }
     }
-
 
     @Override
     public void notifyPlayerChange() {

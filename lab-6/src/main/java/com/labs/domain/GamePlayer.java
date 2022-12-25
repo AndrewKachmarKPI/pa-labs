@@ -1,6 +1,7 @@
 package com.labs.domain;
 
 import com.labs.enums.PlayerType;
+import com.labs.solvers.AlphaBettaSolver;
 import com.labs.solvers.GameSolver;
 import javafx.scene.paint.Color;
 import lombok.*;
@@ -16,7 +17,7 @@ public class GamePlayer {
     private PlayerType type;
     private Color color;
     private String title;
-    private GameSolver gameSolver;
+    private AlphaBettaSolver gameSolver;
 
     public void updateScore() {
         this.score += 10;

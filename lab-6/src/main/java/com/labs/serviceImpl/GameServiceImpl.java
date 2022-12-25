@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class GameServiceImpl implements GameService {
     private static GameServiceImpl gameInstance;
@@ -44,8 +45,6 @@ public class GameServiceImpl implements GameService {
     @Override
     public void saveSettings(GameProperties gameProperties) {
         this.gameProperties = gameProperties;
-        setGameSolverForPlayer(gameProperties.getFirstPlayer());
-        setGameSolverForPlayer(gameProperties.getSecondPlayer());
     }
 
     @Override
@@ -55,19 +54,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void startGame() {
+        setGameSolverForPlayer(gameProperties.getFirstPlayer());
+        setGameSolverForPlayer(gameProperties.getSecondPlayer());
+
         this.currentPlayerTitle = gameProperties.getFirstPlayer().getTitle();
         notifyPlayerChange();
-
-
-        GameBoardNode gameBoardNode = GameBoardNode.builder()
-                .boardId(UUID.randomUUID().toString())
-                .currentState(gameBoard.getGameBoxList())
-                .successors(new ArrayList<>())
-                .depth(0)
-                .functionCost(0).build();
-        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode);
-        gameSolver.alphaBettaMiniMax();
-//        checkNextMove();
+        checkNextMove();
     }
 
     private void checkNextMove() {
@@ -76,8 +68,12 @@ public class GameServiceImpl implements GameService {
         } else {
             GamePlayer currentPlayer = getCurrentPlayer();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
-                String boxId = findBorderForSelect(); //FIXME REPLACE WITH ALGORITHM
-                selectBoxBorderByPlayer(boxId);
+                try {
+                    String boxId = currentPlayer.getGameSolver().getNextMove();
+                    selectBoxBorderByPlayer(boxId);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -166,7 +162,7 @@ public class GameServiceImpl implements GameService {
                     .findFirst();
             if (box.isPresent()) {
                 box.get().setSelected(true);
-                box.get().setSelectedBy(getCurrentPlayer().getTitle());
+                box.get().setSelectedBy(getCurrentPlayer().getType().toString());
                 box.get().getButton().setStyle(bgStyle + "#000000");
                 box.get().getButton().setDisable(true);
             }
@@ -214,13 +210,23 @@ public class GameServiceImpl implements GameService {
     }
 
     private void setGameSolverForPlayer(GamePlayer gamePlayer) {
+        GameBoardNode gameBoardNode = GameBoardNode.builder()
+                .moveBy(getCurrentPlayer().getType())
+                .humanScore(0)
+                .computerScore(0)
+                .boardId(UUID.randomUUID().toString())
+                .currentState(gameBoard.getGameBoxList())
+                .successors(new ArrayList<>())
+                .depth(0)
+                .functionCost(0).build();
+        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode, gameProperties.getGameDifficulty());
         switch (gamePlayer.getType()) {
             case HUMAN: {
-                gamePlayer.setGameSolver(new HumanSolver());
+                gamePlayer.setGameSolver(null);
                 break;
             }
             case COMPUTER: {
-                gamePlayer.setGameSolver(new AlphaBettaSolver(new GameBoardNode()));
+                gamePlayer.setGameSolver(gameSolver);
                 break;
             }
         }

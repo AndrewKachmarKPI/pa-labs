@@ -62,6 +62,10 @@ public class GameBox {
         return boxBorders.stream().filter(BoxBorder::isSelected).count() == boxBorders.size() - 1;
     }
 
+    public boolean isBoxFilled() {
+        return boxBorders.stream().noneMatch(BoxBorder::isNotSelected);
+    }
+
     public boolean isAllBorderBoxSelected() {
         return boxBorders.stream().filter(BoxBorder::isSelected).count() == boxBorders.size();
     }

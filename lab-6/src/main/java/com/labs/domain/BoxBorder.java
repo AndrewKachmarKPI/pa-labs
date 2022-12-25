@@ -3,6 +3,7 @@ package com.labs.domain;
 import javafx.scene.control.Button;
 import lombok.*;
 
+@EqualsAndHashCode
 @ToString
 @Getter
 @Setter
@@ -27,12 +28,6 @@ public class BoxBorder {
         this.button = border.button;
         this.isSelected = border.isSelected;
         this.selectedBy = border.selectedBy;
-    }
-    public BoxBorder(BoxBorder border, String selectedBy) {
-        this.id = border.id;
-        this.button = border.button;
-        this.isSelected = true;
-        this.selectedBy = selectedBy;
     }
 
     public boolean isNotSelected() {

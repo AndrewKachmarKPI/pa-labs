@@ -3,6 +3,7 @@ package com.labs.solvers;
 import com.labs.domain.BoxBorder;
 import com.labs.domain.GameBoardNode;
 import com.labs.domain.GameBox;
+import com.labs.enums.PlayerType;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,18 +15,17 @@ import java.util.concurrent.Callable;
 public class GenerateSuccessorTask implements Callable<GameBoardNode> {
     private String generateBy;
     private GameBoardNode currentState;
-    private boolean isRecursive;
+    private boolean isFirstLayer;
     private static int depth = 2;
 
 
     @Override
     public GameBoardNode call() {
-        if (isRecursive) {
-            buildGameTree(currentState, generateBy);
-        } else {
+        if (isFirstLayer) {
             buildFirstLayer(currentState, generateBy);
+        } else {
+            buildGameTree(currentState, generateBy);
         }
-        System.out.println("GENERATED");
         return currentState;
     }
 
@@ -42,7 +42,6 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         for (GameBoardNode successor : currentState.getSuccessors()) {
             buildGameTree(successor, getGenerateBy(generateBy));
         }
-        // build only first layer
     }
 
     private List<GameBoardNode> generateSuccessors(GameBoardNode currentState, String generateBy) {
@@ -50,15 +49,16 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         List<BoxBorder> currentEmptyBorders = new ArrayList<>(currentState.getDistinctBoxBorders());
 
         for (BoxBorder currentEmptyBorder : currentEmptyBorders) {
-            List<GameBox> newBoardState = new ArrayList<>(getSuccessorGameBoxes(currentState, currentEmptyBorder, generateBy));
-            GameBoardNode boardNode = new GameBoardNode(currentState.getBoardId(), UUID.randomUUID().toString(),
-                    newBoardState, new ArrayList<>(), currentState.getDepth() + 1, 0);
+            GameBoardNode boardNode = new GameBoardNode(currentState.getBoardId(), UUID.randomUUID().toString(), currentState.getDepth() + 1, currentState.getFunctionCost(),
+                    generateBy, currentState.getHumanScore(), currentState.getComputerScore());
+            List<GameBox> newBoardState = new ArrayList<>(getSuccessorGameBoxes(currentState, boardNode, currentEmptyBorder, generateBy));
+            boardNode.setCurrentState(newBoardState);
             successors.add(boardNode);
         }
         return successors;
     }
 
-    public List<GameBox> getSuccessorGameBoxes(GameBoardNode currentNode, BoxBorder borderForSelect, String selectBy) {
+    public List<GameBox> getSuccessorGameBoxes(GameBoardNode currentNode, GameBoardNode boardNode, BoxBorder borderForSelect, String selectBy) {
         List<GameBox> currentState = new ArrayList<>(currentNode.getCurrentState());
 
         List<GameBox> gameBoxes = new ArrayList<>();
@@ -66,6 +66,9 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
             GameBox newBox = new GameBox(gameBox);
             if (newBox.hasBorderWithId(borderForSelect.getId())) {
                 newBox = new GameBox(gameBox, getSelectedBorder(newBox.getBoxBorders(), borderForSelect.getId(), selectBy), selectBy);
+            }
+            if (newBox.isBoxFilled()) {
+                boardNode.updateScore(selectBy);
             }
             gameBoxes.add(newBox);
         }
@@ -78,7 +81,8 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
         for (BoxBorder boxBorder : currentBorders) {
             BoxBorder newBorder;
             if (boxBorder.getId().equals(borderId)) {
-                newBorder = new BoxBorder(boxBorder, selectBy);
+                newBorder = new BoxBorder(boxBorder);
+                newBorder.selectBorder(selectBy);
             } else {
                 newBorder = new BoxBorder(boxBorder);
             }
@@ -88,6 +92,6 @@ public class GenerateSuccessorTask implements Callable<GameBoardNode> {
     }
 
     public String getGenerateBy(String generateBy) {
-        return generateBy.equals("MAX") ? "MIN" : "MAX";
+        return generateBy.equals(PlayerType.COMPUTER.toString()) ? PlayerType.HUMAN.toString() : PlayerType.COMPUTER.toString();
     }
 }

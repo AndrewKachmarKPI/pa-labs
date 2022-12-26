@@ -8,7 +8,7 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum FieldSize {
-    S(2), M(3), L(12);
+    S(2), M(3);
     private Integer size;
 
     public static FieldSize getByTitle(String title) {

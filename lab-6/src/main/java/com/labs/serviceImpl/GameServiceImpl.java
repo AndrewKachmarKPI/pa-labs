@@ -167,7 +167,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void selectBoxBorder(String boxBorderId, PlayerType playerType) {
-        System.out.println("SELECT BOX BORDER");
+        System.out.println("SELECT BOX BORDER BY =>" + playerType.name());
         boolean isBoxClosed = false;
         if (playerType == PlayerType.HUMAN) {
             selectBoxBorder(getBoxBorderPosition(boxBorderId));

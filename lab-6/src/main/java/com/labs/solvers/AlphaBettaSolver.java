@@ -9,9 +9,8 @@ import java.util.stream.Collectors;
 
 
 public class AlphaBettaSolver extends GameSolver {
-    final static int ALPHA = Integer.MIN_VALUE, BETA = Integer.MAX_VALUE;
+    final static int ALPHA = -1000000000, BETA = 1000000000;
     private int depth;
-    private long moveTime = 1900000000;
 
     public BoxBorderPosition getNextMove(GameBoard gameBoard, int color) {
         referenceColor = color;
@@ -26,24 +25,25 @@ public class AlphaBettaSolver extends GameSolver {
     }
 
     private BoxBorderNode searchBestPosition(GameBoard gameBoard, int color, int alpha, int beta, int level) {
-        System.out.println("SEARCH level" + level);
-        if (level >= depth) {
-            return new BoxBorderNode(null, heuristic(gameBoard, color));
-        }
-        List<BoxBorderPosition> possibleMoves = gameBoard.getAvailableMoves();
-        if (possibleMoves.isEmpty()) {
-            return new BoxBorderNode(null, heuristic(gameBoard, color));
-        }
+        if (level < depth) {
+            List<BoxBorderPosition> possibleMoves = gameBoard.getAvailableMoves();
+            int size = possibleMoves.size();
+            if (size == 0) {
+                return new BoxBorderNode(null, heuristic(gameBoard, color));
+            }
+            Collections.shuffle(possibleMoves);
 
-        int size = possibleMoves.size();
-        List<BoxBorderNode> successors = generateSuccessors(gameBoard, color, possibleMoves, size);
-        possibleMoves = successors.stream().map(BoxBorderNode::getBoxBorderPosition).collect(Collectors.toList());
+            List<BoxBorderNode> successors = generateSuccessors(gameBoard, color, possibleMoves, size);
+            possibleMoves = successors.stream().map(BoxBorderNode::getBoxBorderPosition).collect(Collectors.toList());
 
-        if (color == referenceColor) {
-            Collections.reverse(possibleMoves);
-            return minimize(gameBoard, color, alpha, beta, level, possibleMoves);
+            if (color == referenceColor) {
+                Collections.reverse(possibleMoves);
+                return minimize(gameBoard, color, alpha, beta, level, possibleMoves);
+            } else {
+                return maximize(gameBoard, color, alpha, beta, level, possibleMoves);
+            }
         } else {
-            return maximize(gameBoard, color, alpha, beta, level, possibleMoves);
+            return new BoxBorderNode(null, heuristic(gameBoard, color));
         }
     }
 

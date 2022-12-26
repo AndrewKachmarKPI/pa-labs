@@ -10,9 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder(toBuilder = true)
 @AllArgsConstructor
-public class GameBoard implements GameConstants {
+public class GameBoard implements GameConstants, Cloneable {
     private VBox gameBoardVBox;
     private List<GameBox> gameBoxes;
     private int[][] horizontalBorders, verticalBorders, boxBorders;
@@ -33,12 +32,10 @@ public class GameBoard implements GameConstants {
         fillBordersWithEmpty(boxBorders);
     }
 
-    public GameBoard copyGameBoard() {
+    public GameBoard clone() {
         GameBoard newGameBoard = new GameBoard(size);
         for (int i = 0; i < (size - 1); i++) {
-            if (size >= 0) {
-                System.arraycopy(horizontalBorders[i], 0, newGameBoard.horizontalBorders[i], 0, size);
-            }
+            System.arraycopy(horizontalBorders[i], 0, newGameBoard.horizontalBorders[i], 0, size);
         }
         for (int i = 0; i < size; i++) {
             System.arraycopy(verticalBorders[i], 0, newGameBoard.verticalBorders[i], 0, size - 1);
@@ -155,7 +152,7 @@ public class GameBoard implements GameConstants {
     }
 
     public GameBoard getNewBoard(BoxBorderPosition boxBorderPosition, int color) {
-        GameBoard board = copyGameBoard();
+        GameBoard board = clone();
         if (boxBorderPosition.isHorizontal()) {
             board.setHorizontalBorder(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
         } else {

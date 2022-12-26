@@ -2,27 +2,28 @@ package com.labs.solvers;
 
 import com.labs.domain.GameBoard;
 import com.labs.domain.BoxBorderPosition;
+import com.labs.enums.GameDifficulty;
 
 public abstract class GameSolver {
-    protected int referenceColor;
+    protected int player;
     private final static int cScore = 20;
     private final static int cThree = 15;
     private final static int cTwo = 1;
 
-    protected int heuristic(final GameBoard gameBoard, int color) {
-        int value;
-        if (referenceColor == GameBoard.FIRST_PLAYER) {
-            value = cScore * gameBoard.getFirstPlayerScore() - cScore * gameBoard.getSecondPlayerScore();
+    protected int countHeuristic(final GameBoard gameBoard, int color) {
+        int cost;
+        if (player == GameBoard.FIRST_PLAYER) {
+            cost = cScore * gameBoard.getFirstPlayerScore() - cScore * gameBoard.getSecondPlayerScore();
         } else {
-            value = cScore * gameBoard.getSecondPlayerScore() - cScore * gameBoard.getFirstPlayerScore();
+            cost = cScore * gameBoard.getSecondPlayerScore() - cScore * gameBoard.getFirstPlayerScore();
         }
-        if (referenceColor == color) {
-            value += cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
+        if (player == color) {
+            cost += cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
         } else {
-            value -= cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
+            cost -= cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
         }
-        return value;
+        return cost;
     }
 
-    public abstract BoxBorderPosition getNextMove(final GameBoard gameBoard, int color);
+    public abstract BoxBorderPosition getNextMove(final GameBoard gameBoard, int moveBy, GameDifficulty difficulty);
 }

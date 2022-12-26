@@ -14,22 +14,20 @@ import java.util.List;
 public class GameBoard implements GameConstants, Cloneable {
     private VBox gameBoardVBox;
     private List<GameBox> gameBoxes;
+
     private int[][] horizontalBorders, verticalBorders, boxBorders;
     private int size, firstPlayerScore, secondPlayerScore;
 
     public GameBoard(int size) {
-        if (size <= 0) {
-            throw new RuntimeException("Invalid size");
-        }
         this.size = size;
         horizontalBorders = new int[size - 1][size];
         verticalBorders = new int[size][size - 1];
         boxBorders = new int[size - 1][size - 1];
-        firstPlayerScore = 0;
-        secondPlayerScore = 0;
         fillBordersWithEmpty(horizontalBorders);
         fillBordersWithEmpty(verticalBorders);
         fillBordersWithEmpty(boxBorders);
+        firstPlayerScore = 0;
+        secondPlayerScore = 0;
     }
 
     public GameBoard clone() {
@@ -72,10 +70,6 @@ public class GameBoard implements GameConstants, Cloneable {
         } else {
             return FIRST_PLAYER;
         }
-    }
-
-    public boolean hasAvailableMoves() {
-        return gameBoxes.stream().noneMatch(GameBox::isNotOccupied);
     }
 
     public List<BoxBorderPosition> getAvailableMoves() {

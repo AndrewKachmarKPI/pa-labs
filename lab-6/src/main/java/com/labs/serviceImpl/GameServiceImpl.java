@@ -132,7 +132,7 @@ public class GameServiceImpl implements GameService {
         if (!gameBoard.isAllBoxesClosed()) {
             GameSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
-                BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex());
+                BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex(), gameProperties.getGameDifficulty());
                 selectBoxBorder(boxBorderPosition);
                 selectBoxBorder(boxBorderPosition.getBorderPosition(), PlayerType.COMPUTER);
             }

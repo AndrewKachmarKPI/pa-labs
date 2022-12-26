@@ -1,7 +1,7 @@
 package com.labs.solvers;
 
-import com.labs.newDots.Board;
-import com.labs.newDots.Edge;
+import com.labs.domain.GameBoard;
+import com.labs.domain.BoxBorderPosition;
 
 public abstract class GameSolver {
 
@@ -10,18 +10,18 @@ public abstract class GameSolver {
     private final static int cThree = 15;
     private final static int cTwo = 1;
 
-    protected int heuristic(final Board board, int color) {
+    protected int heuristic(final GameBoard gameBoard, int color) {
         int value;
-        if(referenceColor == Board.RED)
-            value = cScore * board.getRedScore() - cScore * board.getBlueScore();
+        if(referenceColor == GameBoard.RED)
+            value = cScore * gameBoard.getRedScore() - cScore * gameBoard.getBlueScore();
         else
-            value = cScore * board.getBlueScore() - cScore * board.getRedScore();
+            value = cScore * gameBoard.getBlueScore() - cScore * gameBoard.getRedScore();
         if(referenceColor == color)
-            value += cThree * board.getBoxCount(3) - cTwo * board.getBoxCount(2);
+            value += cThree * gameBoard.getBoxBordersNumber(3) - cTwo * gameBoard.getBoxBordersNumber(2);
         else
-            value -= cThree * board.getBoxCount(3) - cTwo * board.getBoxCount(2);
+            value -= cThree * gameBoard.getBoxBordersNumber(3) - cTwo * gameBoard.getBoxBordersNumber(2);
         return value;
     }
 
-    public abstract Edge getNextMove(final Board board, int color );
+    public abstract BoxBorderPosition getNextMove(final GameBoard gameBoard, int color );
 }

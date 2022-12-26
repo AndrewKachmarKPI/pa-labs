@@ -1,6 +1,7 @@
 package com.labs.controllers;
 
 import com.labs.DotsAndBoxesApplication;
+import com.labs.domain.GameBoard;
 import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
 import com.labs.enums.FieldSize;
@@ -77,14 +78,16 @@ public class IndexPageController {
     public void onPlayButtonClick() throws IOException {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
+                    .colorIndex(GameBoard.RED)
                     .type(firstPlayerType.getValue())
                     .color(firstPlayerColor.getValue())
-                    .title("Player 1")
+                    .playerId("Player 1")
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
+                    .colorIndex(GameBoard.BLUE)
                     .type(secondPlayerType.getValue())
                     .color(secondPlayerColor.getValue())
-                    .title("Player 2")
+                    .playerId("Player 2")
                     .score(0).build();
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)

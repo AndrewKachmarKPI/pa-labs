@@ -12,10 +12,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GamePlayer {
-    private Integer score = 0;
+    private String playerId;
     private PlayerType type;
     private Color color;
-    private String title;
+    private Integer colorIndex;
+    private Integer score;
     private AlphaBettaSolver gameSolver;
 
     public void updateScore() {

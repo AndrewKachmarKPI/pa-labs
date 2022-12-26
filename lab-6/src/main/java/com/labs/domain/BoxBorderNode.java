@@ -1,13 +1,18 @@
 package com.labs.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-public class BoxBorderNode {
-    private int minMaxUtility;
-    private BoxBorder boxBorder;
+@AllArgsConstructor
+public class BoxBorderNode implements Comparable<BoxBorderNode> {
+    private BoxBorderPosition boxBorderPosition;
+    private int utility;
+
+    @Override
+    public int compareTo(BoxBorderNode boxBorderNode) {
+        return this.utility - boxBorderNode.utility;
+    }
 }

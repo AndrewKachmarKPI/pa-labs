@@ -1,113 +1,122 @@
 package com.labs.solvers;
-import com.labs.newDots.Board;
-import com.labs.newDots.Edge;
-import com.labs.newDots.Pair;
+
+import com.labs.domain.GameBoard;
+import com.labs.domain.BoxBorderPosition;
+import com.labs.domain.BoxBorderNode;
 
 import java.util.*;
 
 
-public class AlphaBettaSolver  extends GameSolver{
-    final static int MIN=-1000000000, MAX=1000000000 ;
-    private int maxLevel ;
-    private long startTime;
-    private long moveTime = 1900000000;
+public class AlphaBettaSolver extends GameSolver {
+    final static int ALPHA = Integer.MIN_VALUE, BETA = Integer.MAX_VALUE;
+    private int maxLevel;
 
-    public Edge getNextMove(Board board, int color) {
-        startTime = System.nanoTime() ;
-        referenceColor = color ;
-        maxLevel = 1 ;
-        Edge best = null;
-        while(maxLevel <= board.getAvailableMoves().size()) {
-            Pair pair = dfs(board, color, MIN, MAX, 0) ;
-            if((System.nanoTime() - startTime) < moveTime)
-                best = pair.getEdge();
-            else
-                break ;
-            maxLevel++ ;
+    public BoxBorderPosition getNextMove(GameBoard gameBoard, int color) {
+        referenceColor = color;
+        maxLevel = 1;
+        BoxBorderPosition best = null;
+        while (maxLevel <= gameBoard.getAvailableMoves().size()) {
+            BoxBorderNode boxBorderNode = dfs(gameBoard, color, ALPHA, BETA, 0);
+            best = boxBorderNode.getBoxBorderPosition();
+            maxLevel++;
         }
         return best;
     }
 
-    Pair dfs(Board board, int color, int a, int b, int level) {
-        if(level < maxLevel && (System.nanoTime() - startTime) < moveTime) {
-            ArrayList<Edge> moves = board.getAvailableMoves();
-            int size = moves.size();
+    private BoxBorderNode dfs(GameBoard gameBoard, int color, int alpha, int beta, int level) {
+        if (level >= maxLevel) {
+            return new BoxBorderNode(null, heuristic(gameBoard, color));
+        }
+        List<BoxBorderPosition> possibleMoves = gameBoard.getAvailableMoves();
+        int size = possibleMoves.size();
 
-            if (size == 0)
-                return new Pair(null, heuristic(board, color));
+        if (size == 0) {
+            return new BoxBorderNode(null, heuristic(gameBoard, color));
+        }
 
-            Collections.shuffle(moves);
-            Pair[] neighbours = new Pair[size] ;
-            for(int i=0 ; i<size ; i++) {
-                Board newBoard = board.getNewBoard(moves.get(i), color);
-                neighbours[i] = new Pair(moves.get(i),heuristic(newBoard, (newBoard.getScore(color) > board.getScore(color) ? color : Board.toggleColor(color))));
+        //TODO ?
+        Collections.shuffle(possibleMoves);
+        BoxBorderNode[] neighbours = new BoxBorderNode[size];
+        for (int i = 0; i < size; i++) {
+            GameBoard newGameBoard = gameBoard.getNewBoard(possibleMoves.get(i), color);
+            neighbours[i] = new BoxBorderNode(possibleMoves.get(i), heuristic(newGameBoard, (newGameBoard.getScoreByColor(color) > gameBoard.getScoreByColor(color) ? color : GameBoard.toggleColor(color))));
+        }
+        Arrays.sort(neighbours);
+        possibleMoves = new ArrayList<>();
+        if (referenceColor != color) {
+            for (int i = 0; i < size; i++) {
+                possibleMoves.add(neighbours[i].getBoxBorderPosition());
             }
-            Arrays.sort(neighbours);
-            moves = new ArrayList<Edge>();
-            if(referenceColor != color)
-                for(int i=0; i<size; i++)
-                    moves.add(neighbours[i].getEdge());
-            else
-                for(int i=size-1; i>=0; i--)
-                    moves.add(neighbours[i].getEdge());
-
-            if (color == referenceColor) {
-                Pair newPair = new Pair(null, MIN);
-
-                for (int i = 0; i < size; i++) {
-                    Board child = board.getNewBoard(moves.get(i), color);
-                    Pair pair;
-                    int childScore = child.getScore(color), currentScore = board.getScore(color);
-                    boolean flag = false;
-                    if (childScore == currentScore) {
-                        pair = dfs(child, Board.toggleColor(color), a, b, level + 1);
-                        flag = true;
-                    } else
-                        pair = dfs(child, color, a, b, level + 1);
-
-                    int childUtility = pair.getUtility();
-                    if (newPair.getUtility() < childUtility) {
-                        newPair.setUtility(childUtility);
-                        newPair.setEdge(moves.get(i));
-                    }
-                    if (flag)
-                        if (childUtility >= b)
-                            return newPair;
-
-                    a = Math.max(a, newPair.getUtility());
-                }
-                return newPair;
-            }
-            else {
-                Pair newPair = new Pair(null, MAX);
-
-                for (int i = 0; i < size; i++) {
-                    Board child = board.getNewBoard(moves.get(i), color);
-                    Pair pair;
-                    int childScore = child.getScore(color), currentScore = board.getScore(color);
-                    boolean flag = false;
-                    if (childScore == currentScore) {
-                        pair = dfs(child, Board.toggleColor(color), a, b, level+1);
-                        flag = true;
-                    } else
-                        pair = dfs(child, color, a, b, level+1);
-
-                    int childUtility = pair.getUtility();
-                    if (newPair.getUtility() > childUtility) {
-                        newPair.setUtility(childUtility);
-                        newPair.setEdge(moves.get(i));
-                    }
-                    if (flag)
-                        if (childUtility <= a)
-                            return newPair;
-
-                    b = Math.min(b, newPair.getUtility());
-                }
-                return newPair;
+        } else {
+            for (int i = size - 1; i >= 0; i--) {
+                possibleMoves.add(neighbours[i].getBoxBorderPosition());
             }
         }
-        else {
-            return new Pair(null, heuristic(board, color));
+
+        if (color == referenceColor) {
+            return minimize(gameBoard, color, alpha, beta, level, possibleMoves);
+        } else {
+            return maximize(gameBoard, color, alpha, beta, level, possibleMoves);
         }
+    }
+
+    private BoxBorderNode maximize(GameBoard gameBoard, int color, int alpha, int beta, int level, List<BoxBorderPosition> moves) {
+        BoxBorderNode newBoxBorderNode = new BoxBorderNode(null, BETA);
+
+        for (BoxBorderPosition move : moves) {
+            GameBoard childGameBoard = gameBoard.getNewBoard(move, color);
+            BoxBorderNode boxBorderNode;
+            int childScore = childGameBoard.getScoreByColor(color);
+            int currentScore = gameBoard.getScoreByColor(color);
+            boolean flag = false;
+            if (childScore == currentScore) {
+                boxBorderNode = dfs(childGameBoard, GameBoard.toggleColor(color), alpha, beta, level + 1);
+                flag = true;
+            } else{
+                boxBorderNode = dfs(childGameBoard, color, alpha, beta, level + 1);
+            }
+
+            int childUtility = boxBorderNode.getUtility();
+            if (newBoxBorderNode.getUtility() > childUtility) {
+                newBoxBorderNode.setUtility(childUtility);
+                newBoxBorderNode.setBoxBorderPosition(move);
+            }
+            if (flag){
+                if (childUtility <= alpha){
+                    return newBoxBorderNode;
+                }
+            }
+
+            beta = Math.min(beta, newBoxBorderNode.getUtility());
+        }
+        return newBoxBorderNode;
+    }
+
+    private BoxBorderNode minimize(GameBoard gameBoard, int color, int alpha, int beta, int level, List<BoxBorderPosition> moves) {
+        BoxBorderNode newBoxBorderNode = new BoxBorderNode(null, ALPHA);
+
+        for (BoxBorderPosition move : moves) {
+            GameBoard child = gameBoard.getNewBoard(move, color);
+            BoxBorderNode boxBorderNode;
+            int childScore = child.getScoreByColor(color), currentScore = gameBoard.getScoreByColor(color);
+            boolean flag = false;
+            if (childScore == currentScore) {
+                boxBorderNode = dfs(child, GameBoard.toggleColor(color), alpha, beta, level + 1);
+                flag = true;
+            } else
+                boxBorderNode = dfs(child, color, alpha, beta, level + 1);
+
+            int childUtility = boxBorderNode.getUtility();
+            if (newBoxBorderNode.getUtility() < childUtility) {
+                newBoxBorderNode.setUtility(childUtility);
+                newBoxBorderNode.setBoxBorderPosition(move);
+            }
+            if (flag)
+                if (childUtility >= beta)
+                    return newBoxBorderNode;
+
+            alpha = Math.max(alpha, newBoxBorderNode.getUtility());
+        }
+        return newBoxBorderNode;
     }
 }

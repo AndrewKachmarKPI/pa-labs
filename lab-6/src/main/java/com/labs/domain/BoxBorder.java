@@ -23,19 +23,10 @@ public class BoxBorder {
         this.selectedBy = "";
     }
 
-    public BoxBorder(BoxBorder border) {
-        this.id = border.id;
-        this.button = border.button;
-        this.isSelected = border.isSelected;
-        this.selectedBy = border.selectedBy;
-    }
-
-    public boolean isNotSelected() {
-        return !this.isSelected;
-    }
-
-    public void selectBorder(String selectedBy) {
+    public void selectBorder(GamePlayer selectedBy) {
         this.isSelected = true;
-        this.selectedBy = selectedBy;
+        this.selectedBy = selectedBy.getType().toString();
+        this.button.setStyle("-fx-background-color: #000000");
+        this.button.setDisable(true);
     }
 }

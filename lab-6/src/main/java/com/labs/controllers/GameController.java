@@ -61,7 +61,7 @@ public class GameController implements Observer {
         String inputStyle = "-fx-text-inner-color: " + getHexColor(gamePlayer.getColor());
         amountInput.setText(gamePlayer.getScore().toString());
         amountInput.setStyle(inputStyle);
-        amountInput.setId(gamePlayer.getTitle());
+        amountInput.setId(gamePlayer.getPlayerId());
     }
 
     public void onHomeButtonClick() throws IOException {
@@ -219,13 +219,13 @@ public class GameController implements Observer {
 
     @Override
     public void onStopGame(GamePlayer gamePlayer) {
-        winLabel.setText(gamePlayer.getTitle() + " wins with score ->" + gamePlayer.getScore());
+        winLabel.setText(gamePlayer.getPlayerId() + " wins with score ->" + gamePlayer.getScore());
     }
 
     @Override
     public void onPlayerChange(GamePlayer gamePlayer) {
         currentPlayer = gamePlayer;
-        moveInput.setText(gamePlayer.getTitle());
+        moveInput.setText(gamePlayer.getPlayerId());
     }
 
     @Override

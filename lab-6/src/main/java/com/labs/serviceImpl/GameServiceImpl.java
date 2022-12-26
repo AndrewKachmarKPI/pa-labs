@@ -2,6 +2,8 @@ package com.labs.serviceImpl;
 
 import com.labs.domain.*;
 import com.labs.enums.PlayerType;
+import com.labs.newDots.Board;
+import com.labs.newDots.Edge;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
@@ -56,29 +58,41 @@ public class GameServiceImpl implements GameService {
     public void startGame() {
         setGameSolverForPlayer(gameProperties.getFirstPlayer());
         setGameSolverForPlayer(gameProperties.getSecondPlayer());
+        initBoard();
 
         this.currentPlayerTitle = gameProperties.getFirstPlayer().getTitle();
         notifyPlayerChange();
         checkNextMove();
     }
 
+
     private void checkNextMove() {
         if (gameBoard.isAllBoxesClosed()) {
             stopGame();
         } else {
             GamePlayer currentPlayer = getCurrentPlayer();
+            AlphaBettaSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
-                try {
-                    selectBoxBorderByPlayer(currentPlayer.getGameSolver().getNextMove());
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Edge edge = solver.getNextMove(board, turn);
+                processMove(edge);
+                System.out.println(edge);
+                selectBoxBorderByPlayer(edge.toString());
+//                try {
+//                    selectBoxBorderByPlayer(currentPlayer.getGameSolver().getNextMove());
+//                } catch (ExecutionException | InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
     }
 
 
     private void changeCurrentPlayer() {
+        if (turn == Board.RED) {
+            turn = Board.BLUE;
+        } else {
+            turn = Board.RED;
+        }
         if (this.gameProperties.getFirstPlayer().getTitle().equals(currentPlayerTitle)) {
             currentPlayerTitle = this.gameProperties.getSecondPlayer().getTitle();
         } else {
@@ -152,8 +166,66 @@ public class GameServiceImpl implements GameService {
         return this.gameBoard;
     }
 
+    private Board board;
+    private int turn;
+    private boolean[][] isSetHEdge, isSetVEdge;
+
+    private void initBoard() {
+        int size = gameProperties.getGameFieldSize().getSize();
+        System.out.println("SIZE->" + size);
+        board = new Board(size);
+        turn = Board.RED;
+        isSetHEdge = new boolean[size - 1][size];
+        isSetVEdge = new boolean[size][size - 1];
+    }
+
+    private void processMove(Edge location) {
+        int x = location.getX(), y = location.getY();
+        ArrayList<Point> ret;
+        if (location.isHorizontal()) {
+            board.setHEdge(x, y, turn);
+        } else {
+            board.setVEdge(x, y, turn);
+        }
+
+
+        if (board.isComplete()) {
+            int winner = board.getWinner();
+            System.out.println("WINNER ->" + winner);
+        }
+
+//        if (ret.isEmpty()) {
+//            if (turn == Board.RED) {
+//                turn = Board.BLUE;
+//            } else {
+//                turn = Board.RED;
+//            }
+//        }
+
+    }
+
+    private Edge boxBorderIdToEdge(String boxBorderId) {
+        Edge edge = new Edge();
+        if (boxBorderId.contains(HORIZONTAL)) {
+            edge.setHorizontal(true);
+            boxBorderId = boxBorderId.replace(HORIZONTAL, "");
+        } else {
+            edge.setHorizontal(false);
+            boxBorderId = boxBorderId.replace(VERTICAL, "");
+        }
+        edge.setX(Integer.parseInt(boxBorderId.split("")[0]));
+        edge.setY(Integer.parseInt(boxBorderId.split("")[1]));
+        return edge;
+    }
+
     @Override
     public void selectBoxBorderByPlayer(String boxBorderId) {
+        System.out.println("BORDER ID->" + boxBorderId);
+        Edge edge = boxBorderIdToEdge(boxBorderId);
+        System.out.println("EDGE->" + edge);
+        if (getCurrentPlayer().getType() == PlayerType.HUMAN) {
+            processMove(boxBorderIdToEdge(boxBorderId));
+        }
         boolean isClosed = false;
         for (GameBox gameBox : gameBoard.getGameBoxList()) {
             Optional<BoxBorder> box = gameBox.getBoxBorders().stream()
@@ -210,23 +282,23 @@ public class GameServiceImpl implements GameService {
     }
 
     private void setGameSolverForPlayer(GamePlayer gamePlayer) {
-        GameBoardNode gameBoardNode = GameBoardNode.builder()
-                .moveBy(getCurrentPlayer().getType())
-                .humanScore(0)
-                .computerScore(0)
-                .boardId(UUID.randomUUID().toString())
-                .currentState(gameBoard.getGameBoxList())
-                .successors(new ArrayList<>())
-                .depth(0)
-                .functionCost(0).build();
-        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode, gameProperties.getGameDifficulty());
+//        GameBoardNode gameBoardNode = GameBoardNode.builder()
+//                .moveBy(getCurrentPlayer().getType())
+//                .humanScore(0)
+//                .computerScore(0)
+//                .boardId(UUID.randomUUID().toString())
+//                .currentState(gameBoard.getGameBoxList())
+//                .successors(new ArrayList<>())
+//                .depth(0)
+//                .functionCost(0).build();
+//        AlphaBettaSolver gameSolver = new AlphaBettaSolver(gameBoardNode, gameProperties.getGameDifficulty());
         switch (gamePlayer.getType()) {
             case HUMAN: {
                 gamePlayer.setGameSolver(null);
                 break;
             }
             case COMPUTER: {
-                gamePlayer.setGameSolver(gameSolver);
+                gamePlayer.setGameSolver(new AlphaBettaSolver());
                 break;
             }
         }

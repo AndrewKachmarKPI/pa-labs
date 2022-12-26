@@ -1,132 +1,113 @@
 package com.labs.solvers;
+import com.labs.newDots.Board;
+import com.labs.newDots.Edge;
+import com.labs.newDots.Pair;
 
-import com.labs.domain.BoxBorder;
-import com.labs.domain.GameBoardNode;
-import com.labs.enums.GameDifficulty;
-import com.labs.enums.PlayerType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.*;
-
-public class AlphaBettaSolver {
-    private GameBoardNode rootState;
-    private GameDifficulty difficulty;
-
-    public AlphaBettaSolver(GameBoardNode rootState, GameDifficulty difficulty) {
-        this.rootState = rootState;
-        this.difficulty = difficulty;
-    }
+import java.util.*;
 
 
-    public String getNextMove() throws ExecutionException, InterruptedException {
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
-        GameBoardNode bestNode = alphaBetaSearch(rootState, difficulty.getDifficulty(), alpha, beta);
-        BoxBorder border = getBestBoxBorder(rootState, bestNode);
-        return border.getId();
-    }
+public class AlphaBettaSolver  extends GameSolver{
+    final static int MIN=-1000000000, MAX=1000000000 ;
+    private int maxLevel ;
+    private long startTime;
+    private long moveTime = 1900000000;
 
-    public GameBoardNode alphaBetaSearch(GameBoardNode currentBoard, Integer difficulty, int alpha, int beta) throws ExecutionException, InterruptedException {
-//        currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
-        generateChild(currentBoard);
-
-        if (currentBoard.getDepth() >= difficulty || currentBoard.isLeaf()) {
-            currentBoard.setFunctionCost(currentBoard.getHumanScore() + currentBoard.getComputerScore());
-            return currentBoard;
+    public Edge getNextMove(Board board, int color) {
+        startTime = System.nanoTime() ;
+        referenceColor = color ;
+        maxLevel = 1 ;
+        Edge best = null;
+        while(maxLevel <= board.getAvailableMoves().size()) {
+            Pair pair = dfs(board, color, MIN, MAX, 0) ;
+            if((System.nanoTime() - startTime) < moveTime)
+                best = pair.getEdge();
+            else
+                break ;
+            maxLevel++ ;
         }
+        return best;
+    }
 
-        GameBoardNode bestNode = new GameBoardNode();
-        if (currentBoard.getMoveBy() == PlayerType.COMPUTER) {
-            bestNode.setFunctionCost(Integer.MIN_VALUE);
+    Pair dfs(Board board, int color, int a, int b, int level) {
+        if(level < maxLevel && (System.nanoTime() - startTime) < moveTime) {
+            ArrayList<Edge> moves = board.getAvailableMoves();
+            int size = moves.size();
 
-            GameBoardNode boardNode;
-            currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
-            for (GameBoardNode successor : currentBoard.getSuccessors()) {
-                boardNode = alphaBetaSearch(successor, difficulty - 1, alpha, beta);
-                if (boardNode.getFunctionCost() > bestNode.getFunctionCost())
-                    bestNode = boardNode;
-                if (bestNode.getFunctionCost() > alpha)
-                    alpha = bestNode.getFunctionCost();
-                if (beta <= alpha)
-                    break;
+            if (size == 0)
+                return new Pair(null, heuristic(board, color));
+
+            Collections.shuffle(moves);
+            Pair[] neighbours = new Pair[size] ;
+            for(int i=0 ; i<size ; i++) {
+                Board newBoard = board.getNewBoard(moves.get(i), color);
+                neighbours[i] = new Pair(moves.get(i),heuristic(newBoard, (newBoard.getScore(color) > board.getScore(color) ? color : Board.toggleColor(color))));
             }
-        } else {
-            bestNode.setFunctionCost(Integer.MAX_VALUE);
-            GameBoardNode boardNode;
-            currentBoard.setMoveBy(getMoveBy(currentBoard.getMoveBy()));
-            for (GameBoardNode successor : currentBoard.getSuccessors()) {
-                boardNode = alphaBetaSearch(successor, difficulty - 1, alpha, beta);
-                if (boardNode.getFunctionCost() < bestNode.getFunctionCost())
-                    bestNode = boardNode;
-                if (bestNode.getFunctionCost() < beta)
-                    beta = bestNode.getFunctionCost();
-                if (beta <= alpha)
-                    break;
+            Arrays.sort(neighbours);
+            moves = new ArrayList<Edge>();
+            if(referenceColor != color)
+                for(int i=0; i<size; i++)
+                    moves.add(neighbours[i].getEdge());
+            else
+                for(int i=size-1; i>=0; i--)
+                    moves.add(neighbours[i].getEdge());
+
+            if (color == referenceColor) {
+                Pair newPair = new Pair(null, MIN);
+
+                for (int i = 0; i < size; i++) {
+                    Board child = board.getNewBoard(moves.get(i), color);
+                    Pair pair;
+                    int childScore = child.getScore(color), currentScore = board.getScore(color);
+                    boolean flag = false;
+                    if (childScore == currentScore) {
+                        pair = dfs(child, Board.toggleColor(color), a, b, level + 1);
+                        flag = true;
+                    } else
+                        pair = dfs(child, color, a, b, level + 1);
+
+                    int childUtility = pair.getUtility();
+                    if (newPair.getUtility() < childUtility) {
+                        newPair.setUtility(childUtility);
+                        newPair.setEdge(moves.get(i));
+                    }
+                    if (flag)
+                        if (childUtility >= b)
+                            return newPair;
+
+                    a = Math.max(a, newPair.getUtility());
+                }
+                return newPair;
             }
-        }
-        currentBoard.setFunctionCost(bestNode.getFunctionCost());
-        return bestNode;
-    }
+            else {
+                Pair newPair = new Pair(null, MAX);
 
-    private void generateChild(GameBoardNode currentBoard) throws ExecutionException, InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> gameBoardNodeCallable = new GenerateSuccessorTask(currentBoard, currentBoard.getMoveBy());
-        executorService.submit(gameBoardNodeCallable).get();
-    }
+                for (int i = 0; i < size; i++) {
+                    Board child = board.getNewBoard(moves.get(i), color);
+                    Pair pair;
+                    int childScore = child.getScore(color), currentScore = board.getScore(color);
+                    boolean flag = false;
+                    if (childScore == currentScore) {
+                        pair = dfs(child, Board.toggleColor(color), a, b, level+1);
+                        flag = true;
+                    } else
+                        pair = dfs(child, color, a, b, level+1);
 
-    public PlayerType getMoveBy(PlayerType moveBy) {
-        return moveBy.equals(PlayerType.COMPUTER) ? PlayerType.HUMAN : PlayerType.COMPUTER;
-    }
+                    int childUtility = pair.getUtility();
+                    if (newPair.getUtility() > childUtility) {
+                        newPair.setUtility(childUtility);
+                        newPair.setEdge(moves.get(i));
+                    }
+                    if (flag)
+                        if (childUtility <= a)
+                            return newPair;
 
-
-    //BUILD TREE
-    public void buildGameTree(GameBoardNode currentState, String generateBy) {
-//        try {
-//            ExecutorService executorService = Executors.newFixedThreadPool(24);
-//            List<Callable<GameBoardNode>> callables = new ArrayList<>();
-//            List<GameBoardNode> successors = getFirstSuccessors(currentState);
-//
-//            for (GameBoardNode successor : successors) {
-////                callables.add(new GenerateSuccessorTask(successor));
-//            }
-//            successors.clear();
-//
-//            List<Future<GameBoardNode>> futures = executorService.invokeAll(callables);
-//            for (Future<GameBoardNode> future : futures) {
-//                successors.add(future.get());
-//            }
-//
-//            currentState.setSuccessors(successors);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    private List<GameBoardNode> getFirstSuccessors(GameBoardNode currentState) throws Exception {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Callable<GameBoardNode> task = new GenerateSuccessorTask(currentState, getMoveBy(currentState.getMoveBy()));
-        return executorService.submit(task).get().getSuccessors();
-    }
-
-    //BEST BOX
-    private BoxBorder getBestBoxBorder(GameBoardNode currentState, GameBoardNode boardNode) {
-        List<BoxBorder> currentStateBoxBorders = currentState.getDistinctAllBoxBorders();
-
-        List<BoxBorder> newBoxBorders = boardNode.getDistinctAllBoxBorders();
-
-
-        BoxBorder newBorder = null;
-        for (BoxBorder currentBorder : currentStateBoxBorders) {
-            Optional<BoxBorder> boxBorder = newBoxBorders.stream()
-                    .filter(border -> border.getId().equals(currentBorder.getId()) && currentBorder.isSelected() != border.isSelected())
-                    .findAny();
-            if (boxBorder.isPresent()) {
-                newBorder = boxBorder.get();
-                break;
+                    b = Math.min(b, newPair.getUtility());
+                }
+                return newPair;
             }
         }
-        return newBorder;
+        else {
+            return new Pair(null, heuristic(board, color));
+        }
     }
 }

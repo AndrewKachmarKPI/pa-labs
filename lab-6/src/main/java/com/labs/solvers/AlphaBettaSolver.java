@@ -18,6 +18,34 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
     public BoxBorderPosition getNextMove(GameBoard gameBoard, int moveBy, GameDifficulty difficulty) {
         startTimer();
         currentPlayer = moveBy;
+        return searchPosition(gameBoard, moveBy, difficulty);
+    }
+
+    private BoxBorderPosition searchPosition(GameBoard gameBoard, int moveBy, GameDifficulty difficulty) {
+        BoxBorderPosition position = new BoxBorderPosition();
+        switch (difficulty) {
+            case EASY: {
+                position = randomSearch(gameBoard);
+                break;
+            }
+            case MEDIUM: {
+                break;
+            }
+            case HARD: {
+                position = deepSearch(gameBoard, moveBy);
+                break;
+            }
+        }
+        return position;
+    }
+
+    private BoxBorderPosition randomSearch(GameBoard gameBoard) {
+        Random rand = new Random();
+        List<BoxBorderPosition> possibleMoves = gameBoard.getAvailableMoves();
+        return possibleMoves.get(rand.nextInt(possibleMoves.size()));
+    }
+
+    private BoxBorderPosition deepSearch(GameBoard gameBoard, int moveBy) {
         depth = 1;
         BoxBorderPosition borderPosition = new BoxBorderPosition();
         while (depth <= gameBoard.getAvailableMoves().size()) {

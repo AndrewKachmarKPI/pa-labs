@@ -3,6 +3,7 @@ package com.labs.service;
 import com.labs.domain.GameBoard;
 import com.labs.domain.GamePlayer;
 import com.labs.domain.GameProperties;
+import com.labs.enums.PlayerType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -27,7 +28,7 @@ public interface GameService {
 
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
 
-    void selectBoxBorderByPlayer(String boxBorderId);
+    void selectBoxBorderByPlayer(String boxBorderId, PlayerType playerType);
 
 
     void notifyPlayerChange();

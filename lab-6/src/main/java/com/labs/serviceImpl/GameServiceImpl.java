@@ -74,9 +74,9 @@ public class GameServiceImpl implements GameService {
             AlphaBettaSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
                 Edge edge = solver.getNextMove(board, turn);
+                System.out.println("EDGE COMP->" + edge);
                 processMove(edge);
-                System.out.println(edge);
-                selectBoxBorderByPlayer(edge.toString());
+                selectBoxBorderByPlayer(edge.toString(), PlayerType.COMPUTER);
 //                try {
 //                    selectBoxBorderByPlayer(currentPlayer.getGameSolver().getNextMove());
 //                } catch (ExecutionException | InterruptedException e) {
@@ -88,11 +88,6 @@ public class GameServiceImpl implements GameService {
 
 
     private void changeCurrentPlayer() {
-        if (turn == Board.RED) {
-            turn = Board.BLUE;
-        } else {
-            turn = Board.RED;
-        }
         if (this.gameProperties.getFirstPlayer().getTitle().equals(currentPlayerTitle)) {
             currentPlayerTitle = this.gameProperties.getSecondPlayer().getTitle();
         } else {
@@ -171,7 +166,7 @@ public class GameServiceImpl implements GameService {
     private boolean[][] isSetHEdge, isSetVEdge;
 
     private void initBoard() {
-        int size = gameProperties.getGameFieldSize().getSize();
+        int size = gameProperties.getGameFieldSize().getSize() + 1;
         System.out.println("SIZE->" + size);
         board = new Board(size);
         turn = Board.RED;
@@ -183,24 +178,34 @@ public class GameServiceImpl implements GameService {
         int x = location.getX(), y = location.getY();
         ArrayList<Point> ret;
         if (location.isHorizontal()) {
-            board.setHEdge(x, y, turn);
+            if (isSetHEdge[x][y]) return;
+            ret = board.setHEdge(x, y, turn);
+            isSetHEdge[x][y] = true;
         } else {
-            board.setVEdge(x, y, turn);
+            if (isSetVEdge[x][y]) return;
+            ret = board.setVEdge(x, y, turn);
+            isSetVEdge[x][y] = true;
         }
-
 
         if (board.isComplete()) {
             int winner = board.getWinner();
-            System.out.println("WINNER ->" + winner);
+            if (winner == Board.RED) {
+                System.out.println("Player-1 is the winner!");
+            } else if (winner == Board.BLUE) {
+                System.out.println("Player-2 is the winner!");
+            } else {
+                System.out.println("DRAW is the winner!");
+            }
         }
 
-//        if (ret.isEmpty()) {
-//            if (turn == Board.RED) {
-//                turn = Board.BLUE;
-//            } else {
-//                turn = Board.RED;
-//            }
-//        }
+        if (ret.isEmpty()) {
+            if (turn == Board.RED) {
+                turn = Board.BLUE;
+            } else {
+                turn = Board.RED;
+            }
+        }
+
 
     }
 
@@ -213,17 +218,16 @@ public class GameServiceImpl implements GameService {
             edge.setHorizontal(false);
             boxBorderId = boxBorderId.replace(VERTICAL, "");
         }
-        edge.setX(Integer.parseInt(boxBorderId.split("")[0]));
-        edge.setY(Integer.parseInt(boxBorderId.split("")[1]));
+        edge.setX(Integer.parseInt(boxBorderId.split("")[1]));
+        edge.setY(Integer.parseInt(boxBorderId.split("")[0]));
         return edge;
     }
 
     @Override
-    public void selectBoxBorderByPlayer(String boxBorderId) {
-        System.out.println("BORDER ID->" + boxBorderId);
-        Edge edge = boxBorderIdToEdge(boxBorderId);
-        System.out.println("EDGE->" + edge);
-        if (getCurrentPlayer().getType() == PlayerType.HUMAN) {
+    public void selectBoxBorderByPlayer(String boxBorderId, PlayerType playerType) {
+        if (playerType == PlayerType.HUMAN) {
+            Edge edge = boxBorderIdToEdge(boxBorderId);
+            System.out.println("EDGE HUM->" + edge);
             processMove(boxBorderIdToEdge(boxBorderId));
         }
         boolean isClosed = false;

@@ -33,7 +33,7 @@ public class Edge {
 
     @Override
     public String toString() {
-        return ((horizontal ? "H" : "V") + x + "" + y);
+        return ((horizontal ? "H" : "V") + y + "" + x);
     }
 
 }

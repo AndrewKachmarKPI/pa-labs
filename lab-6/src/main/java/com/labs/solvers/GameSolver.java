@@ -5,19 +5,19 @@ import com.labs.domain.BoxBorderPosition;
 import com.labs.enums.GameDifficulty;
 
 public abstract class GameSolver {
-    protected int player;
+    protected int currentPlayer;
     private final static int cScore = 20;
     private final static int cThree = 15;
     private final static int cTwo = 1;
 
-    protected int countHeuristic(final GameBoard gameBoard, int color) {
+    protected int countHeuristic(GameBoard gameBoard, int moveBy) {
         int cost;
-        if (player == GameBoard.FIRST_PLAYER) {
+        if (currentPlayer == GameBoard.FIRST_PLAYER) {
             cost = cScore * gameBoard.getFirstPlayerScore() - cScore * gameBoard.getSecondPlayerScore();
         } else {
             cost = cScore * gameBoard.getSecondPlayerScore() - cScore * gameBoard.getFirstPlayerScore();
         }
-        if (player == color) {
+        if (currentPlayer == moveBy) {
             cost += cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
         } else {
             cost -= cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);

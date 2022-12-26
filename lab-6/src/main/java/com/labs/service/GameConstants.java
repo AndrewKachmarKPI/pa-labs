@@ -7,4 +7,5 @@ public interface GameConstants {
     int SECOND_PLAYER = 1; //BLUE border index
     int SELECTED = 2; //SELECTED border index
     int EMPTY = 3;  //EMPTY border index
+    long moveTime = 1900000000;
 }

@@ -64,8 +64,8 @@ public class GameBoard implements GameConstants, Cloneable {
         return score;
     }
 
-    public static int toggleColor(int color) {
-        if (color == FIRST_PLAYER) {
+    public static int togglePlayer(int moveBy) {
+        if (moveBy == FIRST_PLAYER) {
             return SECOND_PLAYER;
         } else {
             return FIRST_PLAYER;

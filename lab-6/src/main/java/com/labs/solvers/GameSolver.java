@@ -4,7 +4,6 @@ import com.labs.domain.GameBoard;
 import com.labs.domain.BoxBorderPosition;
 
 public abstract class GameSolver {
-
     protected int referenceColor;
     private final static int cScore = 20;
     private final static int cThree = 15;
@@ -12,16 +11,18 @@ public abstract class GameSolver {
 
     protected int heuristic(final GameBoard gameBoard, int color) {
         int value;
-        if(referenceColor == GameBoard.RED)
-            value = cScore * gameBoard.getRedScore() - cScore * gameBoard.getBlueScore();
-        else
-            value = cScore * gameBoard.getBlueScore() - cScore * gameBoard.getRedScore();
-        if(referenceColor == color)
-            value += cThree * gameBoard.getBoxBordersNumber(3) - cTwo * gameBoard.getBoxBordersNumber(2);
-        else
-            value -= cThree * gameBoard.getBoxBordersNumber(3) - cTwo * gameBoard.getBoxBordersNumber(2);
+        if (referenceColor == GameBoard.FIRST_PLAYER) {
+            value = cScore * gameBoard.getFirstPlayerScore() - cScore * gameBoard.getSecondPlayerScore();
+        } else {
+            value = cScore * gameBoard.getSecondPlayerScore() - cScore * gameBoard.getFirstPlayerScore();
+        }
+        if (referenceColor == color) {
+            value += cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
+        } else {
+            value -= cThree * gameBoard.getSelectedBoxesNumber(3) - cTwo * gameBoard.getSelectedBoxesNumber(2);
+        }
         return value;
     }
 
-    public abstract BoxBorderPosition getNextMove(final GameBoard gameBoard, int color );
+    public abstract BoxBorderPosition getNextMove(final GameBoard gameBoard, int color);
 }

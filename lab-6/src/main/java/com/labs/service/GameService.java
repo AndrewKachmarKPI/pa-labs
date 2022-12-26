@@ -10,10 +10,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-public interface GameService {
-    String HORIZONTAL = "H";
-    String VERTICAL = "V";
-
+public interface GameService extends GameConstants {
     void startGame();
 
     void saveSettings(Observer observer);
@@ -28,7 +25,7 @@ public interface GameService {
 
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
 
-    void selectBoxBorderByPlayer(String boxBorderId, PlayerType playerType);
+    void selectBoxBorder(String boxBorderId, PlayerType playerType);
 
 
     void notifyPlayerChange();

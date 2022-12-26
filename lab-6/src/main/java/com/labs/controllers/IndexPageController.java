@@ -7,6 +7,7 @@ import com.labs.domain.GameProperties;
 import com.labs.enums.FieldSize;
 import com.labs.enums.GameDifficulty;
 import com.labs.enums.PlayerType;
+import com.labs.service.GameConstants;
 import com.labs.service.GameService;
 import com.labs.serviceImpl.GameServiceImpl;
 import javafx.collections.FXCollections;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class IndexPageController {
@@ -47,6 +49,7 @@ public class IndexPageController {
     void initialize() {
         setGameComplexityComboBox();
         setPlayerTypeComboBoxes();
+        selectDefaultPlayers();
         setDefaultPlayerColors();
         setFieldSizeComboBox();
         gameService = GameServiceImpl.getInstance();
@@ -59,8 +62,15 @@ public class IndexPageController {
 
     private void setPlayerTypeComboBoxes() {
         ObservableList<PlayerType> playerTypes = FXCollections.observableArrayList(PlayerType.values());
+        firstPlayerType.setDisable(true);
         firstPlayerType.setItems(playerTypes);
+        secondPlayerType.setDisable(true);
         secondPlayerType.setItems(playerTypes);
+    }
+
+    private void selectDefaultPlayers() {
+        firstPlayerType.setValue(PlayerType.HUMAN);
+        secondPlayerType.setValue(PlayerType.COMPUTER);
     }
 
     private void setDefaultPlayerColors() {
@@ -78,16 +88,16 @@ public class IndexPageController {
     public void onPlayButtonClick() throws IOException {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
-                    .colorIndex(GameBoard.RED)
+                    .colorIndex(GameConstants.FIRST_PLAYER)
                     .type(firstPlayerType.getValue())
                     .color(firstPlayerColor.getValue())
-                    .playerId("Player 1")
+                    .playerId(UUID.randomUUID().toString())
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
-                    .colorIndex(GameBoard.BLUE)
+                    .colorIndex(GameConstants.SECOND_PLAYER)
                     .type(secondPlayerType.getValue())
                     .color(secondPlayerColor.getValue())
-                    .playerId("Player 2")
+                    .playerId(UUID.randomUUID().toString())
                     .score(0).build();
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)

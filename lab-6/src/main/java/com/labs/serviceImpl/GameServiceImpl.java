@@ -7,6 +7,7 @@ import com.labs.domain.BoxBorderPosition;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
+import com.labs.solvers.GameSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -15,17 +16,13 @@ import java.util.*;
 import java.util.List;
 
 public class GameServiceImpl implements GameService {
-    private static GameServiceImpl gameInstance;
-
     private GameProperties gameProperties;
     private GameBoard gameBoard;
-
     private GamePlayer currentPlayer;
     private List<BoxBorderPosition> selectedPositions;
 
-
+    private static GameServiceImpl gameInstance;
     private List<Observer> observers = new ArrayList<>();
-
 
     public static GameServiceImpl getInstance() {
         if (gameInstance == null) {
@@ -65,27 +62,11 @@ public class GameServiceImpl implements GameService {
         checkNextMove();
     }
 
-
-    private void checkNextMove() {
-        if (gameBoard.isAllBoxesClosed()) {
-            stopGame();
-        } else {
-            AlphaBettaSolver solver = currentPlayer.getGameSolver();
-            if (currentPlayer.getType() == PlayerType.COMPUTER) {
-                BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex());
-                processMove(boxBorderPosition);
-                selectBoxBorderByPlayer(boxBorderPosition.getBorderPosition(), PlayerType.COMPUTER);
-            }
-        }
-    }
-
-    private void changeCurrentPlayer() {
-        if (gameProperties.getFirstPlayer().getPlayerId().equals(currentPlayer.getPlayerId())) {
-            currentPlayer = this.gameProperties.getSecondPlayer();
-        } else {
-            currentPlayer = this.gameProperties.getFirstPlayer();
-        }
-        notifyPlayerChange();
+    private void initBoard() {
+        int size = gameProperties.getGameFieldSize().getSize() + 1;
+        gameBoard = new GameBoard(size);
+        selectedPositions = new ArrayList<>();
+        currentPlayer = gameProperties.getFirstPlayer();
     }
 
     @Override
@@ -148,28 +129,33 @@ public class GameServiceImpl implements GameService {
         }
         this.gameBoard = GameBoard.builder()
                 .size(gameProperties.getGameFieldSize().getSize())
-                .gameBoard(gameBoard)
-                .gameBoxList(gameBoxList).build();
+                .gameBoardVBox(gameBoard)
+                .gameBoxes(gameBoxList).build();
         return this.gameBoard;
     }
 
-    private void initBoard() {
-        int size = gameProperties.getGameFieldSize().getSize() + 1;
-        gameBoard = new GameBoard(size);
-        selectedPositions = new ArrayList<>();
-        currentPlayer = gameProperties.getFirstPlayer();
-    }
-
-    private void processMove(BoxBorderPosition borderPosition) {
-        int x = borderPosition.getXPos(), y = borderPosition.getYPos();
-        if (!selectedPositions.contains(borderPosition)) {
-            if (borderPosition.isHorizontal()) {
-                gameBoard.setHorizontalBorders(x, y, currentPlayer.getColorIndex());
-            } else {
-                gameBoard.setVerticalBorders(x, y, currentPlayer.getColorIndex());
+    private void checkNextMove() {
+        if (!gameBoard.isAllBoxesClosed()) {
+            GameSolver solver = currentPlayer.getGameSolver();
+            if (currentPlayer.getType() == PlayerType.COMPUTER) {
+                BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex());
+                selectBoxBorder(boxBorderPosition);
+                selectBoxBorder(boxBorderPosition.getBorderPosition(), PlayerType.COMPUTER);
             }
+        } else {
+            stopGame();
         }
     }
+
+    private void changeCurrentPlayer() {
+        if (gameProperties.getFirstPlayer().getPlayerId().equals(currentPlayer.getPlayerId())) {
+            currentPlayer = this.gameProperties.getSecondPlayer();
+        } else {
+            currentPlayer = this.gameProperties.getFirstPlayer();
+        }
+        notifyPlayerChange();
+    }
+
 
     private BoxBorderPosition getBoxBorderPosition(String boxBorderId) {
         BoxBorderPosition boxBorderPosition = new BoxBorderPosition();
@@ -186,46 +172,59 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void selectBoxBorderByPlayer(String boxBorderId, PlayerType playerType) {
-        if (playerType == PlayerType.HUMAN) {
-            BoxBorderPosition boxBorderPosition = getBoxBorderPosition(boxBorderId);
-            processMove(getBoxBorderPosition(boxBorderId));
-        }
+    public void selectBoxBorder(String boxBorderId, PlayerType playerType) {
         boolean isBoxClosed = false;
-        for (GameBox gameBox : gameBoard.getGameBoxList()) {
+        if (playerType == PlayerType.HUMAN) {
+            selectBoxBorder(getBoxBorderPosition(boxBorderId));
+        }
+        for (GameBox gameBox : gameBoard.getGameBoxes()) {
             Optional<BoxBorder> box = gameBox.getBoxBorders().stream()
-                    .filter(boxBorder -> boxBorder.getId().equals(boxBorderId))
-                    .filter(boxBorder -> !boxBorder.isSelected())
+                    .filter(boxBorder -> boxBorder.getId().equals(boxBorderId) && !boxBorder.isSelected())
                     .findFirst();
             box.ifPresent(boxBorder -> boxBorder.selectBorder(currentPlayer));
 
             if (box.isPresent() && gameBox.isAllBorderBoxSelected()) {
                 gameBox.closeGameBox(currentPlayer);
-                currentPlayer.updateScore();
                 isBoxClosed = true;
             }
         }
         if (!isBoxClosed) {
             changeCurrentPlayer();
         }
+        updatePlayersScore();
         checkNextMove();
     }
 
-    private void stopGame() {
-        updatePlayersScore();
-        for (Observer observer : observers) {
-            observer.onStopGame(getWinPlayer());
+    private void selectBoxBorder(BoxBorderPosition borderPosition) {
+        if (!selectedPositions.contains(borderPosition)) {
+            if (borderPosition.isHorizontal()) {
+                gameBoard.setHorizontalBorder(borderPosition.getXPos(), borderPosition.getYPos(), currentPlayer.getColorIndex());
+            } else {
+                gameBoard.setVerticalBorder(borderPosition.getXPos(), borderPosition.getYPos(), currentPlayer.getColorIndex());
+            }
+            selectedPositions.add(borderPosition);
         }
     }
 
-    private void updatePlayersScore() {
-
+    private void stopGame() {
+        for (Observer observer : observers) {
+            observer.onStopGame(getWinPlayer());
+        }
     }
 
     private GamePlayer getWinPlayer() {
         GamePlayer firstPlayer = gameProperties.getFirstPlayer();
         GamePlayer secondPlayer = gameProperties.getSecondPlayer();
         return firstPlayer.getScore() > secondPlayer.getScore() ? firstPlayer : secondPlayer;
+    }
+
+    private void updatePlayersScore() {
+        GamePlayer firstPlayer = gameProperties.getFirstPlayer();
+        GamePlayer secondPlayer = gameProperties.getSecondPlayer();
+        firstPlayer.setScore(gameBoard.getScoreByColor(firstPlayer.getColorIndex()));
+        secondPlayer.setScore(gameBoard.getScoreByColor(secondPlayer.getColorIndex()));
+        notifyPlayerScoreChange(firstPlayer);
+        notifyPlayerScoreChange(secondPlayer);
     }
 
     private GameBox getGameBox(BorderPane box, List<BoxBorder> boxBorders) {

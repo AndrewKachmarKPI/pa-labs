@@ -1,9 +1,9 @@
 package com.labs.domain;
 
+import com.labs.service.GameConstants;
 import javafx.scene.layout.VBox;
 import lombok.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,27 +12,25 @@ import java.util.List;
 @Setter
 @Builder(toBuilder = true)
 @AllArgsConstructor
-public class GameBoard {
-    private VBox gameBoard;
-    private List<GameBox> gameBoxList;
-
-    public final static int RED = 0;
-    public final static int BLUE = 1;
-    public final static int BLACK = 2;
-    public final static int BLANK = 3;
-
+public class GameBoard implements GameConstants {
+    private VBox gameBoardVBox;
+    private List<GameBox> gameBoxes;
     private int[][] horizontalBorders, verticalBorders, boxBorders;
-    private int size, redScore, blueScore;
+    private int size, firstPlayerScore, secondPlayerScore;
 
     public GameBoard(int size) {
+        if (size <= 0) {
+            throw new RuntimeException("Invalid size");
+        }
+        this.size = size;
         horizontalBorders = new int[size - 1][size];
         verticalBorders = new int[size][size - 1];
         boxBorders = new int[size - 1][size - 1];
-        fill(horizontalBorders);
-        fill(verticalBorders);
-        fill(boxBorders);
-        this.size = size;
-        redScore = blueScore = 0;
+        firstPlayerScore = 0;
+        secondPlayerScore = 0;
+        fillBordersWithEmpty(horizontalBorders);
+        fillBordersWithEmpty(verticalBorders);
+        fillBordersWithEmpty(boxBorders);
     }
 
     public GameBoard copyGameBoard() {
@@ -42,129 +40,141 @@ public class GameBoard {
                 System.arraycopy(horizontalBorders[i], 0, newGameBoard.horizontalBorders[i], 0, size);
             }
         }
-
         for (int i = 0; i < size; i++) {
             System.arraycopy(verticalBorders[i], 0, newGameBoard.verticalBorders[i], 0, size - 1);
         }
-
         for (int i = 0; i < (size - 1); i++) {
             System.arraycopy(boxBorders[i], 0, newGameBoard.boxBorders[i], 0, size - 1);
         }
-
-        newGameBoard.redScore = redScore;
-        newGameBoard.blueScore = blueScore;
+        newGameBoard.firstPlayerScore = firstPlayerScore;
+        newGameBoard.secondPlayerScore = secondPlayerScore;
+        newGameBoard.gameBoardVBox = gameBoardVBox;
+        newGameBoard.gameBoxes = gameBoxes;
         return newGameBoard;
     }
 
-
-    private void fill(int[][] array) {
-        for (int[] ints : array) {
-            Arrays.fill(ints, GameBoard.BLANK);
+    private void fillBordersWithEmpty(int[][] borders) {
+        for (int[] pos : borders) {
+            Arrays.fill(pos, GameBoard.EMPTY);
         }
     }
 
-
     public int getScoreByColor(int color) {
-        if (color == RED) return redScore;
-        else return blueScore;
+        int score;
+        if (color == FIRST_PLAYER) {
+            score = firstPlayerScore;
+        } else {
+            score = secondPlayerScore;
+        }
+        return score;
     }
 
     public static int toggleColor(int color) {
-        if (color == RED)
-            return BLUE;
-        else
-            return RED;
+        if (color == FIRST_PLAYER) {
+            return SECOND_PLAYER;
+        } else {
+            return FIRST_PLAYER;
+        }
     }
 
     public List<BoxBorderPosition> getAvailableMoves() {
-        List<BoxBorderPosition> ret = new ArrayList<>();
+        List<BoxBorderPosition> availableMoves = new ArrayList<>();
+        availableMoves.addAll(getHorizontalMoves());
+        availableMoves.addAll(getVerticalMoves());
+        return availableMoves;
+    }
+
+    private List<BoxBorderPosition> getHorizontalMoves() {
+        List<BoxBorderPosition> availableMoves = new ArrayList<>();
         for (int i = 0; i < (size - 1); i++) {
             for (int j = 0; j < size; j++) {
-                if (horizontalBorders[i][j] == BLANK) {
-                    ret.add(new BoxBorderPosition(i, j, true));
+                if (horizontalBorders[i][j] == EMPTY) {
+                    availableMoves.add(new BoxBorderPosition(i, j, true));
                 }
             }
         }
+        return availableMoves;
+    }
+
+    private List<BoxBorderPosition> getVerticalMoves() {
+        List<BoxBorderPosition> availableMoves = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < (size - 1); j++) {
-                if (verticalBorders[i][j] == BLANK) {
-                    ret.add(new BoxBorderPosition(i, j, false));
+                if (verticalBorders[i][j] == EMPTY) {
+                    availableMoves.add(new BoxBorderPosition(i, j, false));
                 }
             }
         }
-        return ret;
+        return availableMoves;
     }
 
-    public ArrayList<Point> setHorizontalBorders(int x, int y, int color) {
-        horizontalBorders[x][y] = BLACK;
-        ArrayList<Point> ret = new ArrayList<>();
-        if (y < (size - 1) && verticalBorders[x][y] == BLACK && verticalBorders[x + 1][y] == BLACK && horizontalBorders[x][y + 1] == BLACK) {
+    public void setHorizontalBorder(int x, int y, int color) {
+        horizontalBorders[x][y] = SELECTED;
+        if (y < (size - 1) && verticalBorders[x][y] == SELECTED && verticalBorders[x + 1][y] == SELECTED && horizontalBorders[x][y + 1] == SELECTED) {
             boxBorders[x][y] = color;
-            ret.add(new Point(x, y));
-            if (color == RED) redScore++;
-            else blueScore++;
+            updateScore(color);
         }
-        if (y > 0 && verticalBorders[x][y - 1] == BLACK && verticalBorders[x + 1][y - 1] == BLACK && horizontalBorders[x][y - 1] == BLACK) {
+        if (y > 0 && verticalBorders[x][y - 1] == SELECTED && verticalBorders[x + 1][y - 1] == SELECTED && horizontalBorders[x][y - 1] == SELECTED) {
             boxBorders[x][y - 1] = color;
-            ret.add(new Point(x, y - 1));
-            if (color == RED) redScore++;
-            else blueScore++;
+            updateScore(color);
         }
-        return ret;
     }
 
-    public ArrayList<Point> setVerticalBorders(int x, int y, int color) {
-        verticalBorders[x][y] = BLACK;
-        ArrayList<Point> ret = new ArrayList<Point>();
-        if (x < (size - 1) && horizontalBorders[x][y] == BLACK && horizontalBorders[x][y + 1] == BLACK && verticalBorders[x + 1][y] == BLACK) {
+    public void setVerticalBorder(int x, int y, int color) {
+        verticalBorders[x][y] = SELECTED;
+        if (x < (size - 1) && horizontalBorders[x][y] == SELECTED && horizontalBorders[x][y + 1] == SELECTED && verticalBorders[x + 1][y] == SELECTED) {
             boxBorders[x][y] = color;
-            ret.add(new Point(x, y));
-            if (color == RED) redScore++;
-            else blueScore++;
+            updateScore(color);
         }
-        if (x > 0 && horizontalBorders[x - 1][y] == BLACK && horizontalBorders[x - 1][y + 1] == BLACK && verticalBorders[x - 1][y] == BLACK) {
+        if (x > 0 && horizontalBorders[x - 1][y] == SELECTED && horizontalBorders[x - 1][y + 1] == SELECTED && verticalBorders[x - 1][y] == SELECTED) {
             boxBorders[x - 1][y] = color;
-            ret.add(new Point(x - 1, y));
-            if (color == RED) redScore++;
-            else blueScore++;
+            updateScore(color);
         }
-        return ret;
+    }
+
+    private void updateScore(int color) {
+        if (color == FIRST_PLAYER) {
+            firstPlayerScore++;
+        } else {
+            secondPlayerScore++;
+        }
     }
 
     public boolean isComplete() {
-        return (redScore + blueScore) == (size - 1) * (size - 1);
+        return (firstPlayerScore + secondPlayerScore) == (size - 1) * (size - 1);
     }
 
     public int getWinner() {
-        if (redScore > blueScore) return RED;
-        else if (redScore < blueScore) return BLUE;
-        else return BLANK;
+        if (firstPlayerScore > secondPlayerScore) return FIRST_PLAYER;
+        else if (firstPlayerScore < secondPlayerScore) return SECOND_PLAYER;
+        else return EMPTY;
     }
 
     public GameBoard getNewBoard(BoxBorderPosition boxBorderPosition, int color) {
-        GameBoard ret = copyGameBoard();
+        GameBoard board = copyGameBoard();
         if (boxBorderPosition.isHorizontal()) {
-            ret.setHorizontalBorders(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
+            board.setHorizontalBorder(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
         } else {
-            ret.setVerticalBorders(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
+            board.setVerticalBorder(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
         }
-        return ret;
+        return board;
     }
 
-    private int getBorderNumber(int i, int j) {
+    private int getSelectedBorderNumbers(int i, int j) {
         int count = 0;
-        if (horizontalBorders[i][j] == BLACK) count++;
-        if (horizontalBorders[i][j + 1] == BLACK) count++;
-        if (verticalBorders[i][j] == BLACK) count++;
-        if (verticalBorders[i + 1][j] == BLACK) count++;
+        if (horizontalBorders[i][j] == SELECTED || horizontalBorders[i][j + 1] == SELECTED ||
+                verticalBorders[i][j] == SELECTED || verticalBorders[i + 1][j] == SELECTED) {
+            count++;
+        }
         return count;
     }
 
-    public int getBoxBordersNumber(int nSides) {
+    public int getSelectedBoxesNumber(int compareNumber) {
         int count = 0;
-        for (int i = 0; i < (size - 1); i++) {
-            for (int j = 0; j < (size - 1); j++) {
-                if (getBorderNumber(i, j) == nSides) {
+        int size = this.size - 1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (getSelectedBorderNumbers(i, j) == compareNumber) {
                     count++;
                 }
             }
@@ -173,6 +183,6 @@ public class GameBoard {
     }
 
     public boolean isAllBoxesClosed() {
-        return gameBoxList.stream().noneMatch(GameBox::isNotOccupied);
+        return gameBoxes.stream().noneMatch(GameBox::isNotOccupied);
     }
 }

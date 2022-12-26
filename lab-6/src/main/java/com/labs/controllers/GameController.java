@@ -213,7 +213,7 @@ public class GameController implements Observer {
     // ACTIONS
     private void onBorderSelect(MouseEvent event) {
         if (currentPlayer.getType() != PlayerType.COMPUTER) {
-            gameService.selectBoxBorderByPlayer(((Button) event.getSource()).getId(), PlayerType.HUMAN);
+            gameService.selectBoxBorder(((Button) event.getSource()).getId(), PlayerType.HUMAN);
         }
     }
 

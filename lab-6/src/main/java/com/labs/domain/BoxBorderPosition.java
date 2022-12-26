@@ -1,5 +1,6 @@
 package com.labs.domain;
 
+import com.labs.service.GameConstants;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,16 +10,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class BoxBorderPosition {
-    private int xPos, yPos;
+public class BoxBorderPosition implements GameConstants {
+    private int xPos;
+    private int yPos;
     private boolean isHorizontal;
 
     public BoxBorderPosition() {
-        xPos = yPos = -1;
+        xPos = -1;
+        yPos = -1;
         isHorizontal = false;
     }
 
     public String getBorderPosition() {
-        return (isHorizontal ? "H" : "V") + yPos + "" + xPos;
+        String posPrefix = isHorizontal ? HORIZONTAL : VERTICAL;
+        return posPrefix + yPos + "" + xPos;
     }
 }

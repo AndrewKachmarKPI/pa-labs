@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -34,11 +35,11 @@ public class IndexPageController {
     @FXML
     public ColorPicker firstPlayerColor;
     @FXML
-    public ComboBox<PlayerType> firstPlayerType;
+    public TextField firstPlayerType;
     @FXML
     public ColorPicker secondPlayerColor;
     @FXML
-    public ComboBox<PlayerType> secondPlayerType;
+    public TextField secondPlayerType;
     @FXML
     public ComboBox<GameDifficulty> gameComplexityComboBox;
     @FXML
@@ -49,7 +50,6 @@ public class IndexPageController {
     void initialize() {
         setGameComplexityComboBox();
         setPlayerTypeComboBoxes();
-        selectDefaultPlayers();
         setDefaultPlayerColors();
         setFieldSizeComboBox();
         gameService = GameServiceImpl.getInstance();
@@ -61,16 +61,10 @@ public class IndexPageController {
     }
 
     private void setPlayerTypeComboBoxes() {
-        ObservableList<PlayerType> playerTypes = FXCollections.observableArrayList(PlayerType.values());
         firstPlayerType.setDisable(true);
-        firstPlayerType.setItems(playerTypes);
+        firstPlayerType.setText(PlayerType.HUMAN.toString());
         secondPlayerType.setDisable(true);
-        secondPlayerType.setItems(playerTypes);
-    }
-
-    private void selectDefaultPlayers() {
-        firstPlayerType.setValue(PlayerType.HUMAN);
-        secondPlayerType.setValue(PlayerType.COMPUTER);
+        secondPlayerType.setText(PlayerType.COMPUTER.toString());
     }
 
     private void setDefaultPlayerColors() {
@@ -89,15 +83,15 @@ public class IndexPageController {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.FIRST_PLAYER)
-                    .type(firstPlayerType.getValue())
+                    .type(PlayerType.valueOf(firstPlayerType.getText()))
                     .color(firstPlayerColor.getValue())
-                    .playerId(UUID.randomUUID().toString())
+                    .playerId("Player 1")
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.SECOND_PLAYER)
-                    .type(secondPlayerType.getValue())
+                    .type(PlayerType.valueOf(secondPlayerType.getText()))
                     .color(secondPlayerColor.getValue())
-                    .playerId(UUID.randomUUID().toString())
+                    .playerId("Player 2")
                     .score(0).build();
             GameProperties gameProperties = GameProperties.builder()
                     .firstPlayer(firstPlayer)
@@ -115,8 +109,8 @@ public class IndexPageController {
     }
 
     private boolean isSettingsFormValid() {
-        return !firstPlayerType.selectionModelProperty().get().isEmpty() &&
-                !secondPlayerType.selectionModelProperty().get().isEmpty() &&
+        return !firstPlayerType.getText().isEmpty() &&
+                !secondPlayerType.getText().isEmpty() &&
                 !gameComplexityComboBox.selectionModelProperty().get().isEmpty() &&
                 !fieldSizeComboBox.selectionModelProperty().get().isEmpty();
     }

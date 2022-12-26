@@ -77,6 +77,10 @@ public class GameBoard implements GameConstants {
         }
     }
 
+    public boolean hasAvailableMoves() {
+        return gameBoxes.stream().noneMatch(GameBox::isNotOccupied);
+    }
+
     public List<BoxBorderPosition> getAvailableMoves() {
         List<BoxBorderPosition> availableMoves = new ArrayList<>();
         availableMoves.addAll(getHorizontalMoves());

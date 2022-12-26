@@ -56,17 +56,9 @@ public class GameServiceImpl implements GameService {
     public void startGame() {
         setGameSolverForPlayer(gameProperties.getFirstPlayer());
         setGameSolverForPlayer(gameProperties.getSecondPlayer());
-        initBoard();
 
         notifyPlayerChange();
         checkNextMove();
-    }
-
-    private void initBoard() {
-        int size = gameProperties.getGameFieldSize().getSize() + 1;
-        gameBoard = new GameBoard(size);
-        selectedPositions = new ArrayList<>();
-        currentPlayer = gameProperties.getFirstPlayer();
     }
 
     @Override
@@ -127,10 +119,12 @@ public class GameServiceImpl implements GameService {
 
             gameBoxList.add(getGameBox(box, boxBorders));
         }
-        this.gameBoard = GameBoard.builder()
-                .size(gameProperties.getGameFieldSize().getSize())
-                .gameBoardVBox(gameBoard)
-                .gameBoxes(gameBoxList).build();
+        int size = gameProperties.getGameFieldSize().getSize() + 1;
+        this.gameBoard = new GameBoard(size);
+        this.gameBoard.setGameBoardVBox(gameBoard);
+        this.gameBoard.setGameBoxes(gameBoxList);
+        this.selectedPositions = new ArrayList<>();
+        this.currentPlayer = gameProperties.getFirstPlayer();
         return this.gameBoard;
     }
 
@@ -173,6 +167,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void selectBoxBorder(String boxBorderId, PlayerType playerType) {
+        System.out.println("SELECT BOX BORDER");
         boolean isBoxClosed = false;
         if (playerType == PlayerType.HUMAN) {
             selectBoxBorder(getBoxBorderPosition(boxBorderId));
@@ -215,7 +210,13 @@ public class GameServiceImpl implements GameService {
     private GamePlayer getWinPlayer() {
         GamePlayer firstPlayer = gameProperties.getFirstPlayer();
         GamePlayer secondPlayer = gameProperties.getSecondPlayer();
-        return firstPlayer.getScore() > secondPlayer.getScore() ? firstPlayer : secondPlayer;
+        GamePlayer gamePlayer = null;
+        if (firstPlayer.getScore() > secondPlayer.getScore()) {
+            gamePlayer = firstPlayer;
+        } else if ((secondPlayer.getScore() > firstPlayer.getScore())) {
+            gamePlayer = secondPlayer;
+        }
+        return gamePlayer;
     }
 
     private void updatePlayersScore() {

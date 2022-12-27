@@ -6,7 +6,7 @@ import com.labs.domain.GameBoard;
 import com.labs.domain.BoxBorderPosition;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
-import com.labs.solvers.AlphaBettaSolver;
+import com.labs.solvers.GameSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -130,7 +130,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void checkNextMove() {
         if (!gameBoard.isAllBoxesClosed()) {
-            AlphaBettaSolver solver = currentPlayer.getGameSolver();
+            GameSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
                 BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex(), gameProperties.getGameDifficulty());
                 selectBoxBorder(boxBorderPosition);
@@ -245,7 +245,7 @@ public class GameServiceImpl implements GameService {
 
     private void setGameSolverForPlayer(GamePlayer gamePlayer) {
         if (gamePlayer.getType() == PlayerType.COMPUTER) {
-            gamePlayer.setGameSolver(new AlphaBettaSolver());
+            gamePlayer.setGameSolver(new GameSolver());
         }
     }
 

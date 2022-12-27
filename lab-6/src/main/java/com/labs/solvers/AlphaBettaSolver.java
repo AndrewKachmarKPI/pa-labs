@@ -85,6 +85,7 @@ public class AlphaBettaSolver implements GameConstants {
                 return new BoxBorderNode(null, countUtility(gameBoard, moveBy));
             }
             List<BoxBorderNode> successors = generateSuccessors(gameBoard, moveBy, availableMoves, availableMoves.size());
+            Collections.shuffle(successors);
             availableMoves = successors.stream().map(BoxBorderNode::getBoxBorderPosition).collect(Collectors.toList());
             if (moveBy == currentPlayer) {
                 return minimize(gameBoard, moveBy, alpha, beta, level, availableMoves);

@@ -15,4 +15,5 @@ public class GameProperties {
     private GamePlayer secondPlayer;
     private GameDifficulty gameDifficulty;
     private FieldSize gameFieldSize;
+    private Boolean isAIFirst;
 }

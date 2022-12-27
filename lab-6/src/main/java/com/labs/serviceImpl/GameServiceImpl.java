@@ -123,7 +123,11 @@ public class GameServiceImpl implements GameService {
         this.gameBoard.setGameBoardVBox(gameBoard);
         this.gameBoard.setGameBoxes(gameBoxList);
         this.selectedPositions = new ArrayList<>();
-        this.currentPlayer = gameProperties.getFirstPlayer();
+        if (gameProperties.getIsAIFirst()) {
+            this.currentPlayer = gameProperties.getSecondPlayer();
+        } else {
+            this.currentPlayer = gameProperties.getFirstPlayer();
+        }
         return this.gameBoard;
     }
 

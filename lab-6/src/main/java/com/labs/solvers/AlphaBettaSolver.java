@@ -172,7 +172,7 @@ public class AlphaBettaSolver implements GameConstants {
         return (System.nanoTime() - startTime) > moveTime;
     }
 
-    protected int countUtility(GameBoard gameBoard, int moveBy) {
+    private int countUtility(GameBoard gameBoard, int moveBy) {
         int cost;
         if (currentPlayer == GameBoard.FIRST_PLAYER) {
             cost = gameBoard.getFirstPlayerScore() - gameBoard.getSecondPlayerScore();

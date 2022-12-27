@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GameBoard implements GameConstants, Cloneable {
+public class GameBoard implements GameConstants {
     private VBox gameBoardVBox;
     private List<GameBox> gameBoxes;
 
@@ -30,7 +30,7 @@ public class GameBoard implements GameConstants, Cloneable {
         secondPlayerScore = 0;
     }
 
-    public GameBoard clone() {
+    public GameBoard copyGameBoard() {
         GameBoard newGameBoard = new GameBoard(size);
         for (int i = 0; i < (size - 1); i++) {
             System.arraycopy(horizontalBorders[i], 0, newGameBoard.horizontalBorders[i], 0, size);
@@ -54,9 +54,9 @@ public class GameBoard implements GameConstants, Cloneable {
         }
     }
 
-    public int getScoreByColor(int color) {
+    public int getScoreByPlayerIndex(int player) {
         int score;
-        if (color == FIRST_PLAYER) {
+        if (player == FIRST_PLAYER) {
             score = firstPlayerScore;
         } else {
             score = secondPlayerScore;
@@ -135,18 +135,8 @@ public class GameBoard implements GameConstants, Cloneable {
         }
     }
 
-    public boolean isComplete() {
-        return (firstPlayerScore + secondPlayerScore) == (size - 1) * (size - 1);
-    }
-
-    public int getWinner() {
-        if (firstPlayerScore > secondPlayerScore) return FIRST_PLAYER;
-        else if (firstPlayerScore < secondPlayerScore) return SECOND_PLAYER;
-        else return EMPTY;
-    }
-
     public GameBoard getNewBoard(BoxBorderPosition boxBorderPosition, int color) {
-        GameBoard board = clone();
+        GameBoard board = copyGameBoard();
         if (boxBorderPosition.isHorizontal()) {
             board.setHorizontalBorder(boxBorderPosition.getXPos(), boxBorderPosition.getYPos(), color);
         } else {

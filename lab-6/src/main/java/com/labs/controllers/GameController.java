@@ -26,14 +26,20 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameController implements Observer {
+    @FXML
     public TextField moveInput;
+    @FXML
     public TextField firstPlayerAmount;
+    @FXML
     public TextField secondPlayerAmount;
+    @FXML
     public Button homeBtn;
+    @FXML
     public BorderPane boardPanel;
-    public Label winLabel;
+    @FXML
     public Button reloadGameBtn;
     private List<Button> allButtons = new ArrayList<>();
     private List<BorderPane> allBoxes = new ArrayList<>();
@@ -58,9 +64,7 @@ public class GameController implements Observer {
     }
 
     private void setPlayerScore(TextField amountInput, GamePlayer gamePlayer) {
-        String inputStyle = "-fx-text-inner-color: " + getHexColor(gamePlayer.getColor());
         amountInput.setText(gamePlayer.getScore().toString());
-        amountInput.setStyle(inputStyle);
         amountInput.setId(gamePlayer.getPlayerId());
     }
 
@@ -76,7 +80,6 @@ public class GameController implements Observer {
     public void onReloadBtnClick() {
         allButtons = new ArrayList<>();
         allBoxes = new ArrayList<>();
-        winLabel.setText("");
         firstPlayerAmount.setText("");
         secondPlayerAmount.setText("");
         moveInput.setText("");
@@ -220,16 +223,21 @@ public class GameController implements Observer {
     @Override
     public void onStopGame(GamePlayer gamePlayer) {
         if (gamePlayer != null) {
-            winLabel.setText(gamePlayer.getPlayerId() + " wins with score ->" + gamePlayer.getScore());
+            moveInput.setText(gamePlayer.getPlayerId() + " wins with score ->" + gamePlayer.getScore());
         } else {
-            winLabel.setText("Game ended in a draw!");
+            moveInput.setText("Game ended in a draw!");
         }
     }
 
     @Override
     public void onPlayerChange(GamePlayer gamePlayer) {
         currentPlayer = gamePlayer;
-        moveInput.setText(gamePlayer.getPlayerId());
+//        moveInput.setText(gamePlayer.getPlayerId());
+    }
+
+    @Override
+    public void onMoveTitleChange(String move) {
+        moveInput.setText(move);
     }
 
     @Override

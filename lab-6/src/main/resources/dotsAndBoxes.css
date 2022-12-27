@@ -10,10 +10,21 @@
     -fx-background-size: 30px 30px;
     -fx-background-image: url(com/labs/images/home.png);
 }
-#reloadGameBtn{
+
+#reloadGameBtn {
     -fx-background-size: 30px 30px;
     -fx-background-image: url(com/labs/images/refresh.png);
 }
+
+#man {
+    -fx-background-size: 30px 30px;
+    -fx-background-image: url(com/labs/images/man.png);
+}
+#ai {
+    -fx-background-size: 30px 30px;
+    -fx-background-image: url(com/labs/images/ai.png);
+}
+
 
 .circle {
     -fx-fill: black;

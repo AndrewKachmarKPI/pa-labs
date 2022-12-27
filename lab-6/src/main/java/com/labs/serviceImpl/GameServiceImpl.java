@@ -7,7 +7,6 @@ import com.labs.domain.BoxBorderPosition;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
 import com.labs.solvers.AlphaBettaSolver;
-import com.labs.solvers.GameSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -128,9 +127,10 @@ public class GameServiceImpl implements GameService {
         return this.gameBoard;
     }
 
-    private void checkNextMove() {
+    @Override
+    public void checkNextMove() {
         if (!gameBoard.isAllBoxesClosed()) {
-            GameSolver solver = currentPlayer.getGameSolver();
+            AlphaBettaSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
                 BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex(), gameProperties.getGameDifficulty());
                 selectBoxBorder(boxBorderPosition);
@@ -167,6 +167,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void selectBoxBorder(String boxBorderId, PlayerType playerType) {
+        changeMove(boxBorderId);
         boolean isBoxClosed = false;
         if (playerType == PlayerType.HUMAN) {
             selectBoxBorder(getBoxBorderPosition(boxBorderId));
@@ -187,6 +188,13 @@ public class GameServiceImpl implements GameService {
         }
         updatePlayersScore();
         checkNextMove();
+    }
+
+
+    private void changeMove(String boxBorderId) {
+        for (Observer observer : observers) {
+            observer.onMoveTitleChange(boxBorderId);
+        }
     }
 
     private void selectBoxBorder(BoxBorderPosition borderPosition) {
@@ -221,8 +229,8 @@ public class GameServiceImpl implements GameService {
     private void updatePlayersScore() {
         GamePlayer firstPlayer = gameProperties.getFirstPlayer();
         GamePlayer secondPlayer = gameProperties.getSecondPlayer();
-        firstPlayer.setScore(gameBoard.getScoreByColor(firstPlayer.getColorIndex()));
-        secondPlayer.setScore(gameBoard.getScoreByColor(secondPlayer.getColorIndex()));
+        firstPlayer.setScore(gameBoard.getScoreByPlayerIndex(firstPlayer.getColorIndex()));
+        secondPlayer.setScore(gameBoard.getScoreByPlayerIndex(secondPlayer.getColorIndex()));
         notifyPlayerScoreChange(firstPlayer);
         notifyPlayerScoreChange(secondPlayer);
     }

@@ -25,6 +25,8 @@ public interface GameService extends GameConstants {
 
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
 
+    void checkNextMove();
+
     void selectBoxBorder(String boxBorderId, PlayerType playerType);
 
 

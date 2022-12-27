@@ -10,12 +10,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class AlphaBettaSolver extends GameSolver implements GameConstants {
+public class AlphaBettaSolver implements GameConstants {
+    private int currentPlayer;
     private final static int ALPHA = Integer.MIN_VALUE, BETA = Integer.MAX_VALUE;
     private int depth;
     private long startTime;
 
     public BoxBorderPosition getNextMove(GameBoard gameBoard, int moveBy, GameDifficulty difficulty) {
+        depth = 1;
         startTimer();
         currentPlayer = moveBy;
         return searchPosition(gameBoard, moveBy, difficulty);
@@ -29,6 +31,7 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
                 break;
             }
             case MEDIUM: {
+                position = greedySearch(gameBoard);
                 break;
             }
             case HARD: {
@@ -45,8 +48,8 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
         return possibleMoves.get(rand.nextInt(possibleMoves.size()));
     }
 
+
     private BoxBorderPosition deepSearch(GameBoard gameBoard, int moveBy) {
-        depth = 1;
         BoxBorderPosition borderPosition = new BoxBorderPosition();
         while (depth <= gameBoard.getAvailableMoves().size()) {
             BoxBorderNode boxBorderNode = searchBestPosition(gameBoard, moveBy, ALPHA, BETA, 0);
@@ -59,35 +62,49 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
         return borderPosition;
     }
 
+    private BoxBorderPosition greedySearch(GameBoard gameBoard) {
+        List<BoxBorderPosition> availableMoves = gameBoard.getAvailableMoves();
+        List<Integer> boardsUtility = new ArrayList<>();
+        Collections.shuffle(availableMoves);
+        for (BoxBorderPosition availableMove : availableMoves) {
+            GameBoard board = gameBoard.getNewBoard(availableMove, currentPlayer);
+            int moveBy = currentPlayer;
+            if (board.getScoreByPlayerIndex(currentPlayer) < gameBoard.getScoreByPlayerIndex(currentPlayer)) {
+                moveBy = GameBoard.togglePlayer(currentPlayer);
+            }
+            boardsUtility.add(countUtility(board, moveBy));
+        }
+        Integer bestBoard = Collections.max(boardsUtility);
+        return availableMoves.get(boardsUtility.indexOf(bestBoard));
+    }
+
     private BoxBorderNode searchBestPosition(GameBoard gameBoard, int moveBy, int alpha, int beta, int level) {
         if (level < depth) {
-            List<BoxBorderPosition> possibleMoves = gameBoard.getAvailableMoves();
-            if (possibleMoves.isEmpty()) {
-                return new BoxBorderNode(null, countHeuristic(gameBoard, moveBy));
+            List<BoxBorderPosition> availableMoves = gameBoard.getAvailableMoves();
+            if (availableMoves.isEmpty()) {
+                return new BoxBorderNode(null, countUtility(gameBoard, moveBy));
             }
-            List<BoxBorderNode> successors = generateSuccessors(gameBoard, moveBy, possibleMoves, possibleMoves.size());
-            possibleMoves = successors.stream().map(BoxBorderNode::getBoxBorderPosition).collect(Collectors.toList());
+            List<BoxBorderNode> successors = generateSuccessors(gameBoard, moveBy, availableMoves, availableMoves.size());
+            availableMoves = successors.stream().map(BoxBorderNode::getBoxBorderPosition).collect(Collectors.toList());
             if (moveBy == currentPlayer) {
-                return minimize(gameBoard, moveBy, alpha, beta, level, possibleMoves);
+                return minimize(gameBoard, moveBy, alpha, beta, level, availableMoves);
             } else {
-                return maximize(gameBoard, moveBy, alpha, beta, level, possibleMoves);
+                return maximize(gameBoard, moveBy, alpha, beta, level, availableMoves);
             }
         } else {
-            return new BoxBorderNode(null, countHeuristic(gameBoard, moveBy));
+            return new BoxBorderNode(null, countUtility(gameBoard, moveBy));
         }
     }
 
-    private List<BoxBorderNode> generateSuccessors(GameBoard gameBoard, int color, List<BoxBorderPosition> possibleMoves, int size) {
+    private List<BoxBorderNode> generateSuccessors(GameBoard gameBoard, int playerIndex, List<BoxBorderPosition> possibleMoves, int size) {
         List<BoxBorderNode> successors = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            GameBoard newGameBoard = gameBoard.getNewBoard(possibleMoves.get(i), color);
-            int moveBy;
-            if (newGameBoard.getScoreByColor(color) > gameBoard.getScoreByColor(color)) {
-                moveBy = color;
-            } else {
-                moveBy = GameBoard.togglePlayer(color);
+            GameBoard newGameBoard = gameBoard.getNewBoard(possibleMoves.get(i), playerIndex);
+            int moveBy = playerIndex;
+            if (newGameBoard.getScoreByPlayerIndex(playerIndex) < gameBoard.getScoreByPlayerIndex(playerIndex)) {
+                moveBy = GameBoard.togglePlayer(playerIndex);
             }
-            successors.add(new BoxBorderNode(possibleMoves.get(i), countHeuristic(newGameBoard, moveBy)));
+            successors.add(new BoxBorderNode(possibleMoves.get(i), countUtility(newGameBoard, moveBy)));
         }
         Collections.sort(successors);
         return successors;
@@ -98,10 +115,8 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
         for (BoxBorderPosition move : moves) {
             GameBoard childGameBoard = gameBoard.getNewBoard(move, moveBy);
             BoxBorderNode boxBorderNode;
-            int childScore = childGameBoard.getScoreByColor(moveBy);
-            int currentScore = gameBoard.getScoreByColor(moveBy);
             boolean isScoreEqual = false;
-            if (childScore == currentScore) {
+            if (childGameBoard.getScoreByPlayerIndex(moveBy) == gameBoard.getScoreByPlayerIndex(moveBy)) {
                 boxBorderNode = searchBestPosition(childGameBoard, GameBoard.togglePlayer(moveBy), alpha, beta, level + 1);
                 isScoreEqual = true;
             } else {
@@ -127,7 +142,7 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
         for (BoxBorderPosition move : moves) {
             GameBoard child = gameBoard.getNewBoard(move, moveBy);
             BoxBorderNode boxBorderNode;
-            int childScore = child.getScoreByColor(moveBy), currentScore = gameBoard.getScoreByColor(moveBy);
+            int childScore = child.getScoreByPlayerIndex(moveBy), currentScore = gameBoard.getScoreByPlayerIndex(moveBy);
             boolean isScoreEqual = false;
             if (childScore == currentScore) {
                 boxBorderNode = searchBestPosition(child, GameBoard.togglePlayer(moveBy), alpha, beta, level + 1);
@@ -155,5 +170,20 @@ public class AlphaBettaSolver extends GameSolver implements GameConstants {
 
     private boolean isTimeOut() {
         return (System.nanoTime() - startTime) > moveTime;
+    }
+
+    protected int countUtility(GameBoard gameBoard, int moveBy) {
+        int cost;
+        if (currentPlayer == GameBoard.FIRST_PLAYER) {
+            cost = gameBoard.getFirstPlayerScore() - gameBoard.getSecondPlayerScore();
+        } else {
+            cost = gameBoard.getSecondPlayerScore() - gameBoard.getFirstPlayerScore();
+        }
+        if (currentPlayer == moveBy) {
+            cost += gameBoard.getSelectedBoxesNumber(3) - gameBoard.getSelectedBoxesNumber(2);
+        } else {
+            cost -= gameBoard.getSelectedBoxesNumber(3) - gameBoard.getSelectedBoxesNumber(2);
+        }
+        return cost;
     }
 }

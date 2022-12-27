@@ -61,9 +61,7 @@ public class IndexPageController {
     }
 
     private void setPlayerTypeComboBoxes() {
-        firstPlayerType.setEditable(false);
         firstPlayerType.setText(PlayerType.HUMAN.toString());
-        secondPlayerType.setEditable(false);
         secondPlayerType.setText(PlayerType.COMPUTER.toString());
     }
 

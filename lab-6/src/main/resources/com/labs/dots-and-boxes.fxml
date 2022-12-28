@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<FlowPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" rowValignment="BOTTOM" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.labs.controllers.GameController">
+<FlowPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" rowValignment="BOTTOM" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.labs.controllers.GameController">
     <BorderPane fx:id="boardPanel" prefHeight="599.0" prefWidth="595.0">
       <bottom>
           <GridPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -18,7 +18,7 @@
               </rowConstraints>
               <Button fx:id="homeBtn" mnemonicParsing="false" onMouseClicked="#onHomeButtonClick" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" />
               <Button fx:id="reloadGameBtn" mnemonicParsing="false" onMouseClicked="#onReloadBtnClick" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" GridPane.columnIndex="2" />
-                   <TextField fx:id="moveInput" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="124.0" GridPane.columnIndex="1" />
+                   <TextField fx:id="moveInput" editable="false" prefHeight="30.0" prefWidth="124.0" GridPane.columnIndex="1" />
             <padding>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
@@ -42,10 +42,8 @@
               </padding>
               <TextField fx:id="firstPlayerAmount" alignment="CENTER" editable="false" prefHeight="49.0" prefWidth="157.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
               <TextField fx:id="secondPlayerAmount" alignment="CENTER" editable="false" prefHeight="37.0" prefWidth="156.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-            <Button fx:id="man" mnemonicParsing="false" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" GridPane.rowIndex="1" />
-            <Button fx:id="ai" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="16.0" styleClass="icon-btn" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Label text="Player 1" GridPane.columnIndex="2" />
-            <Label text="Player 2" GridPane.columnIndex="4" />
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="164.0" text="Player 1" GridPane.columnIndex="2" />
+            <Label alignment="CENTER" prefHeight="18.0" prefWidth="168.0" text="Player 2" GridPane.columnIndex="4" />
           </GridPane>
       </top>
     </BorderPane>

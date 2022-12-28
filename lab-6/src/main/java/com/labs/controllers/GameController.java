@@ -60,7 +60,11 @@ public class GameController implements Observer {
         setPlayerScore(secondPlayerAmount, gameProperties.getSecondPlayer());
 
         buildGameField();
-        gameService.startGame();
+        startGame();
+    }
+
+    private void startGame() {
+        new Thread(() -> gameService.startGame()).start();
     }
 
     private void setPlayerScore(TextField amountInput, GamePlayer gamePlayer) {
@@ -146,7 +150,7 @@ public class GameController implements Observer {
     }
 
     private Circle getCircle() {
-        Circle circle = new Circle(8, Color.BLACK);
+        Circle circle = new Circle(10, Color.BLACK);
         circle.setLayoutX(10);
         return circle;
     }
@@ -158,11 +162,13 @@ public class GameController implements Observer {
             button.getStyleClass().add("h-btn");
             button.setId("H" + row + col);
         } else {
+            button.setMinHeight(Region.USE_PREF_SIZE);
             button.getStyleClass().add("v-btn");
             button.setId("V" + row + col);
         }
 
         button.setStyle(bgStyle + getHexColor(Color.LIGHTGRAY));
+        button.getStyleClass().add("border-button");
         EventHandler<MouseEvent> selectBorder = this::onBorderSelect;
         EventHandler<MouseEvent> hoverBorder = this::onBorderHover;
         EventHandler<MouseEvent> unHover = this::onBorderUnHover;
@@ -216,7 +222,7 @@ public class GameController implements Observer {
     // ACTIONS
     private void onBorderSelect(MouseEvent event) {
         if (currentPlayer.getType() != PlayerType.COMPUTER) {
-            gameService.selectBoxBorder(((Button) event.getSource()).getId(), PlayerType.HUMAN);
+            new Thread(() -> gameService.selectBoxBorder(((Button) event.getSource()).getId(), PlayerType.HUMAN)).start();
         }
     }
 

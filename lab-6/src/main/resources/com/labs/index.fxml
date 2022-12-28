@@ -32,7 +32,7 @@
                     <Color red="1.0"/>
                 </value>
             </ColorPicker>
-            <TextField editable="false" prefHeight="30.0" prefWidth="304.0" promptText="Player type"
+            <ComboBox  prefHeight="30.0" prefWidth="304.0" promptText="Player type"
                        fx:id="firstPlayerType"/>
         </VBox>
         <VBox prefHeight="180.0" prefWidth="300.0" spacing="15.0">
@@ -49,7 +49,7 @@
                     <Color blue="1.0"/>
                 </value>
             </ColorPicker>
-            <TextField editable="false" prefHeight="30.0" prefWidth="304.0" promptText="Player type"
+            <ComboBox prefHeight="30.0" prefWidth="304.0" promptText="Player type"
                        fx:id="secondPlayerType"/>
         </VBox>
     </HBox>

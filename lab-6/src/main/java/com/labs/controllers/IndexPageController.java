@@ -35,11 +35,11 @@ public class IndexPageController {
     @FXML
     public ColorPicker firstPlayerColor;
     @FXML
-    public TextField firstPlayerType;
+    public ComboBox<PlayerType> firstPlayerType;
     @FXML
     public ColorPicker secondPlayerColor;
     @FXML
-    public TextField secondPlayerType;
+    public ComboBox<PlayerType> secondPlayerType;
     @FXML
     public ComboBox<GameDifficulty> gameComplexityComboBox;
     @FXML
@@ -61,8 +61,9 @@ public class IndexPageController {
     }
 
     private void setPlayerTypeComboBoxes() {
-        firstPlayerType.setText(PlayerType.HUMAN.toString());
-        secondPlayerType.setText(PlayerType.COMPUTER.toString());
+        ObservableList<PlayerType> playerTypes = FXCollections.observableArrayList(PlayerType.values());
+        firstPlayerType.setItems(playerTypes);
+        secondPlayerType.setItems(playerTypes);
     }
 
     private void setDefaultPlayerColors() {
@@ -81,13 +82,13 @@ public class IndexPageController {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.FIRST_PLAYER)
-                    .type(PlayerType.valueOf(firstPlayerType.getText()))
+                    .type(PlayerType.valueOf(firstPlayerType.getValue().toString()))
                     .color(firstPlayerColor.getValue())
                     .playerId("Player 1")
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.SECOND_PLAYER)
-                    .type(PlayerType.valueOf(secondPlayerType.getText()))
+                    .type(PlayerType.valueOf(secondPlayerType.getValue().toString()))
                     .color(secondPlayerColor.getValue())
                     .playerId("Player 2")
                     .score(0).build();
@@ -107,8 +108,8 @@ public class IndexPageController {
     }
 
     private boolean isSettingsFormValid() {
-        return !firstPlayerType.getText().isEmpty() &&
-                !secondPlayerType.getText().isEmpty() &&
+        return !firstPlayerType.getSelectionModel().isEmpty() &&
+                !secondPlayerType.getSelectionModel().isEmpty() &&
                 !gameComplexityComboBox.selectionModelProperty().get().isEmpty() &&
                 !fieldSizeComboBox.selectionModelProperty().get().isEmpty();
     }

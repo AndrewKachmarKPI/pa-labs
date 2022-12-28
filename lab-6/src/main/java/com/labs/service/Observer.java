@@ -6,6 +6,5 @@ public interface Observer {
     void onStopGame(GamePlayer gamePlayer);
 
     void onPlayerChange(GamePlayer gamePlayer);
-    void onMoveTitleChange(String move);
     void onPlayerScoreChange(String playerTitle, Integer score);
 }

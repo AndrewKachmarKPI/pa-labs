@@ -238,12 +238,7 @@ public class GameController implements Observer {
     @Override
     public void onPlayerChange(GamePlayer gamePlayer) {
         currentPlayer = gamePlayer;
-//        moveInput.setText(gamePlayer.getPlayerId());
-    }
-
-    @Override
-    public void onMoveTitleChange(String move) {
-        moveInput.setText(move);
+        moveInput.setText(gamePlayer.getPlayerId());
     }
 
     @Override

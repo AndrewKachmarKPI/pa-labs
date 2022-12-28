@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class AlphaBettaSolver implements GameConstants {
+public class GameSolver implements GameConstants {
     private int currentPlayer;
     private final static int ALPHA = Integer.MIN_VALUE, BETA = Integer.MAX_VALUE;
     private int depth;

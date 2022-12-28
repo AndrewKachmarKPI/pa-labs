@@ -6,7 +6,7 @@ import com.labs.domain.GameBoard;
 import com.labs.domain.BoxBorderPosition;
 import com.labs.service.GameService;
 import com.labs.service.Observer;
-import com.labs.solvers.AlphaBettaSolver;
+import com.labs.solvers.GameSolver;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -123,14 +123,18 @@ public class GameServiceImpl implements GameService {
         this.gameBoard.setGameBoardVBox(gameBoard);
         this.gameBoard.setGameBoxes(gameBoxList);
         this.selectedPositions = new ArrayList<>();
-        this.currentPlayer = gameProperties.getFirstPlayer();
+        if (gameProperties.getIsAIFirst()) {
+            this.currentPlayer = gameProperties.getSecondPlayer();
+        } else {
+            this.currentPlayer = gameProperties.getFirstPlayer();
+        }
         return this.gameBoard;
     }
 
     @Override
     public void checkNextMove() {
         if (!gameBoard.isAllBoxesClosed()) {
-            AlphaBettaSolver solver = currentPlayer.getGameSolver();
+            GameSolver solver = currentPlayer.getGameSolver();
             if (currentPlayer.getType() == PlayerType.COMPUTER) {
                 BoxBorderPosition boxBorderPosition = solver.getNextMove(gameBoard, currentPlayer.getColorIndex(), gameProperties.getGameDifficulty());
                 selectBoxBorder(boxBorderPosition);
@@ -245,7 +249,7 @@ public class GameServiceImpl implements GameService {
 
     private void setGameSolverForPlayer(GamePlayer gamePlayer) {
         if (gamePlayer.getType() == PlayerType.COMPUTER) {
-            gamePlayer.setGameSolver(new AlphaBettaSolver());
+            gamePlayer.setGameSolver(new GameSolver());
         }
     }
 

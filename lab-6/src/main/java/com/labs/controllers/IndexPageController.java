@@ -75,7 +75,7 @@ public class IndexPageController {
     }
 
     @FXML
-    public void onPlayButtonClick(){
+    public void onPlayButtonClick() throws IOException {
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.FIRST_PLAYER)
@@ -97,21 +97,17 @@ public class IndexPageController {
                     .isAIFirst(isAiFirstMove.isSelected()).build();
             gameService.saveSettings(gameProperties);
 
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
-                Stage stage = (Stage) playBtn.getScene().getWindow();
-                Scene scene = new Scene(fxmlLoader.load());
-                scene.getStylesheets().add("dotsAndBoxes.css");
-                stage.setScene(scene);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
+            Stage stage = (Stage) playBtn.getScene().getWindow();
+            Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("dotsAndBoxes.css");
+            stage.setScene(scene);
         }
     }
 
     private boolean isSettingsFormValid() {
-        return !firstPlayerType.selectionModelProperty().get().isEmpty() &&
-                !secondPlayerType.selectionModelProperty().get().isEmpty() &&
+        return !firstPlayerType.getSelectionModel().isEmpty() &&
+                !secondPlayerType.getSelectionModel().isEmpty() &&
                 !gameComplexityComboBox.selectionModelProperty().get().isEmpty() &&
                 !fieldSizeComboBox.selectionModelProperty().get().isEmpty();
     }

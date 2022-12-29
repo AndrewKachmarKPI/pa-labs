@@ -162,6 +162,7 @@ public class GameController implements Observer {
             button.getStyleClass().add("h-btn");
             button.setId("H" + row + col);
         } else {
+            button.setMinHeight(Region.USE_PREF_SIZE);
             button.getStyleClass().add("v-btn");
             button.setId("V" + row + col);
         }

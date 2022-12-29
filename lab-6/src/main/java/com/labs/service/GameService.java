@@ -21,8 +21,6 @@ public interface GameService extends GameConstants {
 
     GameProperties getGameProperties();
 
-    GameBoard getGameBoard();
-
     GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard);
 
     void checkNextMove();

@@ -53,3 +53,7 @@
     -fx-pref-height: 70;
     -fx-pref-width: 16;
 }
+
+.border-button:disabled, .border-button:disabled > * {
+    -fx-opacity: 1.0 ;
+}

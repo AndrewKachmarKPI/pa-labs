@@ -60,6 +60,10 @@ public class GameController implements Observer {
         setPlayerScore(secondPlayerAmount, gameProperties.getSecondPlayer());
 
         buildGameField();
+        new Thread(this::startGame).start();
+    }
+
+    private void startGame() {
         gameService.startGame();
     }
 
@@ -145,7 +149,7 @@ public class GameController implements Observer {
         return hBox;
     }
 
-    private Circle getCircle() {
+    private Node getCircle() {
         Circle circle = new Circle(8, Color.BLACK);
         circle.setLayoutX(10);
         return circle;
@@ -163,6 +167,7 @@ public class GameController implements Observer {
         }
 
         button.setStyle(bgStyle + getHexColor(Color.LIGHTGRAY));
+        button.getStyleClass().add("border-button");
         EventHandler<MouseEvent> selectBorder = this::onBorderSelect;
         EventHandler<MouseEvent> hoverBorder = this::onBorderHover;
         EventHandler<MouseEvent> unHover = this::onBorderUnHover;
@@ -213,10 +218,9 @@ public class GameController implements Observer {
         return "#" + Integer.toHexString(color.hashCode()) + ";";
     }
 
-    // ACTIONS
     private void onBorderSelect(MouseEvent event) {
         if (currentPlayer.getType() != PlayerType.COMPUTER) {
-            gameService.selectBoxBorder(((Button) event.getSource()).getId(), PlayerType.HUMAN);
+            new Thread(() -> gameService.selectBoxBorder(((Button) event.getSource()).getId(), PlayerType.HUMAN)).start();
         }
     }
 
@@ -232,12 +236,7 @@ public class GameController implements Observer {
     @Override
     public void onPlayerChange(GamePlayer gamePlayer) {
         currentPlayer = gamePlayer;
-//        moveInput.setText(gamePlayer.getPlayerId());
-    }
-
-    @Override
-    public void onMoveTitleChange(String move) {
-        moveInput.setText(move);
+        moveInput.setText(gamePlayer.getPlayerId());
     }
 
     @Override

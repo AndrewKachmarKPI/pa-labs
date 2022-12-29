@@ -30,11 +30,11 @@ public class IndexPageController {
     @FXML
     public ColorPicker firstPlayerColor;
     @FXML
-    public TextField firstPlayerType;
+    public ComboBox<PlayerType> firstPlayerType;
     @FXML
     public ColorPicker secondPlayerColor;
     @FXML
-    public TextField secondPlayerType;
+    public ComboBox<PlayerType> secondPlayerType;
     @FXML
     public ComboBox<GameDifficulty> gameComplexityComboBox;
     @FXML
@@ -58,8 +58,9 @@ public class IndexPageController {
     }
 
     private void setPlayerTypeComboBoxes() {
-        firstPlayerType.setText(PlayerType.HUMAN.toString());
-        secondPlayerType.setText(PlayerType.COMPUTER.toString());
+        ObservableList<PlayerType> playerTypes = FXCollections.observableArrayList(PlayerType.values());
+        firstPlayerType.setItems(playerTypes);
+        secondPlayerType.setItems(playerTypes);
     }
 
     private void setDefaultPlayerColors() {
@@ -74,17 +75,17 @@ public class IndexPageController {
     }
 
     @FXML
-    public void onPlayButtonClick() throws IOException {
+    public void onPlayButtonClick(){
         if (isSettingsFormValid()) {
             GamePlayer firstPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.FIRST_PLAYER)
-                    .type(PlayerType.valueOf(firstPlayerType.getText()))
+                    .type(PlayerType.valueOf(firstPlayerType.getValue().toString()))
                     .color(firstPlayerColor.getValue())
                     .playerId("Player 1")
                     .score(0).build();
             GamePlayer secondPlayer = GamePlayer.builder()
                     .colorIndex(GameConstants.SECOND_PLAYER)
-                    .type(PlayerType.valueOf(secondPlayerType.getText()))
+                    .type(PlayerType.valueOf(secondPlayerType.getValue().toString()))
                     .color(secondPlayerColor.getValue())
                     .playerId("Player 2")
                     .score(0).build();
@@ -96,17 +97,21 @@ public class IndexPageController {
                     .isAIFirst(isAiFirstMove.isSelected()).build();
             gameService.saveSettings(gameProperties);
 
-            FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
-            Stage stage = (Stage) playBtn.getScene().getWindow();
-            Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add("dotsAndBoxes.css");
-            stage.setScene(scene);
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(DotsAndBoxesApplication.class.getResource("dots-and-boxes.fxml"));
+                Stage stage = (Stage) playBtn.getScene().getWindow();
+                Scene scene = new Scene(fxmlLoader.load());
+                scene.getStylesheets().add("dotsAndBoxes.css");
+                stage.setScene(scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private boolean isSettingsFormValid() {
-        return !firstPlayerType.getText().isEmpty() &&
-                !secondPlayerType.getText().isEmpty() &&
+        return !firstPlayerType.selectionModelProperty().get().isEmpty() &&
+                !secondPlayerType.selectionModelProperty().get().isEmpty() &&
                 !gameComplexityComboBox.selectionModelProperty().get().isEmpty() &&
                 !fieldSizeComboBox.selectionModelProperty().get().isEmpty();
     }

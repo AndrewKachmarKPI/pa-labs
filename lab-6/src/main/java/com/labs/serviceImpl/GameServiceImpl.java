@@ -66,11 +66,6 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameBoard getGameBoard() {
-        return gameBoard;
-    }
-
-    @Override
     public GameBoard buildGameBoard(List<Button> buttons, List<BorderPane> boxes, VBox gameBoard) {
         List<GameBox> gameBoxList = new ArrayList<>();
         for (BorderPane box : boxes) {
@@ -171,7 +166,6 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void selectBoxBorder(String boxBorderId, PlayerType playerType) {
-        changeMove(boxBorderId);
         boolean isBoxClosed = false;
         if (playerType == PlayerType.HUMAN) {
             selectBoxBorder(getBoxBorderPosition(boxBorderId));
@@ -192,13 +186,6 @@ public class GameServiceImpl implements GameService {
         }
         updatePlayersScore();
         checkNextMove();
-    }
-
-
-    private void changeMove(String boxBorderId) {
-        for (Observer observer : observers) {
-            observer.onMoveTitleChange(boxBorderId);
-        }
     }
 
     private void selectBoxBorder(BoxBorderPosition borderPosition) {

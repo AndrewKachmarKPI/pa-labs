@@ -30,7 +30,7 @@
                     <Color red="1.0" />
                 </value>
             </ColorPicker>
-            <TextField fx:id="firstPlayerType" editable="false" prefHeight="30.0" prefWidth="304.0" promptText="Player type" />
+            <ComboBox fx:id="firstPlayerType" prefHeight="30.0" prefWidth="304.0" promptText="Player type" />
         </VBox>
         <VBox prefHeight="180.0" prefWidth="300.0" spacing="15.0">
             <HBox.margin>
@@ -46,7 +46,7 @@
                     <Color blue="1.0" />
                 </value>
             </ColorPicker>
-            <TextField fx:id="secondPlayerType" editable="false" prefHeight="30.0" prefWidth="304.0" promptText="Player type" />
+            <ComboBox fx:id="secondPlayerType"  prefHeight="30.0" prefWidth="304.0" promptText="Player type" />
         </VBox>
     </HBox>
     <Separator prefHeight="0.0" prefWidth="600.0" />

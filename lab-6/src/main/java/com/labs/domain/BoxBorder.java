@@ -1,5 +1,6 @@
 package com.labs.domain;
 
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import lombok.*;
 
@@ -26,7 +27,9 @@ public class BoxBorder {
     public void selectBorder(GamePlayer selectedBy) {
         this.isSelected = true;
         this.selectedBy = selectedBy.getType().toString();
-        this.button.setStyle("-fx-background-color: #000000");
+        this.button.setCursor(Cursor.NONE);
         this.button.setDisable(true);
+        this.button.setStyle("-fx-background-color: #000000");
+        this.button.setMouseTransparent(true);
     }
 }
